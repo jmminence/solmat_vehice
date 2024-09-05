@@ -1,0 +1,80 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block content %}
+<!-- MAIN -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <header class="card-header">
+                <h4 class="card-title">Procesos</h4>
+                <span class="d-flex flex-row justify-content-between mt-md-1 align-items-center">
+                    <small class="card-subtitle">Indice</small>
+                </span>
+            </header>
+            <section class="card-body table-responsive">
+                <ul class="nav justify-content-center">
+                    {% for process_type in process_types%}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'lab:process_build' process_type.value %}">
+                                {{ process_type.label }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <table class="table table-sm zero-configuration">
+                    <thead>
+                        <th>Caso</th>
+                        <th>Ingreso</th>
+                        <th>Morfometria</th>
+                        <th>Macro</th>
+                        <th>Rx</th>
+                        <th>Derivados</th>
+                        <th>Ultima Derivación</th>
+                    </thead>
+                    <tbody>
+                        {% for entryform in radiology_progress %}
+                        <tr>
+                            <td>{{ entryform.entryform }}</td>
+                            <td>{{ entryform.created_at|date:"d/m/Y" }}</td>
+                            <td>{{ entryform.morphometry_count }} / {{ entryform.unit_organs_count }}</td>
+                            <td>{{ entryform.macro_count }} / {{ entryform.samples_count }}</td>
+                            <td>{{ entryform.rx_count }} / {{ entryform.samples_count }}</td>
+                            <td>{{ entryform.lab_count }} / {{ entryform.samples_count }}</td>
+                            <td>{{ entryform.last_assignment|date:"d/m/Y" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </div>
+</div>
+
+<!-- END MAIN -->
+
+
+{% endblock content %}
+{% block scripts %}
+<script
+    type="text/javascript"
+    src="https://cdn.datatables.net/buttons/1.7.0/js/dataTables.buttons.min.js"
+    defer>
+</script>
+
+<script
+    type="text/javascript"
+    src="//cdn.jsdelivr.net/npm/sweetalert2@10"
+    defer>
+</script>
+
+<script type="text/javascript">
+$(document).ready(() => {
+  const tableIndex = $(".zero-configuration").DataTable({
+    oLanguage: {
+      sUrl: "https://cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json",
+    },
+  });
+});
+</script>
+{% endblock scripts %}

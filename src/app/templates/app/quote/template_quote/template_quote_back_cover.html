@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body,
+        html {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            height: 100%;
+            width: 100%;
+        }
+
+        .box{
+            width: 100%;
+            height: 80px;
+        }
+
+        .comment {
+            width: 100%;
+            padding: 0% 5%;
+        }
+
+        .title-comment {
+            width: 100%;
+            color: #42A292;
+
+            display: -webkit-box;
+            -webkit-box-pack: start;
+
+            padding: 20px 0px;
+            font-size: 22px;
+        }
+
+        .content-comment{
+            padding-left: 60px;
+            /* font-weight: 300; */
+            color: #030a67;
+            font-size: 18px;
+        }
+        .content-comment li{
+            padding: 5px 0px;
+        }
+
+        .contact-images {
+            width: 100%;
+            height: 320px;
+
+            display: -webkit-box;
+            -webkit-box-pack: center;
+            -webkit-box-align: center;
+            -webkit-box-orient: vertical;
+        }
+
+        .image {
+            width: 30%;
+            height: 90px;
+        }
+
+        .image img{
+            width: 100%;
+        }
+
+        .orange-bar {
+            background-color: #E24301;
+            width: 40%;
+            height: 5px;
+            border-radius: 5px;
+        }
+
+        .socialgroups img {
+            width: 50px;
+            height: 50px;
+            padding: 5px;
+        }
+        .contact-images p {
+            padding-top: 10;
+            color: #030a67;
+        }
+
+        .socialgroups a{
+            display: inline-block;
+            /* align-items: center; */
+            /* margin: 10px; */
+        }
+
+        span {
+            color: blue;
+            text-decoration: underline;
+            text-decoration-color: blue;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="box"></div>
+    <div class="comment">
+        <div class="title-comment"><strong>NOTA</strong></div>
+        <ul class="content-comment">
+            <li>
+                <p>Valores no incluyen IVA</p>
+            </li>
+            <li>
+                <p>Valores de análisis por muestra</p>
+            </li>
+            <li>
+                <p>Esta cotización tiene una validez de {{days_available}} días desde su fecha de emisión</p>
+            </li>
+        </ul>
+    </div>
+    <div class="comment">
+        <div class="title-comment"><strong>FORMA DE PAGO</strong></div>
+        <ul class="content-comment">
+            <li>
+                <p>Crédito a 30 días</p>
+            </li>
+            <li>
+                <p>Cuenta corriente BCI Nº 522 30 406</p>
+            </li>
+        </ul>
+    </div>
+    <div class="comment">
+        <div class="title-comment"><strong>DATOS EMPRESA</strong></div>
+        <ul class="content-comment">
+            <li>
+                <p><strong>Razón Social:</strong> Veterinary Histopathology Center Spa</p>
+            </li>
+            <li>
+                <p><strong>RUT:</strong> 76.431.675-4</p>
+            </li>
+            <li>
+                <p><strong>Giro:</strong> Laboratorio, actividades de investigación</p>
+            </li>
+            <li>
+                <p><strong>Teléfono:</strong> 65 2710 232</p>
+            </li>
+            <li>
+                <p><strong>Dirección:</strong> Libertad 590, Población Egaña, Puerto Montt, Chile</p>
+            </li>
+            <li>
+                <p><strong>Recepción de muestras:</strong> <span>recepcion@vehice.com</span></p>
+            </li>
+            <li>
+                <p><strong>Contacto Facturación:</strong> Administración; <span>admin@vehice.com</span></p>
+            </li>
+            <li>
+                <p><strong>Contacto Área Técnica:</strong> Carlos Sandoval Hurtado; <span>carlos.sandoval@vehice.com</span></p>
+            </li>
+            <li>
+                <p><strong>Contacto Área Comercial:</strong> Marcelo Vera Gaedicke; <span>marcelo.vera@vehice.com</span></p>
+            </li>
+        </ul>
+    </div>
+
+
+    <div class="contact-images">
+        <div class="image"><img src="{{blue_logo_image_url}}" alt="vehice-logo-back-cover"></div>
+        <div class="orange-bar"></div>
+        <div class="socialgroups">
+            <a href="https://www.linkedin.com/company/vehicelab/" ><img src="{{linkedin_logo_url}}" alt="vehice-linkedin"></a>
+            <a href="https://www.facebook.com/VehiceSaludAnimal?mibextid=ZbWKwL"><img src="{{facebook_logo_url}}" alt="vehice-facebook"></a>
+            <a href="https://www.instagram.com/vehicelab?igsh=cmd4dWhpcG1seXRx"><img src="{{instagram_logo_url}}" alt="vehice-instagram"></a>
+            <a href="https://www.youtube.com/@vehice2097"><img src="{{youtube_logo_url}}" alt="vehice-youtube"></a>
+        </div>
+        <p>www.vehice.com</pw>
+    </div>
+</body>
+
+</html>

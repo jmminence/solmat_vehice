@@ -1,0 +1,294 @@
+{% load static %}
+{% block stylesheets %}
+{% load custom_tags %}
+
+<link href="https://fonts.cdnfonts.com/css/calibri-light" rel="stylesheet">
+
+<style type="text/css">
+
+  body {
+    height: 100% !important;
+    font-family: "Calibri light" !important;
+    font-size: 14pt;
+  }
+
+  .cabecera {
+    color: #113d5b !important;
+    font-size: 18px !important;
+    width: auto !important;
+    height: auto !important;
+  }
+  .cabecera_custom {
+    color: #113d5b !important;
+    font-size: 16px !important;
+    width: auto !important;
+    height: auto !important;
+    box-sizing: border-box;
+  }
+
+  table {
+    width: 100%;
+    /* position: relative; */
+    border-collapse: collapse !important;
+    background: #fff;
+    border-radius: 10px;
+  }
+
+  .body-container {
+    /* position: relative; */
+    border: 1px solid #d8d7d2;
+    /* border-spacing: 0; */
+  }
+
+  table th,
+  table td {
+    font-size: 12px;
+    text-align: center;
+    vertical-align: middle !important;
+    /* box-sizing: border-box; */
+
+    padding: 0;
+    /* border: 0; */
+  }
+
+  th {
+    color: #c90b00 !important;
+    font-size: 18px !important;
+    border: 1px solid #d8d7d2 !important;
+  }
+  tr {
+    z-index: 0;
+    page-break-inside: avoid !important;
+  }
+
+
+
+  h1 {
+    padding-left: 80px;
+    color: #c90b00;
+    font-size: 30px;
+
+    font-weight: bold;
+  }
+  h3 {
+    font-family: 'Calibri Light', sans-serif;
+    text-align: right;
+  }
+
+  .form-control {
+    width: 100px;
+    height: 50px;
+    vertical-align: middle;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    background-color: #fff;
+    text-align: center;
+    border: none;
+  }
+
+
+  .row-container {
+    position: absolute;
+    z-index: 999;
+    background-color: transparent !important;
+  }
+  .row-container-one-case td {
+    background-color: #ffffff;
+
+    padding: 0;
+    border: none;
+    vertical-align: middle;
+  }
+  .row-container-one-case td input {
+    text-align: center;
+    font-size: 20px;
+    color: #c90b00;
+    font-weight: 900;
+  }
+
+  .row-container-two-case{
+    background-color: #dddcda;
+  }
+  .row-container-two-case td input {
+    background-color: #dddcda;
+    text-align: center;
+    font-size: 20px;
+    margin: 0;
+    padding: 0;
+  }
+  .row-container-three-case td input {
+    font-weight: bold;
+    color: rgb(62, 118, 182);
+    text-align: center;
+    font-size: 20px
+  }
+  .row-container-simple td input {
+    text-align: center;
+    font-size: 20px;
+  }
+</style>
+
+{% endblock stylesheets %}
+
+{% block body %}
+<form>
+  <h1>SCORE GILL</h1>
+  <div>
+      <table>
+        <thead>
+          <tr>
+            <th rowspan="1" colspan="18" class="cabecera">Branquia</th>
+          </tr>
+          <tr class="cabecera">
+            <th rowspan="3" colspan="1" class="cabecera" style="padding: 20px; width: 150px; font-size: 25px;">Muestras
+            </th>
+            <th rowspan="" colspan="4" class="cabecera">Score Patológico (0 a 3)</th>
+            <th rowspan="1" colspan="12" class="cabecera">Criterio Auxiliar (ausencia: 0 / presencia = 1)</th>
+            <th rowspan="3" colspan="1" class="cabecera">Score</th>
+
+          </tr>
+          <tr class="cabecera">
+            <th rowspan="" colspan="4" class="cabecera">Hallazgos Principales</th>
+            <th rowspan="1" colspan="2" class="cabecera">Tipos de inflamacion</th>
+            <th rowspan="" colspan="1" class="cabecera">Deg.</th>
+            <th rowspan="" colspan="3" class="cabecera">Alteraciones Circulatorias</th>
+            <th rowspan="1" colspan="6" class="cabecera">Microorganismos</th>
+          </tr>
+          <tr class="cabecera">
+            <th rowspan="1" colspan="1" class="cabecera">Hiperplasia<br>Lamelar</th>
+            <th rowspan="1" colspan="1" class="cabecera">Fusión<br>Lamelar</th>
+            <th rowspan="1" colspan="1" class="cabecera_custom">Anormalidades<br>celulares</th>
+            <th rowspan="1" colspan="1" class="cabecera">Edema<br>Lamelar</th>
+            <th rowspan="1" colspan="1" class="cabecera">Inflamación</th>
+            <th rowspan="1" colspan="1" class="cabecera">CGE</th>
+            <th rowspan="1" colspan="1" class="cabecera">Deg.<br>Hidrópica</th>
+            <th rowspan="1" colspan="1" class="cabecera">Congestión</th>
+            <th rowspan="1" colspan="1" class="cabecera_custom">Telangiectasia<br>Trombosis</th>
+            <th rowspan="1" colspan="1" class="cabecera">Hemorragia</th>
+            <!--<p>Type of Water: {{ type_of_water }}, {{result_name}}</p>-->
+            {% if type_of_water == "Dulce" %}
+            <th rowspan="1" colspan="1" class="cabecera">Protozoos</th>
+            <th rowspan="1" colspan="1" class="cabecera">Hongos</th>
+            {% else %}
+            {% if result_name == "Seleccione una opcion" %}
+            <th rowspan="1" colspan="1" class="cabecera">No se seleccionó</th>
+            {% endif %}
+            {% if result_name == "Ameba" %}
+            <th rowspan="1" colspan="1" class="cabecera">Ameba</th>
+            {% endif %}
+            {% if result_name == "Brookynella" %}
+            <th rowspan="1" colspan="1" class="cabecera">Brookynella</th>
+            {% endif %}
+            {% if result_name == "Amebas y otros parásitos" %}
+            <th rowspan="1" colspan="1" style="white-space: normal; text-align: center;" class="cabecera">Amebas y
+              otros<br>parásitos</th>
+            {% endif %}
+            <th rowspan="1" colspan="1" class="cabecera">Otros<br>Parásitos</th>
+            {% endif %}
+            <th rowspan="1" colspan="1" class="cabecera">Zooplancton</th>
+            <th rowspan="1" colspan="1" class="cabecera">Microalgas</th>
+            {% if type_of_water == "Dulce" %}
+            <th rowspan="1" colspan="1" class="cabecera_custom">Flavobacterium</th>
+            {% else %}
+            <th rowspan="1" colspan="1" class="cabecera">Tenacibaculum</th>
+            {% endif %}
+            <th rowspan="1" colspan="1" class="cabecera">Otras <br>Bacterias</th>
+          </tr>
+        </thead>
+        <tbody class="body-container">
+          {% for key, value in samples.items %}
+          {% if "promedio_identification_" in key %}
+          <tr class="row-container-one-case">
+            <th style="width: 125px !important;">{{value.identification.cage}} X</th>
+            <td><input class="form-control" value="{% get_average averages value.identification.id 'Hiperplasia lamelar' %}"></td>
+            <td><input class="form-control" value="{% get_average averages value.identification.id 'Fusión lamelar' %}"></td>
+            <td><input class="form-control" value="{% get_average averages value.identification.id 'Anormalidades celulares' %}"></td>
+            <td><input class="form-control" value="{% get_average averages value.identification.id 'Edema lamelar' %}"></td>
+            <td><input class="form-control" value="{% get_average averages value.identification.id 'Inflamación' %}"></td>
+            <td><input class="form-control" value="{% get_average averages value.identification.id 'CGE' %}"></td>
+            <td><input class="form-control" value="{% get_average averages value.identification.id 'Deg. Hidrópica' %}"></td>
+            <td><input class="form-control" value="{% get_average averages value.identification.id 'Congestión' %}"></td>
+            <td><input class="form-control" value="{% get_average averages value.identification.id 'Telangiectasia Trombosis' %}"></td>
+            <td><input class="form-control" value="{% get_average averages value.identification.id 'Hemorragia' %}"></td>
+            <td><input class="form-control" value="{% if type_of_water == 'Dulce' %}{% get_average averages value.identification.id 'Protozoos' %}{% else %}{% get_average averages value.identification.id result_name %}{% endif %}"></td>
+            <td><input class="form-control" value="{% if type_of_water == 'Dulce' %}{% get_average averages value.identification.id 'Hongos' %}{% else %}{% get_average averages value.identification.id 'Otros Parásitos' %}{% endif %}"></td>
+            <td><input class="form-control" value="{% get_average averages value.identification.id 'Zooplancton' %}"></td>
+            <td><input class="form-control" value="{% get_average averages value.identification.id 'Microalgas' %}"></td>
+            <td><input class="form-control" value="{% if type_of_water == 'Dulce' %}{% get_average averages value.identification.id 'Flavobacterium' %}{% else %}{% get_average averages value.identification.id 'Tenacibaculum' %}{% endif %}"></td>
+            <td><input class="form-control" value="{% get_average averages value.identification.id 'Otras Bacterias' %}"></td>
+            <td style="background-color: #D9E2F3;;"><input class="form-control" style="font-weight: bold; background-color: #D9E2F3;;" value="{% get_identif_sum identification_sums value.identification.id %}"></td>
+          </tr>
+          {% elif "promedio_center" in key %}
+          <tr class="row-container-two-case">
+            <th style="text-align: center; background-color: #ffffff !important;">{{value.center}} <br>X</th>
+            <td><input class="form-control" value="{% get_category_average identification_averages 'Hiperplasia lamelar' %}"></td>
+            <td><input class="form-control" value="{% get_category_average identification_averages 'Fusión lamelar' %}"></td>
+            <td><input class="form-control" value="{% get_category_average identification_averages 'Anormalidades celulares' %}"></td>
+            <td><input class="form-control" value="{% get_category_average identification_averages 'Edema lamelar' %}"></td>
+            <td><input class="form-control" value="{% get_category_average identification_averages 'Inflamación' %}"></td>
+            <td><input class="form-control" value="{% get_category_average identification_averages 'CGE' %}"></td>
+            <td><input class="form-control" value="{% get_category_average identification_averages 'Deg. Hidrópica' %}"></td>
+            <td><input class="form-control" value="{% get_category_average identification_averages 'Congestión' %}"></td>
+            <td><input class="form-control" value="{% get_category_average identification_averages 'Telangiectasia Trombosis' %}"></td>
+            <td><input class="form-control" value="{% get_category_average identification_averages 'Hemorragia' %}"></td>
+            <td><input class="form-control" value="{% if type_of_water == 'Dulce' %}{% get_category_average identification_averages 'Protozoos' %}{% else %}{% get_category_average identification_averages result_name %}{% endif %}"></td>
+            <td><input class="form-control" value="{% if type_of_water == 'Dulce' %}{% get_category_average identification_averages 'Hongos' %}{% else %}{% get_category_average identification_averages 'Otros Parásitos' %}{% endif %}"></td>
+            <td><input class="form-control" value="{% get_category_average identification_averages 'Zooplancton' %}"></td>
+            <td><input class="form-control" value="{% get_category_average identification_averages 'Microalgas' %}"></td>
+            <td><input class="form-control"value="{% if type_of_water == 'Dulce' %}{% get_category_average identification_averages 'Flavobacterium' %}{% else %}{% get_category_average identification_averages 'Tenacibaculum' %}{% endif %}"></td>
+            <td><input class="form-control" value="{% get_category_average identification_averages 'Otras Bacterias' %}"></td>
+            <td style="background-color: #D9E2F3;" ><input class="form-control" style="font-weight: bold; background-color: #D9E2F3;;" value="{% get_cage_total_sum cage_sums %}"></td>
+          </tr>
+          {% elif "porcentaje" in key %}
+          <tr class="row-container-three-case">
+            <th>{{value.identification.cage}} Preval.<br>(%)</th>
+            <td><input class="form-control" value="{% get_dict_value category_percentages 'Hiperplasia lamelar' %}"></td>
+            <td><input class="form-control" value="{% get_dict_value category_percentages 'Fusión lamelar' %}"></td>
+            <td><input class="form-control" value="{% get_dict_value category_percentages 'Anormalidades celulares' %}"></td>
+            <td><input class="form-control" value="{% get_dict_value category_percentages 'Edema lamelar' %}"></td>
+            <td><input class="form-control" value="{% get_dict_value category_percentages 'Inflamación' %}"></td>
+            <td><input class="form-control" value="{% get_dict_value category_percentages 'CGE' %}"></td>
+            <td><input class="form-control" value="{% get_dict_value category_percentages 'Deg. Hidrópica' %}"></td>
+            <td><input class="form-control" value="{% get_dict_value category_percentages 'Congestión' %}"></td>
+            <td><input class="form-control" value="{% get_dict_value category_percentages 'Telangiectasia Trombosis' %}"></td>
+            <td><input class="form-control" value="{% get_dict_value category_percentages 'Hemorragia' %}"></td>
+            <td><input class="form-control" value="{% if type_of_water == 'Dulce' %}{% get_dict_value category_percentages 'Protozoos' %}{% else %}{% get_dict_value category_percentages result_name %}{% endif %}"></td>
+            <td><input class="form-control" value="{% if type_of_water == 'Dulce' %}{% get_dict_value category_percentages 'Hongos' %}{% else %}{% get_dict_value category_percentages 'Otros Parásitos' %}{% endif %}"></td>
+            <td><input class="form-control" value="{% get_dict_value category_percentages 'Zooplancton' %}"></td>
+            <td><input class="form-control" value="{% get_dict_value category_percentages 'Microalgas' %}"></td>
+            <td><input class="form-control" value="{% if type_of_water == 'Dulce' %}{% get_dict_value category_percentages 'Flavobacterium' %}{% else %}{% get_dict_value category_percentages 'Tenacibaculum' %}{% endif %}"></td>
+            <td><input class="form-control" value="{% get_dict_value category_percentages 'Otras Bacterias' %}"></td>
+            <td>-</td>
+          </tr>
+          {% else %}
+          <tr class="row-container-simple">
+            <th>{{value.identification.cage}} ({{value.index}})</th>
+            <td style="background-color: #ebcea5;"><input class="form-control" style="background-color: #ebcea5;" value="{% get_sample_value sample_values value.id 'Hiperplasia lamelar' %}"></td>
+            <td style="background-color: #ebcea5;"><input class="form-control" style="background-color: #ebcea5;" value="{% get_sample_value sample_values value.id 'Fusión lamelar' %}"></td>
+            <td style="background-color: #ebcea5;"><input class="form-control" style="background-color: #ebcea5;" value="{% get_sample_value sample_values value.id 'Anormalidades celulares' %}"></td>
+            <td style="background-color: #ebcea5;"><input class="form-control" style="background-color: #ebcea5;" value="{% get_sample_value sample_values value.id 'Edema lamelar' %}"></td>
+            <td style="background-color: #ece9b9;"><input class="form-control" style="background-color: #ece9b9;" value="{% get_sample_value sample_values value.id 'Inflamación' %}"></td>
+            <td style="background-color: #ece9b9;"><input class="form-control" style="background-color: #ece9b9;" value="{% get_sample_value sample_values value.id 'CGE' %}"></td>
+            <td style="background-color: #e3e3e3;"><input class="form-control" style="background-color: #e3e3e3;" value="{% get_sample_value sample_values value.id 'Deg. Hidrópica' %}"></td>
+            <td style="background-color: #e3e3e3;"><input class="form-control" style="background-color: #e3e3e3;" value="{% get_sample_value sample_values value.id 'Congestión' %}"></td>
+            <td style="background-color: #e3e3e3;"><input class="form-control" style="background-color: #e3e3e3;" value="{% get_sample_value sample_values value.id 'Telangiectasia Trombosis' %}"></td>
+            <td style="background-color: #e3e3e3;"><input class="form-control" style="background-color: #e3e3e3;" value="{% get_sample_value sample_values value.id 'Hemorragia' %}"></td>
+            <td style="background-color: #f4f2ef;"><input class="form-control" style="background-color: #f4f2ef;" value="{% if type_of_water == 'Dulce' %}{% get_sample_value sample_values value.id 'Protozoos' %}{% else %}{% get_sample_value sample_values value.id result_name %}{% endif %}"></td>
+            <td style="background-color: #f4f2ef;"><input class="form-control" style="background-color: #f4f2ef;" value="{% if type_of_water == 'Dulce' %}{% get_sample_value sample_values value.id 'Hongos' %}{% else %}{% get_sample_value sample_values value.id 'Otros Parásitos' %}{% endif %}"></td>
+            <td style="background-color: #f4f2ef;"><input class="form-control" style="background-color: #f4f2ef;" value="{% get_sample_value sample_values value.id 'Zooplancton' %}"></td>
+            <td style="background-color: #f4f2ef;"><input class="form-control" style="background-color: #f4f2ef;" value="{% get_sample_value sample_values value.id 'Microalgas' %}"></td>
+            <td style="background-color: #f4f2ef;"><input class="form-control" style="background-color: #f4f2ef;" value="{% if type_of_water == 'Dulce' %}{% get_sample_value sample_values value.id 'Flavobacterium' %}{% else %}{% get_sample_value sample_values value.id 'Tenacibaculum' %}{% endif %}"></td>
+            <td style="background-color: #f4f2ef;"><input class="form-control" style="background-color: #f4f2ef;" value="{% get_sample_value sample_values value.id 'Otras Bacterias' %}"></td>
+            <td style="background-color: #D9E2F3;"><input class="form-control" style="background-color: #D9E2F3; font-weight: bold;" value="{% get_cage_sum cage_sums value.id %}"></td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+      <br>
+      <h3>Susan O. Mitchell et al. (2012),<span> Modificado.</span></h3>
+  </div>
+</form>
+
+{% endblock body %}

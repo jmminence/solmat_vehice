@@ -1,0 +1,112 @@
+
+{% extends 'base_pdf.html' %}
+{% load static %}
+{% block stylesheets %}
+<link href="https://fonts.cdnfonts.com/css/calibri-light" rel="stylesheet">
+
+<style type="text/css">
+ 
+  body{
+    height:100% !important;
+    font-family:"Calibri light" !important;
+    font-size: 11pt;
+  }
+
+  .container {
+    min-height:100% !important;
+  }
+
+  h2{
+    padding-left: 80px;
+    color: #c90b00;
+    font-weight: 500;
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  th{
+    text-align:center;
+  }
+
+  #table-diagnostic {
+    margin-bottom:5px;
+  }
+
+  #table-diagnostic tr th {
+    border: 1px solid #f2a16b;
+  }
+
+  thead th{
+    color: #5e6381;
+    background-color:white;
+  }
+
+  .organ{
+    background-color:#f9f9f9;
+    color: #c31d3e;
+  }
+
+  .diagnostic {
+    text-align: left;
+    background-color:#d0cece;
+    color: #2a567e;
+    font-weight: normal;
+    white-space: nowrap;
+  }
+
+  .distribution {
+    background-color:#fce4d6;
+    color: #2a567e;
+    font-weight: normal;
+  }
+
+  .frecuencia {
+    background-color:#ddebf7;
+    color: #2a567e;
+    font-weight: normal;
+  }
+
+  #value_info {
+    font-weight: bold;
+    font-size: 12px;
+    text-align:center;
+    color: #c12056;
+  }
+
+  .table > tbody > tr > td, .table > tbody > tr > th, .table > thead > tr > td{
+    height:20px;
+    padding:1px;
+  }
+ 
+  .table > thead > tr > th{
+    padding:0px;
+  }
+
+  .uno{
+    background-color: #92d050;
+  }
+  
+  .dos{
+    background-color: #ffc000;
+  }
+
+  .tres{
+    background-color: red;
+  }
+
+  th{
+    vertical-align: middle !;
+  }
+
+ </style>
+
+{% endblock stylesheets %}
+
+{% block body %}
+</table>
+<center><span class="text-danger">Intensidad</span></center>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+{% endblock scripts %}

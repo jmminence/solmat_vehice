@@ -1,0 +1,98 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block content %}
+<!-- MAIN -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <header class="card-header">
+                <h4 class="card-title">
+                    Hoja lectura -
+                    <a href="{{ case.get_absolute_url }}" class="detailTrigger">Caso: {{ case.no_caso }}</a>
+
+                    {% if organ_difference %}
+                    <span class="text-warning">
+                        -
+                        <i class="ft-alert-triangle"></i>
+                        Hay una diferencia entre las muestras a estudiar y las disponibles para leer.
+                    </span>
+                    {% endif %}
+                </h4>
+            </header>
+            <main class="card-body container-fluid">
+                <section class="row">
+                    <div class="col-md-12 table-responsive">
+                        <table class="table table-striped zero-configuration">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Identificación</th>
+                                    <th scope="col">Unidad</th>
+                                    <th scope="col">Organos</th>
+                                    <th scope="col">Tincion</th>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Disponibilidad</th>
+                                    <th scope="col">Observacion</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for slide in slides %}
+                                <tr>
+                                    <td>{{ slide.identification }}</td>
+                                    <td>{{ slide.unit }}</td>
+                                    <td>{{ slide.organs }}</td>
+                                    <td>{{ slide.stain }}</td>
+                                    <th scope="row">{{ slide.slide }}</th>
+                                    <td>{{ slide.tag }}</td>
+                                    <td>
+                                        {% if slide.url %}
+                                        <a href="{{ slide.url }}" target="_blank">Disponible</a>
+                                        {% else %}
+                                        {{ slide.released_at|yesno:"Disponible,No está disponible" }}
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ slide.observation|default:"S/I" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+</div>
+
+<!-- END MAIN -->
+
+{% endblock content %}
+{% block scripts %}
+<script
+    type="text/javascript"
+    src="//cdn.jsdelivr.net/npm/sweetalert2@10"
+    defer>
+</script>
+
+<script type="text/javascript">
+ $(document).ready(() => {
+     $(".zero-configuration").DataTable({
+         order:[4,'asc']
+     });
+
+     $(".detailTrigger").click(function (e) {
+         e.preventDefault();
+         const url = $(e.target).attr("href");
+         $.get(url, function (data, textStatus) {
+             Swal.fire({
+                 html: data,
+                 width: "80%",
+             });
+         });
+     });
+     
+ })
+</script>
+
+
+{% endblock scripts %}

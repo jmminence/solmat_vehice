@@ -1,0 +1,316 @@
+{% extends 'base_pdf.html' %}
+{% load static %}
+{% block stylesheets %}
+
+<style type="text/css">
+ .text-white {
+   color: white !important;
+ }
+
+ .container {
+   font-family: "Helvetica" !important;
+   font-size: 10px !important;
+   
+ }
+
+ .t1 {
+   font-family: "Helvetica" !important;
+   font-size: 14px !important;
+   font-weight: bold !important;
+   
+ }
+
+ .t2 {
+   font-family: "Helvetica" !important;
+   font-size: 12px !important;
+   font-weight: bold !important;
+   
+ }
+
+ .t3 {
+   font-family: "Helvetica" !important;
+   font-size: 11px !important;
+   font-weight: bold !important;
+   
+ }
+
+ .t3_n {
+   font-family: "Helvetica" !important;
+   font-size: 11px !important;
+   font-weight: normal !important;
+   
+ }
+
+ div {
+   font-family: "Helvetica" !important;
+   font-size: 10px !important;
+   
+   
+ }
+
+ table.table-bordered{
+   border:1px solid gray;
+ }
+ table.table-bordered > thead > tr > th{
+   border:1px solid gray;
+ }
+ table.table-bordered > tbody > tr > td{
+   border:1px solid gray;
+ }
+
+</style>
+
+{% endblock stylesheets %}
+
+{% block body %}
+<div class="container">
+  <div class="row" style="page-break-inside: avoid !important;">
+    <table class="table table-bordered">
+      <tr>
+        <td class="col-xs-3" style="text-align: center;"><img alt="" src="{% static 'assets/images/logo/logo.png' %}" class="img-fluid float-left" style="width: 180px;"></td>
+        <td class="col-xs-5">
+          <center>
+            <span class="t1">
+              SAMPLE RECEPTION FORM
+            </span>
+          </center>
+        </td>
+        <td class="col-xs-2">
+          <div clas="row">
+            <div class="col-xs-12">
+              <span class="t3">Date:</span>
+            </div>
+            <div class="col-xs-12">
+              <span class="t3">Time:</span>
+            </div>
+          </div>
+        </td>
+        <td class="col-xs-2">
+          <div class="row">
+            <div class="col-xs-12">
+              <span class="t3_n">{{date|date:'d/m/Y'}}</span>
+            </div>
+            <div class="col-xs-12">
+              <span class="t3_n">{{date|date:'H:i'}}</span>
+            </div>
+          </div>
+        </td>
+      </tr>  
+    </table>
+  </div>
+
+  <div class="row" style="page-break-inside: avoid !important;">
+    <table class="table table-bordered mt-2">
+      <tbody>
+        <tr>
+          <td colspan="6" class="text-center" style="background-color: #fbe9e7;">
+            <span class="t2" style="text-transform: uppercase;">Case information</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-xs-2">
+            <span class="t3">Case No.:</span>
+          </td>
+          <td colspan="2" class="col-xs-4">
+            <span class="t3_n">{{entryform.no_caso}}</span>
+          </td>
+          <td colspan="2" class="col-xs-2">
+            <span class="t3">Reception Date:</span>
+          </td>
+          <td class="col-xs-4 ">
+            <span class="t3_n">{{ entryform.created_at|date:'d/m/Y, H:i'}}</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-xs-2">
+            <span class="t3">Customer:</span>
+          </td>
+          <td colspan="2" class="col-xs-4">
+            <span class="t3_n">{{entryform.customer.name | default:""}}</span>
+          </td>
+          <td colspan="2" class="col-xs-2">
+            <span class="t3">Request No. :</span>
+          </td>
+          <td class="col-xs-4">
+            <span class="t3_n">{{ entryform.no_request | default:"" }}</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-xs-2">
+            <span class="t3">Site name:</span>
+          </td>
+          <td colspan="2" class="col-xs-4">
+            <span class="t3_n">{{center | default:""}}</span>
+          </td>
+          <td colspan="2" class="col-xs-2">
+            <span class="t3">Aplicant name:</span>
+          </td>
+          <td class="col-xs-4">
+            <span class="t3_n">{{entryform.responsible | default:""}}</span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="6" class="text-center" style="background-color: #fbe9e7;">
+            <span class="t2" style="text-transform: uppercase;">Sample information</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-xs-2">
+            <span class="t3">Sampling Date</span>
+          </td>
+          <td class="col-xs-2">
+            <span class="t3_n">{{ entryform.sampled_at|date:'d/m/Y, H:i'}}</span>
+          </td>
+          <td class="col-xs-2">
+            <span class="t3">Fixative:</span>
+          </td>
+          <td class="col-xs-2">
+            <span class="t3_n">{{entryform.fixative.name|default:""|title}}</span>
+          </td>
+          <td class="col-xs-2">
+            <span class="t3">Entry format:</span>
+          </td>
+          <td class="col-xs-2">
+            <span class="t3_n">{{entry_format|default:""|title}}</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="col-xs-2">
+            <span class="t3">Specie:</span>
+          </td>
+          <td class="col-xs-2">
+            <span class="t3_n">{{entryform.specie.name |default:""|title}}</span>
+          </td>
+          <td class="col-xs-2">
+            <span class="t3">Development stage:</span>
+          </td>
+          <td class="col-xs-2">
+            <span class="t3_n">{{entryform.larvalstage.name |default:""|title}}</span>
+          </td>
+          <td class="col-xs-2">
+            <span class="t3">Water source:</span>
+          </td>
+          <td class="col-xs-2">
+            <span class="t3_n">{{entryform.watersource.name |default:""|title}}</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="2" style="background-color: #fbe9e7;">
+            <span class="t3" >
+              OBSERVATIONS / <br>
+              ANAMNESIS
+            </span>
+          </td>
+          <td colspan="4">
+            <span class="t3_n">{{entryform.anamnesis|default:""}}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>  
+  </div>
+
+  {% for idx, row in exams.items %}
+  <div class="row" style="page-break-inside: avoid !important;">
+    <table class="table table-bordered">
+      <tbody>
+        {% if forloop.first %}
+        <tr>
+          <td colspan="6" class="text-center" style="background-color: #fbe9e7;">
+            <span class="t2" style="text-transform: uppercase;">identification</span>
+          </td>
+        </tr>
+        {% endif %}
+        <tr>
+          <td class="col-xs-2" style="background-color: #fbe9e7;"><span class="t3"> Tank/Cage: </span></td>
+          <td class="col-xs-2 t3_n">{{row.identification.cage}}</td>
+          <td class="col-xs-2" style="background-color: #fbe9e7;"><span class="t3"> Group/Client Case No.: </span></td>
+          <td class="col-xs-2 t3_n">
+            {{ row.identification.group }}
+            {% if row.identification.group and row.identification.client_case_number %}
+            /
+            {% endif %}
+            {{ row.identification.client_case_number|default:"" }}
+          </td>
+          <td class="col-xs-2" style="background-color: #fbe9e7;"><span class="t3">Extra Features:</span></td>
+          <td class="col-xs-2 t3_n">{{row.identification.extra_features_detail|default:""}}</td>
+        </tr>
+        <tr>
+          <td class="col-xs-2" style="background-color: #fbe9e7;"><span class="t3">Weight (g):</span></td>
+          <td class="col-xs-2 t3_n">{{row.identification.weight}}</td>
+          <td  class="col-xs-2" style="background-color: #fbe9e7;"><span class="t3">Units No. :</span></td>
+          <td class="col-xs-2 t3_n">{{row.unit_count|default:row.identification.no_fish}}</td>
+          <td class="col-xs-2" style="background-color: #fbe9e7;"><span class="t3">Optimum?</span></td>
+          <td class="col-xs-2 t3_n">{% if row.identification.is_optimum %} Yes {% else %} No {% endif %}</td>
+        </tr>
+        <tr>
+          <td class="col-xs-2" style="background-color: #fbe9e7;"><span class="t3">Observations</span></td>
+          <td colspan="5" class="t3_n">{{row.identification.observation|default:""}}</td>
+        </tr>
+        <tr>
+          <td class="col-xs-2" style="background-color: #fbe9e7;"><span class="t3">ANALYSIS REQUESTED</span></td>
+          <td colspan="5">
+            {% for key, service in row.services.items %}
+              {%if service.exam.chargeable%}
+                <p>
+                  <span class="t3">{{service.exam.name}} ({{ service.stain.abbreviation }}): </span>
+                  <span class="t3_n">
+                    {% for id, organ in service.organs.items %}
+                      {% if forloop.last %}
+                        {{organ.organ|title}} ({{organ.count}})
+                      {% else %}
+                        {{organ.organ|title}} ({{organ.count}}),
+                      {% endif %}
+                    {% endfor %}
+                  </span>
+                </p>
+              {% endif %}
+            {% endfor %}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  {% endfor %}
+
+  <div class="row" style="page-break-inside: avoid !important;">
+    <table class="table table-bordered">
+      <tbody>
+        <tr>
+          <td class="col-xs-4" colspan="2" style="background-color: #fbe9e7;">
+            <span class="t3" >
+              RECEPTIONED BY:
+            </span>
+          </td>
+          <td class="col-xs-8" colspan="4">
+            <span class="t3_n">{{created_by|default:""}}</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-xs-4" colspan="2" style="background-color: #fbe9e7;">
+            <span class="t3" >
+              SENT BY:
+            </span>
+          </td>
+          <td class="col-xs-8" colspan="4">
+            <span class="t3_n">{{generated_by|default:""}}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="row" style="margin-top:1% !important; page-break-inside: avoid !important;">
+    <span class="t2" style="text-transform: uppercase;"><strong>Important Notes:</strong></span></br>
+    <span class="t3_n"> <b>&middot;</b> The  number  of  samples is  referential as  indicated  by  applicant.  We  will  notify  in  case  of  any  difference  detected during the process, through the present form.</span></br>
+    <span class="t3_n"> <b>&middot;</b> Any question about sample reception and sending information, contact <a href="mailto:recepcion@vehice.com">recepcion@vehice.com</a></span></br>
+    <span class="t3_n"> <b>&middot;</b> Any technical question, contact <a href="mailto:carlos.sandoval@vehice.com">carlos.sandoval@vehice.com</a></span></br>
+    <span class="t3_n"> <b>&middot;</b> Any question about billing and other related issues, contact <a href="mailto:gabriela.vera@vehice.com">gabriela.vera@vehice.com</a></span></br>
+    <span class="t3_n"> <b>&middot;</b> Instructions for histopathology sampling: <a href="www.vehice.com/spa/despacho-de-muestras">www.vehice.com/spa/despacho-de-muestras</a></span>
+  </div>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+{% endblock scripts %}

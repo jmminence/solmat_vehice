@@ -1,0 +1,290 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block content %}
+<!-- MAIN -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <header class="card-header">
+                <h4 class="card-title">
+                    Progreso de Caso: {{ case.no_caso }}
+                </h4>
+            </header>
+            <main class="card-body container-fluid">
+                <section class="row">
+                    <fieldset class="col-md-5 border">
+                        <legend>Información General</legend>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            Caso
+                                        </div>
+                                    </div>
+                                    <input class="form-control" type="text" value="{{ case.no_caso }}" disabled />
+                                    <div class="input-group-append">
+                                        <button class="btn btn-secondary" onclick="navigator.clipboard.writeText('{{ case.no_caso }}')">
+                                            <i class="ft-clipboard"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row my-1">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            Empresa
+                                        </div>
+                                    </div>
+                                    <input class="form-control" type="text" value="{{ case.customer.name }}" disabled />
+                                    <div class="input-group-append">
+                                        <button class="btn btn-secondary" onclick="navigator.clipboard.writeText('{{ case.customer.name }}')">
+                                            <i class="ft-clipboard"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">Centro</div>
+                                    </div>
+                                    <input class="form-control" type="text" value="{{ case.center }}" disabled />
+                                    <div class="input-group-append">
+                                        <button class="btn btn-secondary" onclick="navigator.clipboard.writeText('{{ case.center }}')">
+                                            <i class="ft-clipboard"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            Especie
+                                        </div>
+                                    </div>
+                                    <input class="form-control" type="text" value="{{ case.specie.name }}" disabled />
+                                    <div class="input-group-append">
+                                        <button class="btn btn-secondary" onclick="navigator.clipboard.writeText('{{ case.specie.name }}')">
+                                            <i class="ft-clipboard"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">E. Desarrollo</div>
+                                    </div>
+                                    <input class="form-control" type="text" value="{{ case.larvalstage.name }}" disabled />
+                                    <div class="input-group-append">
+                                        <button class="btn btn-secondary" onclick="navigator.clipboard.writeText('{{ case.larvalstage.name }}')">
+                                            <i class="ft-clipboard"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row my-1">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            Estanque
+                                        </div>
+                                    </div>
+                                    <input class="form-control" type="text" value="{{ identification_tag }}" disabled />
+                                    <div class="input-group-append">
+                                        <button class="btn btn-secondary" onclick="navigator.clipboard.writeText('{{ identification_tag }}')">
+                                            <i class="ft-clipboard"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">Grupo</div>
+                                    </div>
+                                    <input class="form-control" type="text" value="{{ group_tag }}" disabled />
+                                    <div class="input-group-append">
+                                        <button class="btn btn-secondary" onclick="navigator.clipboard.writeText('{{ group_tag }}')">
+                                            <i class="ft-clipboard"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            Fuente de Agua
+                                        </div>
+                                    </div>
+                                    <input class="form-control" type="text" value="{{ case.watersource.name }}" disabled />
+                                    <div class="input-group-append">
+                                        <button class="btn btn-secondary" onclick="navigator.clipboard.writeText('{{ case.watersource.name }}')">
+                                            <i class="ft-clipboard"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row my-1">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            Muestreo
+                                        </div>
+                                    </div>
+                                    <input class="form-control" type="text" value="{{ case.sampled_at|date:'d-m-Y' }}" disabled />
+                                    <div class="input-group-append">
+                                        <button class="btn btn-secondary" onclick="navigator.clipboard.writeText('{{ case.sampled_at|date:'d-m-Y' }}')">
+                                            <i class="ft-clipboard"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            Recepción
+                                        </div>
+                                    </div>
+                                    <input class="form-control" type="text" value="{{ case.created_at|date:'d-m-Y' }}" disabled />
+                                    <div class="input-group-append">
+                                        <button class="btn btn-secondary" onclick="navigator.clipboard.writeText('{{ case.created_at|date:'d-m-Y' }}')">
+                                            <i class="ft-clipboard"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="col-md-5 offset-md-2 d-flex align-items-center">
+                        <h1 class="display-3">
+                            <a href="{% url 'lab:case_read_sheet' case.id %}">Hoja de Lectura</a>
+                        </h1>
+                    </div>
+                </section>
+                <div class="row mt-2">
+                    <div class="col-md-12">
+                        <h5>Servicios</h5>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Servicio</th>
+                                    <th scope="col">Fecha de Ingreso</th>
+                                    <th scope="col">Patologo</th>
+                                    <th scope="col">Fecha de Derivación</th>
+                                    <th scope="col">Plazo</th>
+                                    <th scope="col">Termino Pre-Informe</th>
+                                    <th scope="col">Hoja de Lectura</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for service in analysis %}
+                                <tr>
+                                    <td>{{ service.id }}</td>
+                                    <td>{{ service.exam }}</td>
+                                    <td>{{ service.created_at|date:"d/m/Y" }}</td>
+                                    <td>{{ service.patologo|default:"Sin Asignar" }}</td>
+                                    <td>{{ service.assignment_done_at|date:"d/m/Y"|default:"Sin derivar" }}</td>
+                                    <td>{{ service.assignment_deadline|date:"d/m/Y"|default:"Sin plazo" }}</td>
+                                    <td>{{ service.pre_report_ended_at|date:"d/m/Y"|default:"Sin terminar Pre-Informe" }}</td>
+                                    <td>
+                                        <a href="{% url 'lab:analysis_read_sheet' service.id %}">Hoja de Lectura</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-12">
+                        <h5>Progreso del Procesamiento</h5>
+                        <table class="table zero-configuration">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Unidades(Organos)</th>
+                                    <th scope="col">Armado de Cassettes(Organos)</th>
+                                    <th scope="col">Procesado de Cassettes(Cassettes)</th>
+                                    <th scope="col">Slides</th>
+                                    <th scope="col">Disponibilizados</th>
+                                    <th scope="col">Tincion</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for slide in slides %}
+                                <tr>
+                                    <td>{{ units }}({{ units_organs_count }})</td>
+                                    <td>{{ cassettes }}({{ cassettes_organs_count }})</td>
+                                    <td>{{ cassettes_processed }} / {{ cassettes }}</td>
+                                    <td>{{ slide.build }}</td>
+                                    <td>{{ slide.available }}</td>
+                                    <td>{{ slide.stain__abbreviation }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td>{{ units }}({{ units_organs_count }})</td>
+                                    <td>{{ cassettes }}({{ cassettes_organs_count }})</td>
+                                    <td>{{ cassettes_processed }} / {{ cassettes }}</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>Sin Teñir</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+
+<!-- END MAIN -->
+
+{% endblock content %}
+{% block scripts %}
+<script
+    type="text/javascript"
+    src="//cdn.jsdelivr.net/npm/sweetalert2@10"
+    defer>
+</script>
+
+<script type="text/javascript">
+ $(document).ready(() => {
+     $(".zero-configuration").DataTable({
+         rowsGroup: [0, 1, 2]
+     });
+
+     $(".detailTrigger").click(function (e) {
+         e.preventDefault();
+         const url = $(e.target).attr("href");
+         $.get(url, function (data, textStatus) {
+             Swal.fire({
+                 html: data,
+                 width: "80%",
+             });
+         });
+     });
+
+ })
+</script>
+
+
+{% endblock scripts %}

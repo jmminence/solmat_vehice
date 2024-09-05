@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block stylesheets %}
+<style type="text/css">
+    html {
+        width: 100%;
+        height: 100%;
+    }
+</style>
+{% endblock stylesheets %}
+
+{% block bodyclass %}login{% endblock bodyclass %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="login-panel panel panel-default">
+                <div class="panel-body">
+                    <img src="{% static 'assets/images/logomlp.jpg' %}" style="margin-bottom:20px;" />
+                    <form role="form" method="post" action="{% url 'register' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <fieldset>
+                            <div class="form-group">
+                                <label>E-mail:</label>
+                                <input class="form-control" placeholder="E-mail" name="email" type="email" autofocus>
+                            </div>
+                            <div class="form-group">
+                                <label>Contraseña:</label>
+                                <input class="form-control" placeholder="Contraseña" name="password" type="password" value="">
+                            </div>
+                            <div class="form-group">
+                                <label>Imagen:</label>
+                                <input class="form-control" placeholder="Imagen" name="picture" type="file" value="">
+                            </div>
+                        </fieldset>
+                        <input type="submit" class="btn btn-lg btn-primary btn-block" value="Registrar" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}

@@ -1,0 +1,734 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block stylesheets %}
+
+<style>
+
+  .dt-body-center{
+    text-align: center;
+    padding:6px !important;
+    margin:6px !important;
+  }
+
+</style>
+
+{% endblock stylesheets %}
+{% block content_header %}
+<div class="content-header row">
+  <div class="content-header-left col-md-6 col-12 mb-2">
+    <h3 class="content-header-title mb-0">Configuración de Estudio</h3>
+    <div class="row breadcrumbs-top">
+      <div class="breadcrumb-wrapper col-12">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/">Home</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="#">Estudios</a>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+  {% comment %} <div class="content-header-right col-md-6 col-12">
+    <div class="float-md-right">
+      {% if can_edit %}
+      <button class="btn btn-success btn-lg round" id="add_new_research">
+        <i class="fa fa-plus"></i>
+        Nuevo Estudio
+      </button>
+      {% endif %}
+    </div>
+  </div> {% endcomment %}
+</div>
+{% endblock content_header %} {% block content %}
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-content">
+        <div class="card-body card-dashboard">
+          <div class="text-right">
+            <button 
+              class="btn btn-info editResearch" 
+              data-id="{{ research.id }}" 
+              data-toggle="tooltip" 
+              data-placement="top" 
+              title="Editar Estudio">
+              <i class="fa fa-edit fa-fx"></i> Editar Estudio
+            </button>
+          </div>
+
+          <p><h1>Estudio {{research.code}} {{research.name.title}} </h1></p>
+
+          <div class="row">
+            <div class="col-md-12">
+              <center><div class="badge badge-warning"><h3>ANÁLISIS DISPONIBLES</h3></div></center>
+              <div class="row mt-3 mb-2 pl-2">
+                <div class="col-md-2">
+                  <div id="filter1-year">
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div id="filter1-month">
+                  </div>
+                </div>
+              </div>
+
+              <table id="table-casos" class="table table-striped table-bordered compact dataTable" width="100%">
+                <thead>
+                  <tr>
+                    <th>Nro<br>Caso</th>
+                    <th>Cliente</th>
+                    <th>Centro  |  Laboratorio</th>
+                    <th>Servicios</th>
+                    <th>Fecha<br>Ingreso<br>Servicio</th>
+                    <th>Fecha<br>Muestreo</th>
+                    <th></th>
+                    <th></th>
+                    <th>Fecha<br>Inicio<br>Lectura</th>
+                    <th>Estado<br>Servicio</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for entryForm in casos1 %}
+                    <tr>
+                      <td class="first-column"><strong>{{ entryForm.no_caso }}</strong></td>
+                      <td>
+                          {{ entryForm.cliente }}
+                      </td>
+                      <td>
+                          {{ entryForm.centro }}
+                      </td>
+                      <td>{{ entryForm.exam|default:"" }}</td>
+                      <td>
+                          {{ entryForm.fecha_ingreso|default:"--" }}
+                      </td>
+                      <td>
+                          {{ entryForm.fecha_muestreo|default:"--" }}
+                      </td>
+                      <td>
+                          {{ entryForm.f_m_year|default:"--" }}
+                      </td>
+                      <td>
+                          {{ entryForm.f_m_month|default:"--" }}
+                      </td>
+                      <td>
+                          {{ entryForm.report_started|default:"--" }}
+                      </td>
+                      <td>
+                          {{ entryForm.estado }}
+                      </td>
+                      <td>
+                        <div class="btn-group optionGroups-{{entryForm.analisis}}" data-entryform="{{ entryForm.entryform }}" role="group">
+                          
+                          <button 
+                            class="btn btn-primary showSummaryBtn" 
+                            data-id="{{ entryForm.entryform }}" 
+                            data-closed="{% if entryForm.case_closed %}1{% else %}0{% endif %}"
+                            data-editable="{% if entryForm.edit_case %}1{% else %}0{% endif %}" 
+                            data-toggle="tooltip" 
+                            data-placement="top" 
+                            title="Resúmen del Caso">
+                            <i class="fa fa-list-alt fa-fx"></i> Ver Caso
+                          </button>
+                          
+                          <button 
+                            class="btn btn-success addAnalysis"
+                            data-analysis-id="{{entryForm.analisis}}"
+                            data-toggle="tooltip" 
+                            data-placement="top" 
+                            title="Ingresar al Estudio">
+                            <i class="fa fa-plus fa-fx"></i> Ingresar
+                          </button>
+
+                        </div>
+
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            
+            <div class="col-md-12 mt-3">
+
+              <center><div class="badge badge-success"><h3>ANÁLISIS AGREGADOS </h3></div></center>
+
+              <div class="row mt-3 mb-2 pl-2">
+                <div class="col-md-2">
+                  <div id="filter2-year">
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div id="filter2-month">
+                  </div>
+                </div>
+              </div>
+              
+              <table id="table-casos2" class="table table-striped table-bordered compact dataTable" width="100%">
+                <thead>
+                  <tr>
+                    <th>Nro<br>Caso</th>
+                    <th>Cliente</th>
+                    <th>Centro</th>
+                    <th>Servicios</th>
+                    <th>Fecha<br>Ingreso<br>Servicio</th>
+                    <th>Fecha<br>Muestreo</th>
+                    <th></th>
+                    <th></th>
+                    <th>Fecha<br>Inicio<br>Lectura</th>
+                    <th>Estado<br>Servicio</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for entryForm in casos2 %}
+                    <tr>
+                      <td class="first-column"><strong>{{ entryForm.no_caso }}</strong></td>
+                      <td>
+                          {{ entryForm.cliente }}
+                      </td>
+                      <td>
+                          {{ entryForm.centro }}
+                      </td>
+                      <td>{{ entryForm.exam|default:"" }}</td>
+                      <td>
+                          {{ entryForm.fecha_ingreso }}
+                      </td>
+                      <td>
+                          {{ entryForm.fecha_muestreo }}
+                      </td>
+                      <td>
+                          {{ entryForm.f_m_year|default:"--" }}
+                      </td>
+                      <td>
+                          {{ entryForm.f_m_month|default:"--" }}
+                      </td>
+                      <td>
+                          {{ entryForm.report_started|default:"--" }}
+                      </td>
+                      <td>
+                          {{ entryForm.estado }}
+                      </td>
+                      <td>
+                        <div class="btn-group optionGroups-{{entryForm.analisis}}" data-entryform="{{ entryForm.entryform }}" role="group">
+                          <button 
+                            class="btn btn-primary showSummaryBtn" 
+                            data-id="{{ entryForm.entryform }}" 
+                            data-closed="{% if entryForm.case_closed %}1{% else %}0{% endif %}"
+                            data-editable="{% if entryForm.edit_case %}1{% else %}0{% endif %}"
+                            data-toggle="tooltip" 
+                            data-placement="top" 
+                            title="Resúmen del Caso">
+                            <i class="fa fa-list-alt fa-fx"></i> Ver Caso
+                          </button>
+                          
+                          <button 
+                            class="btn btn-danger removeAnalysis"
+                            data-analysis-id="{{entryForm.analisis}}"
+                            data-toggle="tooltip" 
+                            data-placement="top" 
+                            title="Quitar del Estudio">
+                            <i class="fa fa-close fa-fx"></i> Quitar
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+
+            <div class="col-md-12 mt-3 text-right">
+              <a href="/estudios" class="btn btn-lg btn-danger">Salir sin guardar</a>
+              <button class="btn btn-lg btn-info" onclick="saveResearch(1);">Guardar y salir</button>
+              <button class="btn btn-lg btn-success" onclick="saveResearch(2);">Guardar</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade text-left" id="new_research_modal" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document" style="min-width: 50% !important;" >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="title"></h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="font-size:14px !important; max-height: calc(100vh - 150px); overflow-y:scroll;">
+        <form method="POST" action="/research/new" id="create_research_form" class="form">
+          
+          <div class="row">
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="input-name">Nombre de Estudio</label>
+                <input required type="text" class="form-control" name="name" id="input-name" />
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="select-clients">Clientes</label>
+                <select required class="select2 form-control select-clients" id="select-clients" name="clients" multiple>
+                  {% for client in clients_available %}
+                    <option value="{{client.id}}">{{client.name}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="input-init-date">Fecha Apertura</label>
+                <input required type="text" class="form-control date" name="init_date" id="input-init-date" />
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="input-type">Tipo de Estudio</label>
+                <select required class="form-control" name="type" id="select-type">
+                  <option value="1">Estudio Vehice</option>
+                  <option value="2">Seguimiento de rutina</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="input-name">Responsable Externo</label>
+                <input required class="form-control responsible_place" name="external_responsible" id="input-external-responsible" onclick="responsibleModal()" value=""/>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="input-name">Responsable Interno</label>
+                <select required class="select2 form-control select-users" name="internal_responsible" id="select-internal-responsible">
+                  {% for usr in users_available %}
+                    <option value="{{usr.id}}">{{usr.get_full_name}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            
+            <div class="col-md-8">
+              <div class="form-group">
+                <label for="input-type">Descripción</label>
+                <textarea required row="3" class="form-control" name="description" id="input-description"></textarea>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="select-status">Estado</label>
+                <select required class="form-control" name="status" id="select-status">
+                  <option selected value="1">HABILITADO</option>
+                  <option value="0">DESHABILITADO</option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+          
+          <input id="input-id" name="id" type="hidden" value="" />
+
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-lg btn-primary" id="submit-research">
+              <i class="fa fa-sign-in"></i> <span id="modal_research_button"></span>
+            </button>
+          </div>
+
+        </form>   
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %} {% block scripts %}
+
+<script type="text/javascript">
+  var resumenId;
+  var closed;
+  var tabla_casos;
+  var tabla_casos2;
+  
+  $(document).on('click', '.editResearch', function(e){
+    var research_id = $(this).data('id');
+    $('#title').html("Editar Estudio");
+    $('#modal_research_button').html("Guardar");
+    $('#submit-research').addClass("saveEditResearch");
+
+    var url = Urls.get_research(research_id);
+
+    $.ajax({
+      type: "GET",
+      url: url,
+    })
+    .done(function (data) {
+      if (data.ok){
+        r = data.research;
+        $('#input-id').val(r.id);
+        $('#input-name').val(r.name);
+        $('#select-clients').val('').trigger('change');
+        $('#select-clients').val(r.clients).trigger('change');
+        $('#input-init-date').val(r.init_date);
+        $('#select-type').val(r.type);
+        $('#input-external-responsible').val(r.external_responsible);
+        $('#select-internal-responsible').val(r.internal_responsible).trigger('change');
+        $('#input-description').val(r.description);
+        console.log(r.status)
+        $('#select-status').val(r.status);
+        
+        $('#new_research_modal').modal('show');
+      }
+    })
+    .fail(function () {
+      console.log("Fail")
+    });
+
+  });
+
+  $(document).on('click', '.saveEditResearch', function(e){
+    e.preventDefault();
+    var research_id = $('#input-id').val();
+    var url = Urls.get_research(research_id);
+    $.ajax({
+      type: "GET",
+      url: url,
+      async: false
+    })
+    .done(function (data) {
+      if (data.ok){
+        r = data.research;
+        var selected_clients = $('#select-clients').val();
+        
+        var removing_services = false;
+        $.each(r.client_services, function(key, value){
+          if (!selected_clients.includes(key)){
+            if (!removing_services){
+              removing_services = true;
+            }
+          }
+        });
+
+        if (removing_services){
+          swal({
+            title: "Confirmación",
+            text: "Estás eliminando un cliente que tiene servicios asociados al presente estudio, ¿deseas continuar?",
+            icon: "warning",
+            showCancelButton: true,
+            buttons: {
+              cancel: {
+                  text: "Cancelar!",
+                  value: null,
+                  visible: true,
+                  className: "btn-warning",
+                  closeModal: true,
+              },
+              confirm: {
+                  text: "Continuar",
+                  value: true,
+                  visible: true,
+                  className: "",
+                  closeModal: true,
+              }
+            }
+          }).then(isConfirm => {
+            if (isConfirm) {
+              $('#create_research_form').submit();
+            }
+          });
+        
+        } else {
+          $('#create_research_form').submit();
+        }
+      }
+    })
+    .fail(function () {
+      console.log("Fail")
+    });
+    
+  });
+
+
+  var analisis_agregados = {{analysis_selected}};
+  var research_id = {{research.pk}};
+
+  Array.prototype.insert = function ( index, item ) {
+    this.splice( index, 0, item );
+  };
+
+  $(document).on('click', '.addAnalysis', function(){
+    var analysis_id = $(this).data("analysis-id");
+    analisis_agregados.push(analysis_id);
+    var tr = $(this).parent().parent().parent();
+    
+    var row_data = [];
+    tr.find('td').each(function() {
+      var the_td = $(this).clone();
+
+      if (the_td.find('.addAnalysis').length) {
+        the_td.find('.addAnalysis').remove();
+        the_td.find('.btn-group').append('<button \
+          class="btn btn-danger removeAnalysis" \
+          data-analysis-id="'+analysis_id+'" \
+          data-toggle="tooltip" \
+          data-placement="top" \
+          title="Quitar del Estudio"> \
+          <i class="fa fa-close fa-fx"></i> Quitar \
+        </button>');
+      }
+      
+      row_data.push(the_td.html());
+    });
+
+    if (row_data[4].trim() != "--"){
+      var fm_year = row_data[4].split("/")[2];
+      var fm_month = row_data[4].split("/")[1];
+      row_data.insert(5, fm_year);
+      row_data.insert(6, fm_month);
+    } else {
+      row_data.insert(5, "--");
+      row_data.insert(6, "--");
+    }
+    
+    tabla_casos.row(tr).remove().draw();
+    tabla_casos2.row.add(row_data).draw();
+  });
+
+  $(document).on('click', '.removeAnalysis', function(){
+    var analysis_id = $(this).data("analysis-id");
+    analisis_agregados = _.without(analisis_agregados, analysis_id);
+    var tr = $(this).parent().parent().parent();
+    
+    var row_data = [];
+    tr.find('td').each(function() {
+      var the_td = $(this).clone();
+
+      if (the_td.find('.removeAnalysis').length) {
+        the_td.find('.removeAnalysis').remove();
+        the_td.find('.btn-group').append('<button \
+          class="btn btn-success addAnalysis" \
+          data-analysis-id="'+analysis_id+'" \
+          data-toggle="tooltip" \
+          data-placement="top" \
+          title="Ingresar al Estudio"> \
+          <i class="fa fa-plus fa-fx"></i> Ingresar \
+        </button>');
+      }
+      
+      row_data.push(the_td.html());
+    });
+
+    if (row_data[4].trim() != "--"){
+      var fm_year = row_data[4].split("/")[2];
+      var fm_month = row_data[4].split("/")[1];
+      row_data.insert(5, fm_year);
+      row_data.insert(6, fm_month);
+    } else {
+      row_data.insert(5, "--");
+      row_data.insert(6, "--");
+    }
+
+    tabla_casos2.row(tr).remove().draw();
+    tabla_casos.row.add(row_data).draw();
+    //tabla_casos.order([-1, 'desc']).draw();
+  });
+
+  function saveResearch(choice){
+    $.ajax({
+      type: "POST",
+      url: '/research/' + research_id,
+      data: { 'analisis' : analisis_agregados },
+      async: false,
+    })
+    .done(function (data) {
+      if (data.ok){
+        if (choice == 1){
+          toastr.success("Análisis agregados exitosamente.", "Listo!");
+          setTimeout(function() {
+            window.location='/estudios'
+          }, 3000);
+        } else {
+          toastr.success("Análisis agregados exitosamente.", "Listo!");
+          setTimeout(function() {
+            location.reload();
+          }, 3000);
+        }
+      } else {
+        toastr.error("No ha sido posible registrar correctamente los análisis ingresados,   intente nuevamente.", "Lo sentimos!");
+        setTimeout(function() {
+          location.reload();
+        }, 3000);
+      }
+    })
+    .fail(function (data) {
+      toastr.error("No ha sido posible registrar correctamente los análisis ingresados,   intente nuevamente.", "Lo sentimos!");
+      setTimeout(function() {
+        location.reload();
+      }, 3000);
+    })
+  }
+
+  $(document).on('change', '.filterYear', function(e){
+    tabla_casos.column(5).search(this.value ? '^'+this.value+'$' : '', true, false ).draw();
+  });
+
+  $(document).on('change', '.filter2Year', function(e){
+    tabla_casos2.column(5).search(this.value ? '^'+this.value+'$' : '', true, false ).draw();
+  });
+
+  $(document).on('change', '.filterMonth', function(e){
+    tabla_casos.column(6).search(this.value ? '^'+this.value+'$' : '', true, false ).draw();
+  });
+
+  $(document).on('change', '.filter2Month', function(e){
+    tabla_casos2.column(6).search(this.value ? '^'+this.value+'$' : '', true, false ).draw();
+  });
+
+  $(document).ready(function () {
+
+    $('.select-clients').select2({'width':'100%'});
+    $('.select-users').select2({'width':'100%'});
+    
+    tabla_casos = $('#table-casos').DataTable({
+      "rowsGroup": [0,1],
+      "bPaginate" : true,
+      "lengthMenu": [[5, 10, 15, 25, -1], [5, 10, 15, 25, "Todos"]],
+      "pageLength": 5,
+      "order": [[ 0, "desc" ]],
+      "orderable": false,
+      "targets": 'no-sort',
+      "bSort": true,
+      "oLanguage": {
+        "sSearch": "Filtro General",
+        "sLengthMenu": "Mostrar _MENU_"
+      },
+      "columnDefs": [
+        {
+          "targets": [0, 1, 2, 3, 4, 5 ,6, 7, 8],
+          "orderable": false,
+          "className": "dt-body-center",
+        },
+        {
+          "targets": [ 0],
+          "className": "dt-wd-1",
+        },
+        {
+          "targets": [5, 6],
+          "visible": false,
+        },
+      ],
+      initComplete: function () {
+        lockScreen(0);
+        this.api().columns().every( function () {
+          if(this[0][0] == 5){
+            var column = this;
+            var select = $('<select style="width:100% !important;" class="filterYear form-control "><option value="">Todos</option></select>')
+              .appendTo( $('#filter1-year'));
+            select.before('<label><b>Filtro por Año Muestreo</b></label><br> ');
+            column.data().unique().sort().each( function ( d, j ) {
+              if (select.find('option[value="'+d+'"]').length==0)
+              {
+                  select.append( '<option value="'+d+'">'+d+'</option>' )
+              }
+            } )
+            select.select2();
+          }
+          if(this[0][0] == 6){
+            var column = this;
+            var select = $('<select style="width:100% !important;" class="filterMonth form-control "><option value="">Todos</option></select>')
+              .appendTo( $('#filter1-month'));
+            select.before('<label><b>Filtro por Mes Muestreo</b></label><br> ');
+            column.data().unique().sort().each( function ( d, j ) {
+              if (select.find('option[value="'+d+'"]').length==0)
+              {
+                  select.append( '<option value="'+d+'">'+d+'</option>' )
+              }
+            } )
+            select.select2();
+          }
+        })
+      }
+    });
+
+    tabla_casos2 = $('#table-casos2').DataTable({
+      "rowsGroup": [0,1],
+      "bPaginate" : true,
+      "lengthMenu": [[5, 10, 15, 25, -1], [5, 10, 15, 25, "Todos"]],
+      "pageLength": 5,
+      "order": [[ 0, "desc" ]],
+      "orderable": false,
+      "targets": 'no-sort',
+      "bSort": true,
+      "oLanguage": {
+        "sSearch": "Filtro General",
+        "sLengthMenu": "Mostrar _MENU_"
+      },
+      "columnDefs": [
+        {
+          "targets": [0, 1, 2, 3, 4, 5 ,6, 7, 8],
+          "orderable": false,
+          "className": "dt-body-center",
+        },
+        {
+          "targets": [0],
+          "className": "dt-wd-1",
+        },
+        {
+          "targets": [5, 6],
+          "visible": false,
+        },
+      ],
+      initComplete: function () {
+        lockScreen(0);
+        this.api().columns().every( function () {
+          if(this[0][0] == 5){
+            var column = this;
+            var select = $('<select style="width:100% !important;" class="filter2Year form-control "><option value="">Todos</option></select>')
+              .appendTo( $('#filter2-year'));
+            select.before('<label><b>Filtro por Año Muestreo</b></label><br> ');
+            column.data().unique().sort().each( function ( d, j ) {
+              if (select.find('option[value="'+d+'"]').length==0)
+              {
+                  select.append( '<option value="'+d+'">'+d+'</option>' )
+              }
+            } )
+            select.select2();
+          }
+          if(this[0][0] == 6){
+            var column = this;
+            var select = $('<select style="width:100% !important;" class="filter2Month form-control "><option value="">Todos</option></select>')
+              .appendTo( $('#filter2-month'));
+            select.before('<label><b>Filtro por Mes Muestreo</b></label><br> ');
+            column.data().unique().sort().each( function ( d, j ) {
+              if (select.find('option[value="'+d+'"]').length==0)
+              {
+                  select.append( '<option value="'+d+'">'+d+'</option>' )
+              }
+            } )
+            select.select2();
+          }
+        })
+      }
+    });
+
+    
+    $('.date').datetimepicker({
+      locale: 'es',
+      keepOpen: false,
+      format:'DD/MM/YYYY HH:mm',
+      defaultDate: moment()
+    });    
+  });
+  
+</script> {% endblock scripts %}

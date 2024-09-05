@@ -1,0 +1,51 @@
+{% load avatar_tags %}
+{% load static %}
+
+<nav class="header-navbar navbar-expand-md navbar navbar-with-menu fixed-top navbar-semi-dark navbar-shadow">
+  <div class="navbar-wrapper">
+    <div class="navbar-header">
+      <ul class="nav navbar-nav flex-row">
+        <li class="nav-item mobile-menu d-md-none mr-auto">
+          <a href="#" class="nav-link nav-menu-main menu-toggle hidden-xs">
+            <i class="ft-menu font-large-1"></i>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/" class="navbar-brand">
+            <img src="../../static/assets/images/logo/Logo blanco.png" style="width:160px; padding-left:20px;">
+          </a>
+        </li>
+        <li class="nav-item d-md-none">
+          <a data-toggle="collapse" data-target="#navbar-mobile" class="nav-link open-navbar-container">
+            <i class="fa fa-ellipsis-v"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="navbar-container content">
+      <div id="navbar-mobile" class="navbar-toggleable-sm">
+        <ul class="nav navbar-nav float-right">
+          <li class="dropdown dropdown-user nav-item ">
+            <a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link dropdown-user-link dropbtn"  onclick="myFunction()">
+              <span class="avatar avatar-online">
+                <img src="{% if request.user|has_avatar %}{% avatar_url user %}{% else %}{% static 'assets/images/portrait/small/avatar-s-1.png' %}{% endif %}" title=""/>
+                <i></i>
+              </span>
+              <span class="user-name">{{request.user.get_full_name}}</span>
+            </a>
+            <div id="myDropdown" class="dropdown-content-avatar">
+              <a href="{% url 'profile' %}" class="dropdown-item">
+                <i class="ft-user"></i>{{request.lang.profile}}</a>
+              <div class="dropdown-divider"></div>
+              <a href="{% url 'logout' %}" class="dropdown-item">
+                  <i class="ft-power"></i> {{request.lang.exit}}
+              </a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+

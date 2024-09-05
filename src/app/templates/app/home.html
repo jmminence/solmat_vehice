@@ -1,0 +1,403 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block stylesheets %}
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Dashboard</h4>
+      </div>
+      <div class="card-content">
+        <div class="card-body card-dashboard">
+          <div class="row">
+          <div class="col-md-4">
+            <p><label for="">{{request.lang.year}}:</label></p>
+            <select id="year" class="select2 form-control" style="width:100% !important;">
+              {% for y in years %}
+                <option value="{{y}}">{{y}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col-md-3">
+            <p><label for="">Meses:</label></p>
+            <select id="mes" class="select-multiple" multiple="multiple">
+              <option selected value="1">Enero</option>
+              <option selected value="2">Febrero</option>
+              <option selected value="3">Marzo</option>
+              <option selected value="4">Abril</option>
+              <option selected value="5">Mayo</option>
+              <option selected value="6">Junio</option>
+              <option selected value="7">Julio</option>
+              <option selected value="8">Agosto</option>
+              <option selected value="9">Septiembre</option>
+              <option selected value="10">Octubre</option>
+              <option selected value="11">Noviembre</option>
+              <option selected value="12">Diciembre</option>
+            </select>
+          </div>
+
+          <div class="col-md-4">
+            <p><label for="">Servicios:</label></p>
+            <select id="analysis" class="select2 form-control" style="width:100% !important;">
+              <option value="0">Todos los Servicios</option>
+              {% for s in services %}
+              <option value="{{s.id}}">{{s.name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col-md-1">
+              <p><label for="">Filtrar:</label></p>
+              <button class="btn btn-primary" type="button" id="search_btn"><i class="fa fa-search"></i></button>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+      </div>
+      <div class="card-content">
+        <div class="card-body card-dashboard">
+          <div class="row">
+            <div id="analysischart" class="col-md-4" style="height:400px;"></div>
+            <div id="reportschart" class="col-md-4" style="height:400px;"></div>
+            <div id="leftschart" class="col-md-4" style="height:400px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+      </div>
+      <div class="card-content">
+        <div class="card-body card-dashboard">
+          <div class="row">
+            <div id="top10" class="col-md-6" style="width: 100%; height:400px;"></div>
+            <div id="top5" class="col-md-6"  style="width: 100%; height:400px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block scripts %}
+<script type="text/javascript">
+  // based on prepared DOM, initialize echarts instance
+  function Draw10()
+  {
+    var myChart = echarts.init(document.getElementById('top10'));
+
+    var data = genTop10(10);
+    option = {
+        title : {
+            text: 'Tipo de Análisis (Top 10)',
+            subtext: 'Porcentaje',
+            x:'left'
+        },
+        tooltip : {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        label: {
+                normal: {
+                    formatter: '{c}',
+                    position: 'inside'
+                }
+            },
+        series : [{
+                name: '',
+                type: 'pie',
+                radius : '70%',
+                data: data.seriesData,
+                label: {
+                normal: {
+                    show: false,
+                  }
+                },
+                itemStyle: {
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
+        ]
+    };
+    myChart.setOption(option);
+  }
+  
+  function Draw5(){
+    var myChart1 = echarts.init(document.getElementById('top5'));
+    var data = genTop10(5);
+    option = {
+    title: {
+        text: 'Análisis (Top 5)',
+        subtext: 'Cantidades'
+    },
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+            type: 'shadow'
+        }
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+    xAxis: {
+        type: 'value',
+        boundaryGap: [0, 0.01]
+    },
+    yAxis: {
+        type: 'category',
+        data: data.legendData.reverse()
+    },
+    series: [
+          {
+              name: '',
+              type: 'bar',
+              data: data.seriesData.reverse()
+          }
+      ]
+    };
+    myChart1.setOption(option);
+  }
+  
+  function genTop10(cant) {
+    var nameList = [];
+    var legendData = [];
+    var seriesData = [];
+    var selected = {};
+    var top = {{top_10 | safe}};
+    $.each(top, function(i,j){
+      if(i >= cant)
+        return;
+      legendData.push(j[1]);
+      seriesData.push({
+            name: j[1],
+            value: j[2]
+        });
+      // selected[j[1]] = true;
+    });
+    return {
+        legendData: legendData,
+        seriesData: seriesData,
+    };
+  }
+  
+$(".select2").select2({
+  width: '80%'
+});
+
+$("#mes").dropdown({
+  placeholder: 'Meses', 
+  useLabels: false, 
+  message: {
+    addResult     : '<b>{term}</b>',
+    count         : '{count} seleccionado',
+    maxSelections : 'Max {maxCount} selecciones',
+    noResults     : 'Sin resultados.'
+  }
+  });
+
+$('#search_btn').on('click', function(){
+  var params = 'year='+$('#year').val();
+  params += '&exam='+$('#analysis').val();
+  $.each($('#mes').val(), function(i, v){
+    params += '&mes='+v;
+  });
+
+  $.get('/dashboard_analysis?'+params, function(data){
+      myChart2.clear();
+      GetOption(data.data, 'Análisis');
+      myChart2.setOption(option);
+      myChart2.hideLoading();
+  });
+
+  $.get('/dashboard_reports?'+params, function(data){
+    GetOption(data.data, 'Informes Emitidos' );
+    myChart3.clear();
+    myChart3.setOption(option);
+    myChart3.hideLoading();
+  });
+
+  $.get('/dashboard_lefts?'+params, function(data){
+    myChart4.clear();
+    var patologos = {}
+    var dates = []
+    $.each(data.data, function(i, v){
+      if(dates.indexOf(v[0] +' - '+ v[1]) == -1)
+        dates.push(v[0] +' - '+ v[1]);
+      var name = v[2];
+      if(name == null)
+        name = "N/A"
+      try {
+        patologos[name] = {}
+      } catch (error) {
+        patologos[name] = {};
+      }
+    });
+
+    $.each(data.data, function(i, v){
+      $.each(patologos, function(n, d){
+        var name = v[2];
+        if(name == null)
+          name = "N/A"
+        try {
+          var s = d[v[0] +' - '+ v[1]];
+          if(s == undefined){
+            if(n == name)
+              d[v[0] +' - '+ v[1]] = v[3]
+            else
+              d[v[0] +' - '+ v[1]] = 0
+          }
+          else if(n == name)
+           d[v[0] +' - '+ v[1]] = v[3]
+        } catch{
+         
+        }
+      })
+    });
+
+    var series = []
+    var labels = []
+    $.each(patologos, function(i,v){
+      var values = []
+      $.each(v, function(x,y){
+        values.push(y)
+      })
+      labels.push(i);
+      series.push({
+                name: i,
+                type: 'bar',
+                stack: '2',
+                data: values
+            });
+    });
+    
+    option = {
+        title:{
+          text: 'Informes por emitir',
+          subtext: 'Año - Mes',
+        },
+        xAxis: {
+            type: 'category',
+            data: dates
+        },
+        legend: {
+              // data: data,
+              type: 'scroll',
+              bottom: 15
+          },
+        tooltip :{},
+        yAxis: {
+            type: 'value',
+        },
+        series: series
+    };
+    myChart4.setOption(option);
+    myChart4.hideLoading();
+  });
+
+});
+
+function GetOption(data, title){
+  var labels = [];
+  var values = [];
+  $.each(data, function(i, v){
+    labels.push(v[0] +' - '+ v[1])
+    values.push(v[2])
+  })
+
+  option = {
+          title:{
+            text: title,
+            subtext: 'Año - Mes',
+
+          },
+        xAxis: {
+            type: 'category',
+            data: labels
+        },
+        tooltip :{},
+        yAxis: {
+            type: 'value'
+        },
+        series: [{
+            data: values,
+            type: 'bar'
+        }]
+    };
+}
+
+var myChart2;
+var myChart3;
+var myChart4;
+$(document).ready(function(){
+  Draw10();
+  
+  Draw5();
+
+  var option = {
+      title: {
+          text: '',
+      },
+      xAxis: {
+      },
+      yAxis: {
+      },
+      series: []
+  }
+  myChart2 = echarts.init(document.getElementById('analysischart'));
+  myChart2.setOption(option);
+  myChart2.showLoading(opts={
+      text: '',
+      color: 'rgba(255, 255, 255, 0.8)',
+      textColor: '#000',
+      maskColor: 'rgba(255, 255, 255, 0.8)',
+      zlevel: 0
+  });
+  
+  myChart3 = echarts.init(document.getElementById('reportschart'));
+  myChart3.setOption(option);
+  myChart3.showLoading(opts={
+      text: '',
+      color: 'rgba(255, 255, 255, 0.8)',
+      textColor: '#000',
+      maskColor: 'rgba(255, 255, 255, 0.8)',
+      zlevel: 0
+  });
+  
+  myChart4 = echarts.init(document.getElementById('leftschart'));
+  myChart4.setOption(option);
+  myChart4.showLoading(opts={
+      text: '',
+      color: 'rgba(255, 255, 255, 0.8)',
+      textColor: '#000',
+      maskColor: 'rgba(255, 255, 255, 0.8)',
+      zlevel: 0
+  });
+  $('#search_btn').click();
+})
+</script>
+{% endblock scripts %}

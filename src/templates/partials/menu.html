@@ -1,0 +1,86 @@
+{% load static %}
+{% load custom_tags %}
+<div data-scroll-to-active="true" class="main-menu menu-fixed menu-dark menu-accordion menu-shadow">
+  <!-- main menu content-->
+  <div class="main-menu-content">
+    <ul id="main-menu-navigation" data-menu="menu-navigation" class="navigation navigation-main">
+      {% for item in user|navigations %}
+      <li>
+          <a href="{{ item.path }}">
+              {% if item.icon %}
+                  <i class="{{ item.icon }}"></i>
+              {% endif %}
+              <span>{{ item.section_name }}</span>
+          </a>
+          {% if item.child_items %}
+              <ul class="acc-menu">
+                  {% for subitem in item.child_items %}
+                      <li>
+                          <a href="{{ subitem.path }}">
+                              {% if subitem.icon %}
+                                  <i class="{{ subitem.icon }}"></i>
+                              {% endif %}
+                              <span>{{ subitem.section_name }}</span>
+                          </a>
+                      </li>
+                  {% endfor %}
+              </ul>
+          {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <!-- /main menu content-->
+  <!-- main menu footer-->
+  <!-- main menu footer-->
+  <div class="main-menu-footer">
+    <button id="change_language" class="btn btn-dark btn-block"><i class="fa fa-language fa-fx"></i> <b>{{request.lang.change_language}}</b></button>
+  </div>
+</div>
+
+<script src="{% static 'assets/js/core/libraries/jquery.min.js' %}" type="text/javascript"></script>
+<script>
+    $("#change_language").on('click', function(){
+        swal({
+            title: "{{request.lang.confirmation}}",
+            text: "{{request.lang.change_language}}",
+            icon: "warning",
+            showCancelButton: true,
+            buttons: {
+              cancel: {
+                  text: "{{request.lang.back}}",
+                  value: null,
+                  visible: true,
+                  className: "btn-warning",
+                  closeModal: true,
+              },
+              confirm: {
+                  text: "{{request.lang.to_confirm}}",
+                  value: true,
+                  visible: true,
+                  className: "",
+                  closeModal: true,
+              }
+            }
+          }).then(isConfirm => {
+            if (isConfirm) {
+                $.ajax({
+                    url: "/change_language",
+                    type: "GET",
+                    data: {},
+                    success: function(json){
+                        if (json.error == 0){
+                            location.reload();
+                        } else{
+                            console.log("error")
+                        }
+                    },
+                    error: function (xhr, errmsg, err)
+                    {
+                        console.log(xhr.status + ": " + xhr.responseText);
+                    }
+                });
+            }
+          });
+    });
+</script>

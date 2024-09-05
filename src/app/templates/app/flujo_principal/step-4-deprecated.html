@@ -1,0 +1,225 @@
+<fieldset>
+  <div id="step_{{ step_tab }}">
+    <input type="hidden" id="step_id" name="step_id" value="{{step_id}}">
+    <input type="hidden" id="step_tag" name="step_tag" value="{{step_tag}}">
+    <input type="hidden" id="form_id" name="form_id" value="{{form_id}}" >
+    <input type="hidden" id="entryform_id" name="entryform_id" value="{{entryform_id}}" >
+    <h4 class="form-section">
+      <i class="ft-user"></i> Armado Bloque + Corte
+    </h4>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+        </div>
+      </div>
+    </div>
+    <div id="block_group">
+        {% if edit %}
+        <div class="col-md-12 text-right m-1">
+          <button type="button" id="saveTimingStep4" class="btn btn-warning square"><i class="fa fa-save"></i> Guardar Cambios</button>
+        </div>
+        {% endif %}
+      <div class="table-responsive">
+        <table id="block_table" class="table table-bordered table-condensed" width="100%" cellpadding="0" cellspacing="0" border="0">
+          <thead>
+            <tr>
+              <th>Cassette</th>
+              <th>Muestra</th>
+              <th>Organos</th>
+              <th>Nro Cortes</th>
+              <th>Inicio Bloque <br> <span class="btn btn-sm btn-success square block_start_all"><i class="fa fa-check-square-o"></i> Todos</span></th>
+              <th>Fin Bloque <br> <span class="btn btn-sm btn-success square block_end_all"><i class="fa fa-check-square-o"></i> Todos</span></th>
+              <th>Inicio Corte <br> <span class="btn btn-sm btn-success square slice_start_all"><i class="fa fa-check-square-o"></i> Todos</span></th>
+              <th>Fin Corte <br> <span class="btn btn-sm btn-success square slice_end_all"><i class="fa fa-check-square-o"></i> Todos</span></th>
+              <th>Opciónes</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</fieldset>
+
+<div class="modal fade text-left" id="new_analysis" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="title">Nuevo Análisis <span class="NoCasoSummary"></span></h3>
+      </div>
+      <div class="modal-body">
+        <fieldset>
+          <div id="modal_{{ step_tab }}">
+            <input type="hidden" name="step_id" value="{{step_id}}">
+            <input type="hidden" name="step_tag" value="step_3_new">
+            <input type="hidden" name="form_id" value="{{form_id}}" >
+            <input type="hidden" name="entryform_id" value="{{entryform_id}}" >
+            <h4 class="form-section">
+              <i class="ft-search"></i> Servicios
+            </h4>
+            <div class="row">
+              <div class="col-sm-12">
+                <p><label for="exam">Seleccione los análisis:</label></p>
+                <div class="input-group">
+                  <select class="select2" id="exam_new_select" name="analysis" multiple="multiple" style="width:100%;">
+                  </select>
+                </div>
+              </div>
+              <div class="col-sm-12 mt-3">
+                <table class="table table-bordered table-condensed" id="patologo_table_4" style="font-size:13px;">
+                  <thead>
+                    <tr>
+                      <th style="width:40%">Análisis</th>
+                      <th style="width:60%">Patólogo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-sm-12 mt-3">
+                <table class="table table-bordered table-condensed" id="samples_new_table" style="font-size:13px;">
+                  <thead>
+                    <tr>
+                      <th style="width:5%">Nº Muestra</th>
+                      <th style="width:15%">Identificación</th>
+                      <th style="width:37%">Análisis</th>
+                      <th style="width:37%">Órganos</th>
+                      <th style="width:6%">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+          </div>
+        </fieldset>
+        <a class="btn btn-primary" href="javascript:void(0);" onclick="submitNewAnalysis();"> Guardar </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script id="block_dyeing_row" type="text/x-lodash-template">
+  <tr data-index="<%= cassette_index %>">
+    <td>
+      <%= cassette_name %>
+      <input type="hidden" name="block_cassette_pk_<%= cassette_index %>" value="<%= cassette_pk %>" >
+      <input type="hidden" name="block_cassette_name_<%= cassette_index %>" value="<%= cassette_name %>" >
+    </td>
+    <td>
+      <%= samples %>
+    </td>
+    <td>
+      <%= organs %>
+    </td>
+    <td>
+      <%= no_slice %>
+    </td>
+    <td>
+      <input type="checkbox" id="block_start_block_<%= cassette_index %>" class="switchery" />
+      <input type="hidden" name="block_start_block_<%= cassette_index %>" value="<%= start_block %>"  />
+    </td>
+    <td>
+      <input type="checkbox" id="block_end_block_<%= cassette_index %>" class="switchery" />
+      <input type="hidden" name="block_end_block_<%= cassette_index %>" value="<%= end_block %>" />
+    </td>
+    <td>
+      <input type="checkbox" id="block_start_slice_<%= cassette_index %>" class="switchery" />
+      <input type="hidden" name="block_start_slice_<%= cassette_index %>" value="<%= start_slice %>" />
+    </td>
+    <td>
+      <input type="checkbox" id="block_end_slice_<%= cassette_index %>" class="switchery" />
+      <input type="hidden" name="block_end_slice_<%= cassette_index %>" value="<%= end_slice %>" />
+    </td>
+    <td>
+      <span id="slice-info" data-trigger="hover" data-toggle="popover" data-html="true" title="Visualizar Cortes" data-content="<%= slice_info %>"><i class="fa fa-search-plus fa-fw fa-2x"></i></span>
+    </td>
+  </tr>
+</script>
+
+
+<script id="sample_new_row" type="text/x-lodash-template">
+  <tr id="sample_new-<%= sample.id %>">
+    <td id="sampleNro_new-<%= sample.id %>" rowspan="1">
+        <input type="hidden" value="<%= sample.id %>" name="sample[id][<%= sample.index %>]">
+        <%= sample.index %>
+    </td>
+
+    <td id="sampleIden_new-<%= sample.id %>" rowspan="1">
+        <%= sample.identification.cage %>-<%= sample.identification.group %>
+    </td>
+  
+    <!-- Analisis -->
+    <td class="samples_new_exams_list samples_new_exams delete_new-<%= sample.id %>" data-index="<%= sample.id %>">
+      <!-- <input class="form-control samples_new_exams" style="width:100% !important;" data-index="<%= sample.id %>" disabled/> -->
+      <!-- </select> -->
+    </td>
+
+    <!-- Organs -->
+    <td class="delete_new-<%= sample.id %>">
+    </td>
+
+    <!-- Actions -->
+    <td class="delete_new-<%= sample.id %>">
+    </td>
+  </tr> 
+  
+</script>
+
+<script id="add_old_analisis" type="text/x-lodash-template">
+  <tr id="analisis_new-<%= sampleId %>-<%= sampleIndex %>" class="old_row analis_new_row analis_new_row-<%= sampleId %>" data-sampleid="<%= sampleIndex %>" data-sampleindex="<%= sampleId %>">
+    <td class="samples_new_exams_list" data-index="<%= sampleId %>">
+      <input class="form-control" style="width:100% !important;" readonly value="<%= analisis %>"/>
+      <!-- <input class="form-control" style="width:100% !important;" name="sample[exams][<%= sampleId %>][<%= sampleIndex %>]" hidden value="<%= sampleIndex %>"/> -->
+    </td>
+    <td>
+      <select id="select<%= optionId %>" class="select2 form-control organs_new_select organs_new_select-<%= sampleIndex %>" style="width:100% !important;" multiple="multiple" disabled>
+        <% _.each(organs, function (organ) { %>
+          <option value=<%= organ.id %>> <%= _.toUpper(organ.name) %> </option>
+        <% }); %>
+      </select>
+    </td>
+    <td>
+      <a href="javascript:void(0);" class="btn btn-danger" disabled><i class="fa fa-trash "></i></a>
+    </td>
+  </tr>
+</script>
+
+<script id="add_new_analisis" type="text/x-lodash-template">
+  <tr id="analisis_new-<%= sampleId %>-<%= sampleIndex %>" class="analis_new_row analis_new_row-<%= sampleId %>" data-sampleid="<%= sampleIndex %>" data-sampleindex="<%= sampleId %>">
+    <td class="samples_new_exams_list" data-index="<%= sampleId %>">
+      <input class="form-control" style="width:100% !important;" readonly value="<%= analisis %>"/>
+      <input class="form-control" style="width:100% !important;" name="sample[exams][<%= sampleId %>][<%= sampleIndex %>]" hidden value="<%= sampleIndex %>"/>
+    </td>
+    <td>
+      <select id="select<%= optionId %>" class="select2 form-control organs_new_select organs_new_select-<%= sampleIndex %>" style="width:100% !important;" name="sample[organs][<%= sampleId %>][<%= sampleIndex %>]" multiple="multiple">
+        <% _.each(organs, function (organ) { %>
+          <option value=<%= organ.id %>> <%= _.toUpper(organ.name) %> </option>
+        <% }); %>
+      </select>
+    </td>
+    <td>
+      <a href="javascript:void(0);" class="btn btn-danger" onclick="deleteNewAnalisis(<%= sampleId %>, <%= sampleIndex %>);"><i class="fa fa-trash "></i></a>
+    </td>
+  </tr>
+</script>
+
+<script id="patologo_row_4" type="text/x-lodash-template">
+  <tr id="exam_4-<%= exam.id %>">
+    <td>
+      <%= exam.text %>
+    </td>
+    <td>
+      <select id="patologos-select_4-<%= exam.id %>" class="select2 form-control patologos-select_4" style="width:100% !important;" name="sample[patologos][<%= exam.id %>]" {% if not edit %}disabled{% endif %}>
+        <% _.each(patologos, function (patologo) { %>
+          <option value=<%= patologo.id %>> <%= _.toUpper(patologo.first_name +' '+ patologo.last_name) %> </option>
+        <% }); %>
+      </select>
+    </td>
+  </tr> 
+</script>

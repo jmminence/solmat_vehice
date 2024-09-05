@@ -1,0 +1,710 @@
+{
+    "version": {
+        "es": "Spanish",
+        "en": "English"
+    },
+    "entries" : {
+        "es": "Ingresos",
+        "en": "Cases"
+    },
+    "home" : {
+        "es": "Inicio",
+        "en": "Home"
+    },
+    "entry_list" : {
+        "es": "Listado de Ingresos",
+        "en": "List of Cases"
+    },
+    "show" : {
+        "es": "Mostrar",
+        "en": "Show"
+    },
+    "no_case" : {
+        "es": "Nro Caso",
+        "en": "No. Case"
+    },
+    "client" : {
+        "es": "Cliente",
+        "en": "Client"
+    },
+    "centro" : {
+        "es": "Centro",
+        "en": "Farm site"
+    },
+    "new_case" : {
+        "es": "Nuevo Caso",
+        "en": "Add Case"
+    },
+    "search" : {
+        "es": "Buscar",
+        "en": "Search"
+    },
+    "summary" : {
+        "es": "Resumen",
+        "en": "Summary"
+    },
+    "cancel" : {
+        "es": "Anular",
+        "en": "Cancel"
+    },
+    "request" : {
+        "es": "Solicitud",
+        "en": "Request"
+    },
+    "reception_date" : {
+        "es": "Fecha Recepción",
+        "en": "Reception Date"
+    },
+    "current_stage" : {
+        "es": "Etapa en curso",
+        "en": "Current Stage"
+    },
+    "options" : {
+        "es": "Opciones",
+        "en": "Options"
+    },
+    "case_closed" : {
+        "es": "Caso Cerrado",
+        "en": "Case Closed"
+    },
+    "case_cancelled" : {
+        "es": "Caso Anulado",
+        "en": "Case Cancelled"
+    },
+    "reopen" : {
+        "es": "Reabrir",
+        "en": "Reopen"
+    },
+    "to_confirm": {
+        "es": "Confirmar",
+        "en": "Confirm"
+    },
+    "confirmation": {
+        "es": "Confirmación",
+        "en": "Confirmation"
+    },
+    "to_exit": {
+        "es": "Salir",
+        "en": "Cancel"
+    },
+    "done": {
+        "es": "Listo!",
+        "en": "Done!"
+    },
+    "error": {
+        "es": "Error!",
+        "en": "Error!"
+    },
+    "done_msg":{
+        "es": "Proceso ejecutado con éxito.",
+        "en": "Process executed successfully."
+    },
+    "error_msg":{
+        "es": "No ha sido posible ejecutar el proceso exitosamente.",
+        "en": "It has not been possible to execute the process successfully."
+    },
+    "cancel_case_confirm_text":{
+        "es": "Le notificamos que al anular un caso no será posible reabrirlo. Además, automáticamente serán anulados todos los servicios que se encuentren abiertos o en curso. ¿Está seguro que desea continuar con la anulación?",
+        "en": "We notify you that by canceling a case it will not be possible to reopen it. In addition, all services that are open or in progress will be automatically canceled. Are you sure you want to proceed with the cancellation?"
+    },
+    "reopen_case_text":{
+        "es": "¿Está seguro que desea reabrir este caso definitivamente?",
+        "en": "Are you sure you want to reopen this case permanently?"
+    },
+    "year":{
+        "es": "Años",
+        "en": "Years"
+    },
+    "profile":{
+        "es": "Perfil",
+        "en": "Profile"
+    },
+    "exit":{
+        "es": "Salir",
+        "en": "Exit"
+    },
+    "summary_case":{
+        "es": "Resumen Caso",
+        "en": "Summary case"
+    },
+    "general_info":{
+        "es":"Información general",
+        "en":"General information"
+    },
+    "company":{
+        "es":"Empresa",
+        "en":"Company"
+    },
+    "responsable":{
+        "es":"Responsable",
+        "en":"Aplicant name"
+    },
+    "sampling_date":{
+        "es":"Fecha Muestreo",
+        "en":"Sampling date"
+    },
+    "work_order":{
+        "es":"Nro Orden de Trabajo",
+        "en":"No. Work order"
+    },
+    "no_request":{
+        "es":"Nro Solicitud interlaboratorio",
+        "en":"No. Request"
+    },
+    "fixative":{
+        "es":"Fijador",
+        "en":"Fixative"
+    },
+    "lab":{
+        "es": "Laboratorio",
+        "en": "Laboratory"
+    },
+    "laboratory":{
+        "es":"Laboratorio de Ingreso",
+        "en":"Entrance Laboratory"
+    },
+    "type_case":{
+        "es":"Tipo de ingreso",
+        "en":"Type of case"
+    },
+    "detail":{
+        "es":"Detalle",
+        "en":"Detail"
+    },
+    "specie":{
+        "es":"Especie",
+        "en":"Specie"
+    },
+    "development_stage":{
+        "es":"Estadío desarrollo",
+        "en":"Stage of development"
+    },
+    "water_source":{
+        "es":"Fuente de agua",
+        "en":"Water source"
+    },
+    "identification":{
+        "es":"Identificación",
+        "en":"Identification"
+    },
+    "add_identification":{
+        "es":"Agregar identificación",
+        "en":"Add identification"
+    },
+    "edit_units":{
+        "es":"Editar Unidades/Identificación",
+        "en":"Edit Units"
+    },
+    "edit_services":{
+        "es":"Editar Servicios",
+        "en":"Edit Services"
+    },
+    "cage":{
+        "es":"Estanque/<br>Jaula",
+        "en":"Tank/<br>Cage"
+    },
+    "group_client":{
+        "es":"Grupo/Nro Caso Cliente",
+        "en":"Group/Client's case"
+    },
+    "group":{
+        "es":"Grupo",
+        "en":"Group"
+    },
+    "case_client":{
+        "es":"Nro Caso<br> Cliente",
+        "en":"Client <br> Case"
+    },
+    "amount_identifications_units":{
+        "es":"Cantidad<br>Unidades",
+        "en":"Units<br>Amount"
+    },
+    "amount_identifications":{
+        "es":"Cantidad",
+        "en":"Amount"
+    },
+    "fishes":{
+        "es":"Peces",
+        "en":"No. Fishes"
+    },
+    "containers":{
+        "es":"Contenedores",
+        "en":"No. containers"
+    },
+    "weight":{
+        "es":"Peso (gr)",
+        "en":"Weight (g)"
+    },
+    "optimum":{
+        "es":"Óptimo?",
+        "en":"Optimum?"
+    },
+    "extra_features":{
+        "es":"Característica<br> Extra",
+        "en":"Extra <br>feature"
+    },
+    "observations":{
+        "es":"Observaciones",
+        "en":"Observations"
+    },
+    "services":{
+        "es":"Servicios",
+        "en":"Services"
+    },
+    "date":{
+        "es":"Fecha",
+        "en":"Date"
+    },
+    "status":{
+        "es":"Estado",
+        "en":"Status"
+    },
+    "charge_samples":{
+        "es":"Muestras a cobrar",
+        "en":"Samples to charge"
+    },
+    "total_organs":{
+        "es":"Total óganos",
+        "en":"Total organs"
+    },
+    "samples":{
+        "es":"Muestras",
+        "en":"Samples"
+    },
+    "no_sample":{
+        "es":"No. muestra",
+        "en":"No. sample"
+    },
+    "analysis":{
+        "es":"Análisis",
+        "en":"Analysis"
+    },
+    "organs":{
+        "es":"Órganos",
+        "en":"Organs"
+    },
+    "stain":{
+        "es":"Tinción",
+        "en":"Stain"
+    },
+    "nro_case":{
+        "es":"Caso N°",
+        "en":"Case No."
+    },
+    "send_case":{
+        "es":"Enviar caso",
+        "en":"Send case"
+    },
+    "shipment_record":{
+        "es":"Registro de Envíos",
+        "en":"Shipment record"
+    },
+    "attachment_documents":{
+        "es":"Documentos Adjuntos",
+        "en":"Attachment documents"
+    },
+    "step1_case":{
+        "es":"Paso 1: identificación del caso",
+        "en":"Step 1: Case identification"
+    },
+    "step2_case":{
+        "es":"Paso 2: Servicios",
+        "en":"Step 2: Services"
+    },
+    "step3_case":{
+        "es":"Paso 3: Analísis",
+        "en":"Step 3: Analysis"
+    },
+    "back":{
+        "es":"Volver",
+        "en":"Back"
+    },
+    "nro_individual":{
+        "es":"N° Individuo",
+        "en":"No. Individual"
+    },
+    "preselected_analysis":{
+        "es":"Análisis pre-seleccionados",
+        "en":"Pre-selected analysis"
+    },
+    "select_analysis":{
+        "es":"Seleccione los Análisis",
+        "en":"Select Analysis"
+    },
+    "restore_configuration":{
+        "es":"Restablecer Configuración",
+        "en":"Restore Configuration"
+    },
+    "analysis_all":{
+        "es":"Ingresar análisis a todos",
+        "en":"Enter analysis to all"
+    },
+    "organs_all":{
+        "es":"Ingresar órganos a todos",
+        "en":"Enter organs to all"
+    },
+    "actions":{
+        "es":"Acciones",
+        "en":"Actions"
+    },
+    "stain_all":{
+        "es":"Tinción a todos",
+        "en":"Stain to all"
+    },
+    "comments":{
+        "es":"Comentarios",
+        "en":"Comments"
+    },
+    "studies":{
+        "es":"Estudios",
+        "en":"Studies"
+    },
+    "reports":{
+        "es":"Informes",
+        "en":"Reports"
+    },
+    "close_service":{
+        "es":"Cerrar Servicio",
+        "en":"Close Service"
+    },
+    "cancel_service":{
+        "es":"Anular Servicio",
+        "en":"Cancel Service"
+    },
+    "finalize":{
+        "es":"Finalizar",
+        "en":"Finalize"
+    },
+    "next":{
+        "es":"Continuar",
+        "en":"Next"
+    },
+    "information":{
+        "es":"Información",
+        "en":"Information"
+    },
+    "information_action":{
+        "es":"¿Qué acción desea realizar?",
+        "en":"What do you want to do?"
+    },
+    "download":{
+        "es":"Descargar",
+        "en":"Download"
+    },
+    "send_to_mail":{
+        "es":"Enviar por correo",
+        "en":"Send to email"
+    },
+    "download_send":{
+        "es":"Descargar y enviar",
+        "en":"Download and send"
+    },
+    "english":{
+        "es":"Inglés",
+        "en":"English"
+    },
+    "spanish":{
+        "es":"Español",
+        "en":"Spanish"
+    },
+    "send_document_language":{
+        "es":"¿En qué idioma desea enviar el documento de resumen?",
+        "en":"What language do you want to send the sample reception form?"
+    },
+    "email_form":{
+        "es":"Formulario de Email",
+        "en":"Email Form"
+    },
+    "receivers":{
+        "es":"Destinatarios",
+        "en":"Receivers"
+    },
+    "template":{
+        "es":"Plantilla",
+        "en":"Template"
+    },
+    "without_template":{
+        "es":"Sin Plantilla",
+        "en":"Without template"
+    },
+    "message":{
+        "es":"Mensaje",
+        "en":"Message"
+    },
+    "shipment_record_form":{
+        "es":"Registro de Envíos y Descargas Formulario de Recepción de Muestras    ",
+        "en":"Shipment record and sample reception form downloads"
+    },
+    "performed_by":{
+        "es":"Realizado Por",
+        "en":"Performed by"
+    },
+    "type":{
+        "es":"Tipo",
+        "en":"Type"
+    },
+    "version2":{
+        "es":"Versión",
+        "en":"Version"
+    },
+    "files":{
+        "es":"Archivos",
+        "en":"Files"
+    },
+    "outsources_files":{
+        "es":"Archivos de tercerización",
+        "en":"Outsourcing files"
+    },
+    "file_loader":{
+        "es":"Cargador de archivos",
+        "en":"File loader"
+    },
+    "drag_select_file":{
+        "es":"Arrastra o selecciona archivo que deseas cargar",
+        "en":"Drag or select the file you want to upload"
+    },
+    "load":{
+        "es":"Cargar",
+        "en":"Load"
+    },
+    "services_still_open_text":{
+        "es":"Lo sentimos, aún se encuentran servicios abiertos que deben ser cerrados o anulados antes de cerrar el caso.",
+        "en":"We are sorry, services are still open. These must be closed or cancelled before closing the case."
+    },
+    "close_case_text":{
+        "es":"¿Está seguro que desea finalizar la recepción del caso?",
+        "en":"Are you sure you want to finish the case reception?"
+    },
+    "confirm_case":{
+        "es":"Sí!",
+        "en":"Confirm"
+    },
+    "cancel_case":{
+        "es":"No, cancelar!",
+        "en":"Back"
+    },
+    "reopen_service":{
+        "es":"Reabrir servicio",
+        "en":"Reopen service"
+    },
+    "save_changes":{
+        "es":"Guardar Cambios",
+        "en":"Save changes"
+    },
+    "reception_date_time":{
+        "es":"Fecha/Hora Recepción",
+        "en":"Reception Date & time"
+    },
+    "sampling_date_time":{
+        "es":"Hora Muestreo",
+        "en":"Sampling time"
+    },
+    "sample_detail":{
+        "es":"Detalle Muestra",
+        "en":"Sample Detail"
+    },
+    "optimus_condition":{
+        "es":"¿Óptimo?",
+        "en":"Optimum?"
+    },
+    "change_language":{
+        "es":"¿Cambiar idioma?",
+        "en":"¿Change language?"
+    },
+    "no_comments_yet":{
+        "es":"No hay comentarios disponibles",
+        "en":"No commets available"
+    },
+    "add_new_comment":{
+        "es":"Ingresar nuevo comentario",
+        "en":"Add a new comment"
+    },
+    "add_comment":{
+        "es":"Agregar comentario",
+        "en":"Add comment"
+    },
+    "not_selected":{
+        "es":"No seleccionados",
+        "en":"Not selected"
+    },
+    "associated_service":{
+        "es":"Asociados al servicio",
+        "en":"Associated with service"
+    },
+    "showing_all":{
+        "es":"Mostrando todos",
+        "en":"Showing all"
+    },
+    "empty_list":{
+        "es":"Lista vacía",
+        "en":"Empty list"
+    },
+    "save":{
+        "es":"Guardar",
+        "en":"Save"
+    },
+    "added_manually":{
+        "es":"Agregados manualmente",
+        "en":"Added manually"
+    },
+    "upload_report":{
+        "es":"Cargar informe",
+        "en":"Upload"
+    },
+    "report_loader":{
+        "es":"Cargaor de informes",
+        "en":"Report loader"
+    },
+    "no_reports_available":{
+        "es":"No hay informes disponibles",
+        "en":"No reports available"
+    },
+    "confirm_service_cancellation":{
+        "es":"¿Confirma que desea realizar la anulación del servicio?",
+        "en":"Do you confirm you want to cancel the service?"
+    },
+    "service_cancellation":{
+        "es":"Confirmación de anulación de servicio",
+        "en":"Confirmation of service cancellation"
+    },
+    "date_cancellation":{
+        "es":"Ingrese una fecha de anulación",
+        "en":"Enter a cancellation date"
+    },
+    "comment":{
+        "es":"Comentario",
+        "en":"Comments"
+    },
+    "confirm":{
+        "es":"Confirmar",
+        "en":"Confirm"
+    },
+    "service_closure":{
+        "es":"Confirmación de cierre de servicio",
+        "en":"Confirmation of service closure"
+    },
+    "confirm_service_closure":{
+        "es":"¿Confirma que desea realizar el cierre del servicio?",
+        "en":"Do you confirm you want to close the service?"
+    },
+    "enter_close_date":{
+        "es":"Ingrese una fecha de cierre",
+        "en":"Enter a close date"
+    },
+    "enter_report_code":{
+        "es":"Ingrese el códio del informe",
+        "en":"Enter report code"
+    },
+    "service_has":{
+        "es":"El servicio posee",
+        "en":"The service has"
+    },
+    "reports_attached":{
+        "es":"reportes adjuntos y",
+        "en":"attached reports and"
+    },
+    "reception_receive":{
+        "es":"Comprobante de Recepción",
+        "en":"Receipt voucher"
+    },
+    "reception_receive_question":{
+        "es":"¿Deseas descargar el comprobante de recepción?",
+        "en":"Do you want to download the receipt? "
+    },
+    "reception_done":{
+        "es":"La recepción ha finalizado exitosamente",
+        "en":"Reception done successfully"
+    },
+    "selection":{
+        "es":"Selección",
+        "en":"Selection"
+    },
+    "select_all":{
+        "es":"Seleccionar",
+        "en":"Select All"
+    },
+    "deselect_all":{
+        "es":"Deseleccionar",
+        "en":"Deselect All"
+    },
+    "select_all_units":{
+        "es":"Seleccionar todas las unidades",
+        "en":"Select All Units"
+    },
+    "deselect_all_units":{
+        "es":"Deseleccionar todas las unidades",
+        "en":"Deselect All Units"
+    },
+    "select_all_units_by_ident":{
+        "es":"Seleccionar todas las unidades de la identificación",
+        "en":"Select all units from current identification"
+    },
+    "deselect_all_units_by_ident":{
+        "es":"Deseleccionar todas las unidades de la identificación",
+        "en":"Deselect all units from current identification"
+    },
+    "add":{
+        "es":"Ingresar",
+        "en":"Add"
+    },
+    "remove":{
+        "es":"Eliminar",
+        "en":"Remove"
+    },
+    "add_organs_to_selection":{
+        "es": "Agregar o quitar órganos a selección",
+        "en": "Add or remove organs to selection"
+    },
+    "organs_to_every_units":{
+        "es": "Órganos para todas las unidades",
+        "en": "Organs to every units"
+    },
+    "yes":{
+        "es":"Si",
+        "en":"Yes"
+    },
+    "no":{
+        "es":"No",
+        "en":"No"
+    },
+    "individual":{
+        "es":"Individuo",
+        "en":"Individual"
+    },
+    "services_by_individual":{
+        "es": "Servicios por individuo",
+        "en": "Services by individual"
+    },
+    "services_deadline":{
+        "es": "Tiempo de respuesta",
+        "en": "Deadline"
+    },
+    "organ":{
+        "es": "Órgano",
+        "en": "Organ"
+    },
+    "diagnostic":{
+        "es": "Diagnóstico",
+        "en": "Diagnostic"
+    },
+    "distribution":{
+        "es": "Distribución",
+        "en": "Distribution"
+    },
+    "frequency":{
+        "es": "Frecuencia",
+        "en": "Frequency"
+    },
+    "N_samples":{
+        "es": "N° de muestras afectadas",
+        "en": "No. affected samples"
+    },
+    "TotalSamples":{
+        "es": "Total de muestras",
+        "en": "Total samples"
+    },
+    "DiagnosticIntensity":{
+        "es": "Intensidad del diagnóstico por muestra (0 - 3)",
+        "en": "Diagnostic intensity per sample (0 - 3)"
+    }
+}

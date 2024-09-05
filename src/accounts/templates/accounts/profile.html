@@ -1,0 +1,228 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load avatar_tags %}
+{% block stylesheets %}
+
+<style>
+.icon-animation {
+  animation-name: rotateThis;
+  animation-duration: .5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes "rotateThis" {
+  from { transform: scale( 1 ) rotate( 0deg );   }
+  to   { transform: scale( 1 ) rotate( 360deg ); }
+}
+</style>
+
+
+{% endblock stylesheets %}
+{% block breadcumb %}
+<li class="active">
+    <a href="profile">Perfil de Usuario</a>
+</li>
+{% endblock breadcumb %}
+{% block content %}
+{% if messages %}
+ {% for message in messages %}
+ <div class="mensajes alert alert-{% if message.tags %}{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}{% else %}default{% endif %} alert-dismissible" role="alert">
+ <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+ {{ message }}
+ </div>
+ {% endfor %}
+ {% endif %}
+
+<div class="row">
+    <div class="col-sm-12" id="notifications">
+
+    </div>
+</div>
+
+<div data-widget-group="group1">
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="panel panel-profile panel-bluegray">
+              <div class="panel-body">
+                <!-- <div class="picture-container"> -->
+                    <div class="picture-sm">
+                        <img src="{% if request.user|has_avatar %}{% avatar_url user 80 %}{% else %}{% static 'assets/images/portrait/small/avatar-s-1.png' %}{% endif %}" class="picture-src" id="wizardPicturePreview" style="width:80px" title=""/>
+                    </div>
+                <!-- </div> -->
+                <div class="name" id="global_name">{{name}}</div>
+              </div>
+            </div><!-- panel -->
+            <div class="list-group list-group-alternate mb-n nav nav-tabs">
+                <a href="#tab-about"    role="tab" data-toggle="tab" class="list-group-item"><i class="ti ti-user"></i> Información Personal</a>
+                <a href="#tab-timeline" role="tab" data-toggle="tab" class="list-group-item"><i class="ti ti-image"></i> Cambiar avatar</a>
+                <a href="#tab-password" role="tab" data-toggle="tab" class="list-group-item"><i class="ti ti-lock"></i> Cambiar Contraseña</a>
+            </div>
+        </div><!-- col-sm-3 -->
+        <div class="col-sm-9">
+            <div class="tab-content">
+                <div class="tab-pane" id="tab-password">
+                    <div class="panel panel-bluegray">
+                        <div class="panel-heading">
+                            <h2>Cambiar contraseña</h2>
+                        </div>
+                        <div class="panel-body">
+                            <form id="change_password">
+                                <div class="col-sm-10 col-sm-offset-1">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="old_password">Contraseña actual</label>
+                                        <input type="password" class="form-control" name="old_password" id="old_password" placeholder="Contraseña actual" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="new_password1">Nueva contraseña</label>
+                                        <input type="password" class="form-control" name="new_password1" id="new_password1" placeholder="Nueva contraseña" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="new_password2">Repetir contraseña</label>
+                                        <input type="password" class="form-control" name="new_password2" id="new_password2" placeholder="Repetir contraseña" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div> <!-- /.panel-body -->
+                        <div class="panel-footer">
+                            <div class="row">
+                                <div class="col-sm-3 col-sm-offset-9">
+                                    <input type="submit" class="btn-primary btn" id="change_pass" value="Guardar">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- #tab-projects -->
+
+                <div class="tab-pane active" id="tab-about">
+                    <div class="panel panel-bluegray">
+                        <div class="panel-heading">
+                            <h2>Información Personal</h2>
+                        </div>
+                        <div class="panel-body">
+                            <form id="change_data" action="{% url 'change_info' %}" method="POST">
+                                <div class="col-sm-10 col-sm-offset-1">
+                                    <div class="form-group">
+                                        <label for="first_name">Nombre</label>
+                                        <input class="form-control" name="first_name" id="first_name" placeholder="Nombre" value="{{first_name}}" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="last_name">Apellido</label>
+                                        <input class="form-control" name="last_name" id="last_name" placeholder="Apellido" value="{{last_name}}" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">E-Mail</label>
+                                        <input class="form-control" name="email" id="email" placeholder="E-Mail" disabled  value="{{email}}"/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="rut" >RUT</label>
+                                        <input type="text" placeholder="RUT ..." name="rut" id="rut" required class="form-control" value="{{rut}}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="phone" >Teléfono</label>
+                                        <input type="text" placeholder="Teléfono ..." name="phone" id="phone" required class="form-control" value="{{phone}}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="firma" >Firma</label>
+                                        <div class="fileinput fileinput-new" style="width: 100%;" data-provides="fileinput">
+                                            {% if hayFoto == 1 %}
+                                            <div class="fileinput-new thumbnail" style="width: 100%; height: 150px;">
+                                                <img src="{{signature}}" alt="..." height="250px">
+                                            </div>
+                                            <div class="fileinput-preview fileinput-exists thumbnail" style="width: 100%; height: 150px;"></div>
+                                            {% else %}
+                                            <div class="fileinput-preview thumbnail mb20" data-trigger="fileinput" style="width: 100%; height: 150px;"></div>
+                                            {% endif %}
+                                            <div>
+                                                <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Eliminar</a>
+                                                <span class="btn btn-default btn-file"><span class="fileinput-new">Seleccionar</span><span class="fileinput-exists">Cambiar</span><input type="file" name="firma"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="panel-footer">
+                            <div class="row">
+                                <div class="col-sm-3 col-sm-offset-9">
+                                    <button class="btn-primary btn" id="change_personal_data">Guardar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane" id="tab-timeline">
+                    <div class="panel panel-bluegray" style="min-height:420px">
+                        <div class="panel-heading">
+                            <h2>Cambiar Avatar</h2>
+                        </div>
+                        <div class="panel-body">
+                            <form action="{% url 'avatar_add' %}" method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-sm-4 col-sm-offset-4">
+                                        <div class="picture-container">
+                                            <div class="picture">
+                                                <img src="{% if request.user|has_avatar %}{% avatar_url user 200 %}{% else %}{% static 'assets/images/portrait/small/avatar-s-1.png' %}{% endif %}" class="picture-src" id="wizardPicturePreview" title=""/>
+                                                <input type="file" name="avatar" id="wizard-picture" required>
+                                            </div>
+                                            <h4>Selecciona tu imagen</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-3 col-sm-offset-9 clearfix">
+                                        <input type="submit" class="btn-primary btn" id="change_avatar" value="Guardar">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
+
+
+
+{% block scripts %}
+<script src="{% static 'assets/js/jquery.form.js' %}"></script>
+<script>
+$('#change_password')[0].reset();
+$('#change_pass').on('click', function(){
+    var url  = "{% url 'change-password' %}"
+    data = $('#change_password').serialize();
+    $.ajax(url, {
+        data: data,
+        type: 'post',
+        success: function(data) {
+            if(data.error){
+                toastr.error(data.message, '');
+            }
+            else{
+                toastr.success(data.message, '');
+                $('#change_password')[0].reset();
+            }
+        },
+        error: function() {
+        }
+    })
+});
+
+$('#change_personal_data').on('click', function(){
+    $('#change_data').ajaxSubmit({
+        success: function(data) {
+            window.location.href = "/accounts/profile"
+            },
+        error: function() {
+        }
+    })
+});
+</script>
+{% endblock scripts %}

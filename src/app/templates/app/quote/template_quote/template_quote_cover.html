@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body,
+        html {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            height: 100%;
+            width: 100%;
+        }
+
+        .section-cover {
+            display: -webkit-flex;
+            -webkit-box-orient: vertical;
+
+            height: 350px;
+            width: 100%;
+        }
+
+        .content {
+            height: 100%;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+
+            -webkit-box-pack: center;
+            -webkit-box-align: center;
+
+            padding-left: 45px;
+            padding-right: 35px;
+        }
+        .information{
+            font-size: 2.15em;
+            color: #0D0344;
+
+            padding-top: 125px;
+            padding-left: 20px;
+        }
+
+        #content-description {
+            padding-top: 55px;
+            line-height: 1.5;
+        }
+
+        img {
+            width: 100%;
+        }
+
+        .title {
+            position: absolute;
+            top: 25%;
+            right: 10%;
+            width: 80%;
+
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+
+            -webkit-box-pack: center;
+            -webkit-box-align: end;
+        }
+
+        .title p{
+            padding: 5px 0px;
+            font-size: 2.5em;
+            font-weight: 600;
+            color: white;
+            text-align: right;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="section-cover">
+        <header>
+            {% if has_cover_image %}
+            <img src="{{cover_image_url}}" alt="cover vehice quote">
+            {% else %}
+            <img src="{{cover_image_url_default}}" alt="cover-vehice-quote-default">
+            {% endif %}
+        </header>
+
+        <div class="title">
+            <p>{% if hast_title %}Propuesta económica{% endif %}</p>
+            <p>{% if hast_title %}{{title}}{% endif %}</p>
+        </div>
+
+        <div class="content">
+            <div class="information">
+                <p id="content-customer">Estimado/a {{responsible.name}}:</p>
+
+                <p id="content-description">De acuerdo con tus requerimientos, te adjuntamos propuesta económica por
+                    nuestros servicios.</p>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

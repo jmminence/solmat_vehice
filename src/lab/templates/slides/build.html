@@ -1,0 +1,151 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block stylesheets %}
+<link
+    rel="stylesheet"
+    href="https://cdn.datatables.net/select/1.3.3/css/select.dataTables.min.css"
+    type="text/css"
+    media="screen"
+/>
+{% endblock stylesheets %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <header class="card-header">
+                <h4 class="card-title">Slides</h4>
+                <span class="d-flex flex-row justify-content-between mt-md-1 align-items-center">
+                    <small class="card-subtitle">Disponibles para armar</small>
+                    <span>
+                    <button type="button" class="btn btn-warning" id="btnHideSlide">
+                        NO REQUIERE ARMADO
+                    </button>
+                    <button type="button" class="btn btn-primary" id="btnArmarSlide">
+                        ARMAR
+                    </button>
+                    </span>
+                </span>
+            </header>
+
+            <div class="row justify-content-center align-items-end">
+                <div class="col-md-4 form-group">
+                    <label for="">Rango de fecha:</label>
+                    <select id="entryformSel" class="form-control" style="width:100%">
+                        <option value="0" selected>Casos ingresados los ultimos 7 dias</option>
+                        <option value="1">Casos ingresados entre 7 y 15 dias atras </option>
+                        <option value="2">Casos ingresados entre 15 y 30 dias atras</option>
+                        <option value="3">Casos ingresados mas allá de 30 dias</option>
+                    </select>
+                </div>
+                <div class="col-md-1 form-group">
+                    <label for=""># Caso:</label>
+                    <input class="form-control" id="noCaso" type="text"/>
+                </div>
+                <div class="col-md-2 form-group">
+                    <button class="btn btn-primary" id="btnEntryformFilter">Filtrar</button>
+                </div>
+            </div>
+
+            <section class="card-body table-responsive">
+                <table class="table table-bordered table-striped zero-configuration"></table>
+            </section>
+        </div>
+    </div>
+</div>
+
+<!-- End Main Content -->
+
+<!-- Modal Dialogs -->
+
+<!-- SLIDE BUILD MODAL -->
+
+<div class="modal fade" id="dlgArmarSlide" tabindex="-1" aria-labelledby="btnArmarSlide" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Armar Slides</h5>
+                <button type="button" class="btn btn-warning btn-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body container-fluid">
+                <form id="formArmarSlide">
+                    <div class="row mb-3">
+                        <label for="buildAt" class="col-md-4 col-form-label text-right">Fecha armado:</label>
+                        <div class="col-md-2">
+                            <input type="datetime-local" class="form-control" id="buildAt">
+                        </div>
+                    </div>
+                    <div class="d-flex flex-row justify-content-center align-items-center">
+                            <button
+                                id="btnDeleteSelected"
+                                type="button"
+                                class="btn btn-danger mx-2"
+                            >
+                                Borrar Seleccionadas
+                            </button>
+                            <label class="mx-2 border-left pl-2" for="">Seleccione la tincion:</label>
+                            <select id="selectStain" class="mx-2">
+                                {% for stain in stains %}
+                                <option value="{{ stain.id }}">{{ stain.abbreviation }}</option>
+                                {% endfor %}
+                            </select>
+                            <button
+                                id="btnCreateSlide"
+                                type="button"
+                                class="btn btn-success mx-2"
+                            >
+                                Agregar a seleccionadas
+                            </button>
+                    </div>
+                    <div class="row my-2">
+                        <div class="col-md-12 table-responsive">
+                            <table
+                                class="table table-sm table-striped w-100"
+                                id="tableBuildDialog"
+                            >
+                            </table>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-close" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+                <button id="btnSaveSlide" type="button" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- End Modal Dialogs -->
+
+{% endblock content %}
+{% block scripts %}
+<script
+    type="text/javascript"
+    src="https://cdn.datatables.net/select/1.3.3/js/dataTables.select.min.js"
+    defer>
+</script>
+
+<script
+    type="text/javascript"
+    src="https://cdn.datatables.net/buttons/1.7.0/js/dataTables.buttons.min.js"
+    defer>
+</script>
+
+<script
+    type="text/javascript"
+    src="//cdn.jsdelivr.net/npm/sweetalert2@10"
+    defer>
+</script>
+
+<script type="text/javascript"
+        src="{% static 'lab/js/slide-build.js' %}"
+        defer>
+</script>
+{% endblock scripts %}

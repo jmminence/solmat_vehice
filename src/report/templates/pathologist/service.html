@@ -1,0 +1,142 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block content %}
+<!-- MAIN -->
+
+<!-- PENDING SERVICES CARD -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <header class="card-header">
+                <h1 class="card-title">SERVICIOS EN ESPERA</h1>
+                <small class="card-subtitle">Servicios que han sido derivados pero que no han iniciado lectura.</small>
+                <section class="row mt-3">
+                    <div class="col-md-3 d-flex flex-column">
+                        <b>Histopatólogo:</b>
+                        <select id="pathologistPending" class="form-control select2 pendingInput" multiple>
+                            {% for pathologist in pathologists %}
+                            <option
+                                {% if user_id == pathologist.id  %} selected {% endif %}
+                                value="{{ pathologist.id }}">
+                                {{ pathologist.first_name }} {{ pathologist.last_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <b>Area:</b>
+                        <select id="areaPending" class="form-control select2 pendingInput" multiple>
+                            {% for area in areas %}
+                            <option value="{{ area.id }}">{{ area.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </section>
+            </header>
+            <main class="card-body container-fluid">
+                <div class="col-md-12 table-responsive">
+                    <table id="pendingTable" class="table table-sm table-striped" style></table>
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+<!-- END -->
+
+<!-- READING SERVICES CARD -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <header class="card-header">
+                <h1 class="card-title">SERVICIOS EN LECTURA</h1>
+                <small class="card-subtitle">Servicios con lectura iniciada y sin finalizar.</small>
+                <section class="row mt-3">
+                    <div class="col-md-3 d-flex flex-column">
+                        <b>Histopatólogo:</b>
+                        <select id="pathologistReading" class="form-control readingInput select2" multiple>
+                            {% for pathologist in pathologists %}
+                            <option
+                                {% if user_id == pathologist.id  %} selected {% endif %}
+                                value="{{ pathologist.id }}">
+                                {{ pathologist.first_name }} {{ pathologist.last_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <b>Area:</b>
+                        <select id="areaReading" class="form-control select2 readingInput" multiple>
+                            {% for area in areas %}
+                            <option value="{{ area.id }}">{{ area.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </section>
+            </header>
+            <main class="card-body container-fluid">
+                <div class="col-md-12 table-responsive">
+                    <table id="readingTable" class="table table-sm table-striped" style></table>
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+<!-- END -->
+
+<!-- REVIEWING SERVICES CARD -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <header class="card-header">
+                <h1 class="card-title">SERVICIOS EN REVISIÓN</h1>
+                <small class="card-subtitle">Servicios en que se termino lectura pero no se ha cerrado el servicio.</small>
+                <section class="row mt-3">
+                    <div class="col-md-3 d-flex flex-column">
+                        <b>Histopatólogo:</b>
+                        <select id="pathologistReviewing" class="form-control select2 reviewingInput" multiple>
+                            {% for pathologist in pathologists %}
+                            <option
+                                {% if user_id == pathologist.id  %} selected {% endif %}
+                                value="{{ pathologist.id }}">
+                                {{ pathologist.first_name }} {{ pathologist.last_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <b>Area:</b>
+                        <select id="areaReviewing" class="form-control select2 reviewingInput" multiple>
+                            {% for area in areas %}
+                            <option value="{{ area.id }}">{{ area.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </section>
+            </header>
+            <main class="card-body container-fluid">
+                <div class="col-md-12 table-responsive">
+                    <table id="reviewingTable" class="table table-sm table-striped" style></table>
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+<!-- END -->
+
+<!-- END MAIN -->
+
+{% endblock content %}
+{% block scripts %}
+<script
+    type="text/javascript"
+    src="//cdn.jsdelivr.net/npm/sweetalert2@10"
+    defer>
+</script>
+
+
+<script type="text/javascript"
+        src="{% static 'report/js/pathologist-service.js' %}"
+        defer>
+</script>
+{% endblock scripts %}

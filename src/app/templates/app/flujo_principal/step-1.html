@@ -1,0 +1,209 @@
+<fieldset>
+  <div id="step_{{ step_tab }}">
+    <input type="hidden" id="step_id" name="step_id" value="{{step_id}}">
+    <input type="hidden" id="step_tag" name="step_tag" value="{{step_tag}}">
+    <input type="hidden" id="form_id" name="form_id" value="{{form_id}}">
+    <input type="hidden" id="entryform_id" name="entryform_id" value="{{entryform_id}}">
+    {% if edit %}
+    <div class="offset-8 text-right m-1">
+      <button type="button" id="saveStep1" class="btn btn-warning square"><i class="fa fa-save"></i> {{request.lang.save_changes}}</button>
+    </div>
+    {% endif %}
+    <h4 class="form-section">
+      <i class="ft-user"></i> {{request.lang.general_info}}
+    </h4>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="customer">
+            {{request.lang.client}} :
+          </label>
+          <select class="select2 form-control" name="customer" id="customer_select"
+            {% if not edit %}disabled{% endif %}>
+            <option value="" disabled selected>Seleccione un Cliente</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="company">
+            {{request.lang.company}} :
+          </label>
+          <select class="select2 form-control" name="company_index" id="company_select"
+            {% if not edit %}disabled{% endif %}>
+            <option value="" disabled selected>Seleccione una Empresa</option>
+          </select>
+        </div>
+        <div class="form-group pl-1" id="center">
+          <label for="center" id="company_type_center">
+            {{request.lang.centro}}:
+          </label>
+          <label for="center" id="company_type_lab" style="display: none;">
+            {{request.lang.lab}}:
+          </label>
+          <input type='text' class="form-control" name="company_laboratory" id="center_input" style="display: none;"
+            {% if not edit %}disabled{% endif %}>
+          <select class="select2 form-control" name="company_center" id="center_select" disabled
+            {% if not edit %}disabled{% endif %}>
+            <option value="" disabled selected>Seleccione una Centro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="entryformat_select">Formato de Ingreso :</label>
+          <select class="form-control" id="entryformat_select" name="entry_format" {% if not edit %}disabled{% endif %}>
+            <option selected value="1">Tubo</option>
+            <option value="2">Cassette</option>
+            <option value="3">Bloque</option>
+            <option value="4">Slide s/teñir</option>
+            <option value="5">Slide teñido</option>
+            <option value="6">Vivo</option>
+            <option value="7">Muerto</option>
+          </select>
+        </div>
+        <div class="form-group" id="order_number">
+          <label for="order_number">
+            {{request.lang.work_order}} :
+          </label>
+          <input type='text' class="form-control" id="order_number_input" name="no_order"
+            {% if not edit %}disabled{% endif %} />
+        </div>
+        <div class="form-group" id="request_number">
+          <label for="request_number">
+            {{request.lang.no_request}} :
+          </label>
+          <input type='text' class="form-control" id="request_number_input" name="no_request"
+            {% if not edit %}disabled{% endif %} />
+        </div>
+        <div class="form-group">
+          <label for="entryform_type_1">{{request.lang.type_case}} :</label>
+          <fieldset>
+            <div class="d-inline-block custom-control custom-radio mr-1">
+              <input type="radio" checked class="custom-control-input bg-primary" name="entryform_type" id="entryform_type_1" value="1">
+              <label class="custom-control-label" for="entryform_type_1">Normal</label>
+            </div>
+            <div class="d-inline-block custom-control custom-radio mr-1">
+              <input type="radio" class="custom-control-input bg-primary" name="entryform_type" id="entryform_type_2" value="2">
+              <label class="custom-control-label" for="entryform_type_2">Fast</label>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label>{{request.lang.reception_date_time}} : </label>
+          <div class='input-group date' id='datetime_created_at'>
+            <input type="text" class="form-control" id="created_at" name="created_at" {% if not edit %}disabled{% endif %} />
+            <div class="input-group-append">
+              <span class="input-group-text">
+                <span class="fa fa-calendar"></span>
+              </span>
+            </div>
+          </div>
+          <input type="hidden" name="created_at_submit" id="created_at_submit" {% if not edit %}disabled{% endif %} />
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>{{request.lang.sampling_date}} : </label>
+              <div class='input-group date' id='datetime_sampled_at'>
+                <input type='text' class="form-control" name='sampled_at' {% if not edit %}disabled{% endif %} />
+                <div class="input-group-append">
+                  <span class="input-group-text">
+                    <span class="fa fa-calendar"></span>
+                  </span>
+                </div>
+              </div>
+              <input type="hidden" name="sampled_at_submit" id="sampled_at_submit" {% if not edit %}disabled{% endif %} />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>{{request.lang.sampling_date_time}} : </label>
+              <div class='input-group'>
+                <input type='text' id='datetime_sampled_at_hour' class="form-control" name='sampled_at_hour' {% if not edit %}disabled{% endif %} />
+                <div class="input-group-append">
+                  <span class="input-group-text">
+                    <span class="fa fa-clock-o"></span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>AM/PM</label>
+              <select class="form-control" id="sampled_at_am_pm" name="sampled_at_am_pm" {% if not edit %}disabled{% endif %}>
+                <option selected value="">--</option>
+                <option value="AM">AM</option>
+                <option value="PM">PM</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="form-group" id="responsible">
+          <label for="responsible">
+            {{request.lang.responsable}} :
+          </label>
+          <div class='input-group'>
+            <input type='text' class="form-control responsible_place" onclick="responsibleModal()" readonly
+              {% if not edit %}disabled{% endif %} />
+            <div class="input-group-append">
+              <span class="input-group-text">
+                <span class="fa fa-user"></span>
+              </span>
+            </div>
+          </div>
+          <input type='text' class="form-control" id="responsible_input" name="responsible" hidden />
+        </div>
+        <div class="form-group">
+          <label for="phoneNumber3">{{request.lang.fixative}} :</label>
+          <select class="select2 form-control" id="fixtative_select" name="fixative"
+            {% if not edit %}disabled{% endif %}>
+            <option value="">S/I</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="transfer_order_input">
+            Orden de transporte :
+          </label>
+          <input type='text' class="form-control" id="transfer_order_input" name="transfer_order"
+            {% if not edit %}disabled{% endif %} />
+        </div>
+        <div class="form-group">
+          <label for="phoneNumber3">Anamnesis :</label>
+          <textarea id="anamnesis_input" name="anamnesis" row="2" class="form-control" {% if not edit %}disabled{% endif %} ></textarea>
+        </div>
+        <div class="form-group">
+          <label for="phoneNumber3">{{request.lang.laboratory}} :</label>
+          <select class="select2 form-control" id="laboratory_select" name="laboratory"
+            {% if not edit %}disabled{% endif %}>
+          </select>
+        </div>
+      </div>
+    </div>
+    <h4 class="form-section">
+      <i class="ft-droplet"></i> {{request.lang.sample_detail}}
+    </h4>
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="date3">{{request.lang.specie}} :</label>
+          <select class="select2 form-control" id="specie_select" name="specie" {% if not edit %}disabled{% endif %}>
+          </select>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="phoneNumber3">{{request.lang.development_stage}} :</label>
+          <select class="select2 form-control" id="larvalstage_select" name="larvalstage" {% if not edit %}disabled{% endif %}>
+          </select>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="date3">{{request.lang.water_source}} :</label>
+          <select class="select2 form-control" id="watersource_select" name="watersource" {% if not edit %}disabled{% endif %}>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</fieldset>

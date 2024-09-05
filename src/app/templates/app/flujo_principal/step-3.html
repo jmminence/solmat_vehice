@@ -1,0 +1,166 @@
+<fieldset>
+  <div id="step_{{ step_tab }}">
+    <input type="hidden" id="step_id" name="step_id" value="{{step_id}}">
+    <input type="hidden" id="step_tag" name="step_tag" value="{{step_tag}}">
+    <input type="hidden" id="form_id" name="form_id" value="{{form_id}}" >
+    <input type="hidden" id="entryform_id" name="entryform_id" value="{{entryform_id}}" >
+    <h4 class="form-section">
+      <i class="ft-search"></i> {{request.lang.services}}
+    </h4>
+    <div class="row">
+
+      <div class="col-sm-12" style="display:none;" id="pre-selected-exams">
+        <div class="row">
+          <div class="col-sm-12 text-right">
+            <button class="btn btn-secondary" onClick="window.location.reload();"><i class="fa fa-refresh"></i>{{request.lang.restore_configuration}}</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-12 mt-2">
+        <div class="row">
+          <div class="col-sm-3">
+            <select class="select2" style="width:100%;" id="exam_select" name="analysis" {% if not edit %}disabled{% endif %}>
+            </select>
+          </div>
+          <div class="col-sm-2">
+            <select class="select2" style="width:100%;" id="stain_select" {% if not edit %}disabled{% endif %}>
+            </select>
+          </div>
+          <div class="col-sm-4">
+          <select class="select2" style="width:100%;" id="organs_select" multiple="multiple" {% if not edit %}disabled{% endif %}>
+            </select>
+          </div>
+          <div class="col-sm-3">
+            <button type="button" class="btn btn-primary" onclick="addExamToSamples()"><i class="fa fa-plus"></i> {{request.lang.add}}</button>
+            <button type="button" class="btn btn-danger" onclick="removeExamFromSamples()"><i class="fa fa-close"></i> {{request.lang.remove}}</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 mt-3">
+        
+        <button type="button" class="btn btn-sm btn-light" onclick="selectAllChecks(1)"><i class="fa fa-check-square-o"></i> {{request.lang.select_all}}</button>
+        <button type="button" class="btn btn-sm btn-light" onclick="selectAllChecks(0)"><i class="fa fa-square-o"></i> {{request.lang.deselect_all}}</button>
+        <select class="form-control form-control-sm select-identifications" style="width:auto !important; display:inline !important;">
+          <option selected value="-">Todas las identificaciones</option>
+        </select>
+        <table class="table table-bordered table-condensed mt-1" id="samples_table" style="font-size:13px;">
+          <thead>
+            <tr>
+              <th style="width:5%">{{request.lang.selection}}</th>
+              <th style="width:5%">{{request.lang.individual}}</th>
+              <th style="width:15%">{{request.lang.identification}}</th>
+              <th style="width:25%">{{request.lang.organs}}</th>
+              <th style="width:25%">{{request.lang.analysis}} / Tinción</th>
+              <th style="width:30%">{{request.lang.organs}} a Analizar</th>
+              <th style="width:10%">{{request.lang.status}}</th>
+              <th style="width:5%"></th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div id="poolServices" class="row col-sm-12 mt-2">
+      <div class="col-sm-3">
+        <select class="select2" style="width:100%;" id="exams_pool" name="exams_pool" {% if not edit %}disabled{% endif %}>
+        </select>
+      </div>
+      <div class="col-sm-3">
+        <button type="button" class="btn btn-primary" onclick="addExam()"><i class="fa fa-plus"></i> {{request.lang.add}}</button>
+        <button type="button" class="btn btn-danger" onclick="deleteExamPools()"><i class="fa fa-close"></i> {{request.lang.remove}}</button>
+      </div>
+      <table class="table table-bordered table-condensed mt-1" id="pools_table" style="font-size:13px;">
+        <thead>
+          <tr>
+            <th style="width:5%">Selección</th>
+            <th style="width:10%">Pool</th>
+            <th style="width:15%">{{request.lang.identification}}</th>
+            <th style="width:50%">Órganos</th>
+            <th style="width:20%">Análisis</th>
+            <th style="width:5%">Estado</th>
+            <th style="width:5%"></th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+    </div>
+  </div>
+</fieldset>
+
+<script id="sample_row" type="text/x-lodash-template">
+  <tr id="sample-<%= sample.id %>">
+    <td id="sampleCheck-<%= sample.id %>" rowspan="1" >
+        <input type="checkbox" data-ident="<%= sample.identification.id %>" class="form-control checkbox-1x" style="margin-top:8% !important;"/> 
+    </td>
+    <td id="sampleNro-<%= sample.id %>" rowspan="1">
+        <input type="hidden" value="<%= sample.id %>" name="sample[id][<%= sample.index %>]">
+        <%= sample.index %>
+    </td>
+    <td id="sampleIden-<%= sample.id %>" rowspan="1">
+        (<%= sample.identification.correlative %>) <%= sample.identification.cage %>-<%= sample.identification.group %>-<%= sample.identification.extra_features_detail %>
+    </td>
+    <td id="sampleOrgans-<%= sample.id %>" rowspan="1">
+      <select id="sampleOrgans-<%= sample.id %>" multiple class="form-control sampleOrgansSelect" style="width:100% !important;" disabled >
+        <% _.each(sample.organs_set, function (organ) { %>
+          <option selected value="<%= organ.organ.id %>"><%= organ.organ.abbreviation %></option>
+        <% }); %>
+      </select>
+    </td>
+  
+    <!-- Analisis -->
+    <td class="samples_exams_list samples_exams delete-<%= sample.id %>" data-index="<%= sample.id %>" >
+    </td>
+
+    <!-- Organs -->
+    <td class="delete-<%= sample.id %>">
+    </td>
+
+    <!-- Status -->
+    <td class="delete-<%= sample.id %>">
+    </td>
+    <!-- Opt -->
+    <td class="delete-<%= sample.id %>">
+    </td>
+  </tr> 
+  
+</script>
+
+<script id="add_analisis" type="text/x-lodash-template">
+<tr id="analisis-<%= sampleId %>-<%= examId %>-<%= stain.id %>" class="analis-row analis-row-<%= sampleId %>" data-examid="<%= examId %>">
+  <td class="samples_exams_list" data-index="<%= sampleId %>">
+    <div class="input-group">
+      <input class="form-control" style="width:70% !important;" readonly value="<%= analisis %>" />
+      <input class="form-control" style="width:30% !important;" readonly value="<%= stain.abbr %>" />
+    </div>
+    <input class="form-control" style="width:100% !important;" name="sample[exams][<%= sampleId %>][<%= examId %>][<%= stain.id %>]" hidden value="<%= examId %>"/>
+    <input class="form-control analisis-stain-selected" style="width:100% !important;" name="sample[stain][<%= sampleId %>][<%= examId %>][<%= stain.id %>]" hidden value="<%= stain.id %>" />
+  </td>
+  <td>
+    <select class="form-control organs-select organs-select-<%= sampleId %>-<%= examId %>" style="width:100% !important;" name="sample[organs][<%= sampleId %>][<%= examId %>][<%= stain.id %>]" multiple="multiple" disabled>
+      <% _.each(organs, function (organ_data, ou) { %>
+        <% _.each(organ_data.organ_set, function (org) { %>
+          <% if (ou == org.id ){ %>
+            <option value="<%= ou %>-<%= org.id %>">
+              <%= org.abbreviation %> 
+            </option>
+          <% } else { %>
+             <option value="<%= ou %>-<%= org.id %>">
+              <%= organ_data.ou.organ.abbreviation %> - <%= org.abbreviation %> 
+            </option>
+          <% } %>
+        <% }); %>
+      <% }); %>
+    </select>
+  </td>
+  <td>
+    <h3><div class="badge bg-blue"><%= status %></div></h3>
+  </td>
+  <td>
+    <button type="button" class="btn btn-danger" onclick="forceRemoveService('<%= sampleId %>', 'analisis-<%= sampleId %>-<%= examId %>-<%= stain.id %>')"> <i class="fa fa-trash"></i></button>
+  </td>
+</tr>
+</script>

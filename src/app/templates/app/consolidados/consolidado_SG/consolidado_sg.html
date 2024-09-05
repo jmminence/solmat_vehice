@@ -1,0 +1,702 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block stylesheets %}
+<!-- Esto es un comentario de prueba para subir a produccion -->
+<style type="text/css">
+    #chartDataTable, #chartDataTable2 {
+      display: none;
+      text-align: center;
+    }
+    #table-sg td, #table-sg th{
+      padding: 2px; /* Mantiene el espacio interior reducido */
+        height: 20px; /* Reduce la altura de las celdas */
+        width: 50px; /* Reduce el ancho de las celdas */
+        font-size: 0.8em; /* Mantiene el tamaño de la fuente reducido */
+    }
+    table {
+
+    width: 60%; /* Ajusta este valor para cambiar el ancho de la tabla */
+    table-layout:auto;
+    }
+
+    th {
+        background-color: #008385;
+        color: #f2f1ef;
+      }
+
+    tr {
+        text-align: center;
+        font-size: 0.9em;
+      }
+
+      .scrollit {
+        overflow-x: auto;
+        white-space: normal;
+    }
+
+    .save{
+        padding-top: 15px;
+        text-align: right;
+        margin-bottom: 10px;
+        margin-top: 10px;
+    }
+
+    .wide-cell{
+        min-width: 120px;
+        text-align: center;
+        align-items: center; /* Centra el contenido verticalmente */
+        padding-top: 20px; /* Ajusta este valor segn necesites para mover el texto hacia abajo */
+        vertical-align: top; /* Alinea el contenido al inicio de la celda */
+    }
+
+    .wide-cell-fl{
+    min-width: 125px;
+    text-align: center;
+    align-items: center; /* Centra verticalmente el contenido dentro de la caja */
+    justify-content: center; /* Centra horizontalmente el contenido dentro de la caja */
+    height: 100%; /* Asegura que el contenedor tenga altura suficiente para el centrado vertical */
+    text-align: center; /* Alinea el texto al centro (útil para textos de múltiples líneas o ajustes adicionales) */
+    color: white; /* Cambia el color del texto a blanco para visibilidad */
+    border: 1px solid #004D4D; /* Borde más oscuro para definir la caja */
+    font-family: Arial, sans-serif; /* Fuente legible */
+    margin-bottom: 100px;
+    }
+
+    .wide-cell-necrosis{
+      min-width: 125px;
+    }
+
+    .wide-cell-exfoliacion{
+      min-width: 125px;
+    }
+
+    .wide-cell-cge{
+      min-width: 125px;
+    }
+
+    .wide-cell-deg{
+      min-width: 125px;
+    }
+
+    .wide-cell-edemalamelar{
+      min-width: 125px;
+    }
+
+    .wide-cell-microalgas{
+      min-width: 125px;
+    }
+
+
+
+    .wide-cell-otrosparasitos{
+      min-width: 125px;
+    }
+
+    .wide-cell-tenacibaculum{
+      min-width: 125px;
+    }
+
+    .wide-cell-otrasbacterias{
+      min-width: 125px;
+    }
+
+    .wide-cell-score{
+      min-width: 140px;
+    }
+
+
+  .radio-option label {
+    margin-left: 5px;
+  }
+
+    .row-flex {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      gap: 20px; /* This creates space between the flex items */
+    }
+    .chart-and-table-container {
+      flex: 1 1 calc(50% - 40px); /* Adjust the 20px if you need more or less space between the items */
+      margin-bottom: 20px; /* Space below each chart and table */
+    }
+    .chart-and-table-container {
+      border: 3px solid rgba(255, 164, 000, 0.4); /* Blue color with 50% opacity */
+      background-color: white;
+      padding: 10px; /* Adds some padding inside the border */
+      box-sizing: border-box; /* Ensures padding and border are included in the total width and height */
+    }
+    .chart-container {
+      width: 100%; /* Full width of the container */
+      max-width: 600px; /* Set a maximum width to prevent it from being too wide */
+      margin: 0 auto; /* Center the chart horizontally */
+      position: relative; /* Required for Chart.js to work properly */
+  }
+
+  canvas {
+    display: block; /* Ensure the canvas is displayed as a block element */
+    width: 100% !important; /* Make the canvas take the full width of the container */
+    height: auto !important; /* Maintain the aspect ratio */
+}
+
+    /* If you want the canvas to be responsive instead of fixed size */
+    .chart-container canvas {
+      width: 100% !important;
+      height: auto !important;
+      max-height: 400px; /* Adjust the max height as needed */
+    }
+
+    .chart-data-table {
+      width: 100%; /* Full width to match the chart */
+      table-layout: fixed; /* This ensures that each column has the same width */
+    }
+
+    .chart-table-header, .chart-table-cell {
+      text-align: center;
+      width: 20%; /* Adjust this percentage based on the number of columns */
+    }
+
+
+</style>
+
+
+
+{% endblock stylesheets %}
+
+{% block content_header %}
+<div class="content-header row">
+    <div class="content-header-left col-md-6 col-12 mb-2">
+        <h3 class="content-header-title mb-0">Consolidado</h3>
+        <div class="row breadcrumbs-top">
+            <div class="breadcrumb-wrapper col-12">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/">INICIO</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="#">CONSOLIDADO</a>
+                    </li>
+                    <li class="breadcrumb-item active">
+                      <a href="#">{{no_caso}}</a>
+                    </li>
+                    <li class="breadcrumb-item active">
+                      <a href="#">{{analysis.exam.name}}</a>
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content_header %}
+
+{% block content %}
+    <form id="dataForm">
+        <div class="container-sm">
+        <div class="container">
+        <h2></h2>
+        </div>
+        </div>
+         <div class="container-sm scrollit">
+                    <table class="table table-striped table" id="table-sg">
+
+                      <table class="table table-striped table-bordered small-table" id="table-organ; text-align: center; align-items: center;">
+                        <tr>
+                          <th rowspan="3" colspan="1" style="text-align: center; vertical-align: middle;">Muestras</th>
+                          <th rowspan="" colspan="8" style="text-align: center; vertical-align: middle;">Score Patológico (0 a 3)</th>
+                          <th rowspan="1" colspan="12" style="text-align: center; vertical-align: middle;">Criterio Auxiliar (ausencia: 0 / presencia = 1)</th>
+                          <th rowspan="3" colspan="1" style="text-align: center; vertical-align: middle;">Score</th>
+                        </tr>
+                        <tr>
+
+                            <th rowspan="" colspan="8">Hallazgos Principales</th>
+                            <th rowspan="1" colspan="2">Tipos de inflamacion</th>
+                            <th rowspan="" colspan="1">Deg.</th>
+                            <th rowspan="" colspan="3">Alteraciones Circulatorias</th>
+                            <th rowspan="" colspan="6">Microorganismos</th>
+                        </tr>
+                        <tr>
+                            <th class="wide-cell" rowspan="1" colspan="1" style="text-align: center; vertical-align: middle;">Hiperplasia <br> Lamelar</th>
+                            <th class="wide-cell-fl" rowspan="1" colspan="1" style="text-align: center; vertical-align: middle;"> Fusión <br> Lamelar </th>
+                            <th class="wide-cell" rowspan="1" colspan="1" style="text-align: center; vertical-align: middle;">Espongiosis</th>
+                            <th class="wide-cell-necrosis" rowspan="1" colspan="1" style="text-align: center; vertical-align: middle;">Necrosis</th>
+                            <th class="wide-cell" rowspan="1" colspan="1" style="text-align: center; vertical-align: middle;">Degeneración <br>Ballonizante</th>
+                            <th class="wide-cell-exfoliacion" rowspan="1" colspan="1" style="text-align: center; vertical-align: middle;">Exfoliación</th>
+                            <th class="wide-cell-anormalidadescelulares" rowspan="1" colspan="1" style="text-align: center; vertical-align: middle;">Anormalidades <br>celulares</th>
+                            <th class="wide-cell-edemalamelar" rowspan="1" colspan="1" style="text-align: center; vertical-align: middle;">Edema <br>Lamelar</th>
+                            <th class="wide-cell" rowspan="1" colspan="1" style="text-align: center; vertical-align: middle;">Inflamación</th>
+                            <th class="wide-cell-cge" rowspan="1" colspan="1" style="text-align: center; vertical-align: middle;">CGE</th>
+                            <th class="wide-cell-deg" rowspan="1" colspan="1" style="text-align: center; vertical-align: middle;">Deg. <br>Hidrópica</th>
+                            <th class="wide-cell" rowspan="1" colspan="1" style="text-align: center; vertical-align: middle;">Congestión</th>
+                            <th class="wide-cell" rowspan="1" colspan="1" style="text-align: center; vertical-align: middle;">Telangiectasia <br>Trombosis</th>
+                            <th class="wide-cell" rowspan="1" colspan="1" style="text-align: center; vertical-align: middle;">Hemorragia</th>
+                            {% if type_of_water == "Dulce" %}
+                              <th class="wide-cell" rowspan="1" colspan="1" style="text-align: center; vertical-align: middle;">Protozoos</th>
+                              <th class="wide-cell" rowspan="1" colspan="1" style="text-align: center; vertical-align: middle;">Hongos</th>
+                            {% else %}
+                              <th class="wide-cell" rowspan="1" colspan="1" style="text-align: center; vertical-align: middle;">
+                                <form class="radio-form">
+                                  <div class="radio-option">
+                                    <input type="radio" id="ameba" name="mar_opcional" value="Ameba" {% if result_name == "Ameba" %}checked{% endif %}>
+                                    <label for="ameba">Ameba</label>
+                                  </div>
+
+                                  <div class="radio-option">
+                                    <input type="radio" id="brookynella" name="mar_opcional" value="Brookynella" {% if result_name == "Brookynella" %}checked{% endif %}>
+                                    <label for="brookynella">Brookynella</label>
+                                  </div>
+
+                                  {% comment %} <div class="radio-option">
+                                    <input type="radio" id="amebas_y_otros_parasitos" name="mar_opcional" value="Amebas y otros parásitos" {% if result_name == "Amebas y otros parásitos" %}checked{% endif %}>
+                                    <label for="amebas_y_otros_parasitos">Amebas y otros<br> parásitos</label>
+                                  </div> {% endcomment %}
+                                </form>
+                                <!-- Asignar nombre del select y los valores de las opciones -->
+                                <!--  <select id="marOpcional" name="mar_opcional" class="form-control select-wide">
+                                  <option value="" {% if not is_selected %}selected{% endif %}>Seleccione una opción</option>
+                                  <option value="Ameba" {% if result_name == "Ameba" %}selected{% endif %}>Ameba</option>
+                                  <option value="Brookynella" {% if result_name == "Brookynella" %}selected{% endif %}>Brookynella</option>
+                                  <option value="Amebas y otros parásitos" {% if result_name == "Amebas y otros parásitos" %}selected{% endif %}>Amebas y otros parásitos</option>
+                                </select>-->
+                              </th>
+                              <th class="wide-cell" rowspan="1" colspan="1" style="text-align: center; vertical-align: middle;">Otros parásitos</th>
+                            {% endif %}
+                            <th class="wide-cell" rowspan="1" colspan="1" style="text-align: center; vertical-align: middle;">Zooplancton</th>
+                            <th class="wide-cell" rowspan="1" colspan="1" style="text-align: center; vertical-align: middle;">Microalgas</th>
+                            {% if type_of_water == "Dulce" %}
+                              <th class="wide-cell" rowspan="1" colspan="1" style="text-align: center; vertical-align: middle;">Flavobacterium</th>
+                            {% else %}
+                            <th class="wide-cell" rowspan="1" colspan="1" style="text-align: center; vertical-align: middle;">Tenacibaculum</th>
+                            {% endif %}
+                            <th class="wide-cell" rowspan="1" colspan="1" style="text-align: center; vertical-align: middle;">Otras <br>Bacterias</th>
+                        </tr>
+                        </thead>
+                        <tbody id="asdasd">
+                            {% for key, value in samples.items %}
+                            <tr>
+                                {% if "promedio_identification_" in key %}
+                                <th data-cage-name="{{value.identification.cage}}" style="position: sticky; left: 0;text-align: center; vertical-align: middle; " >{{value.identification.cage}} X</th>
+                                <td style="background-color: #acbfad;"><input id="{{value.identification.id}}-Hiperplasia lamelar-promedio" class="form-control {{value.identification.id}}-promedio" style="border: 1px solid rgb(215, 99, 99);" style="background-color: #acbfad;" type="number" min="0" value="" readonly></td>
+                                <td style="background-color: #acbfad;"><input id="{{value.identification.id}}-Fusión lamelar-promedio" class="form-control {{value.identification.id}}-promedio" style="border: 1px solid rgb(215, 99, 99);" style="background-color: #ddf1b3;" type="number" min="0" value="0" readonly></td>
+                                <td style="background-color: #acbfad;"><input id="{{value.identification.id}}-Espongeosis-promedio"class="form-control {{value.identification.id}}-promedio" style="border: 1px solid rgb(215, 99, 99);" style="background-color: #acbfad;" type="number" min="0" value="0" readonly></td>
+                                <td style="background-color: #acbfad;"><input id="{{value.identification.id}}-Necrosis-promedio" class="form-control {{value.identification.id}}-promedio" style="border: 1px solid rgb(215, 99, 99);" style="background-color: #acbfad;" type="number" min="0" value="0" readonly></td>
+                                <td style="background-color: #acbfad;"><input id="{{value.identification.id}}-Degeneración Ballonizante-promedio" class="form-control {{value.identification.id}}-promedio" style="border: 1px solid rgb(215, 99, 99);" style="background-color: #acbfad;" type="number" min="0" value="0" readonly></td>
+                                <td style="background-color: #acbfad;"><input id="{{value.identification.id}}-Exfoliación-promedio" class="form-control {{value.identification.id}}-promedio" style="border: 1px solid rgb(215, 99, 99);" style="background-color: #acbfad;" type="number" min="0" value="0" readonly></td>
+                                <td style="background-color: #acbfad;"><input id="{{value.identification.id}}-Anormalidades celulares-promedio" class="form-control {{value.identification.id}}-promedio" style="border: 1px solid rgb(215, 99, 99);" style="background-color: #acbfad;" type="number" min="0" value="0" readonly></td>
+                                <td style="background-color: #acbfad;"><input id="{{value.identification.id}}-Edema lamelar-promedio" class="form-control {{value.identification.id}}-promedio" style="border: 1px solid rgb(215, 99, 99);" style="background-color: #acbfad;" type="number" min="0" value="0" readonly></td>
+                                <td style="background-color: #acbfad;"><input id="{{value.identification.id}}-Inflamación-promedio" class="form-control {{value.identification.id}}-promedio" style="border: 1px solid rgb(215, 99, 99);" style="background-color: #acbfad;" type="number" min="0" value="0" readonly></td>
+                                <td style="background-color: #acbfad;"><input id="{{value.identification.id}}-CGE-promedio" class="form-control {{value.identification.id}}-promedio" style="border: 1px solid rgb(215, 99, 99);" style="background-color: #acbfad;" type="number" min="0" value="0" readonly></td>
+                                <td style="background-color: #acbfad;"><input id="{{value.identification.id}}-Deg. Hidrópica-promedio" class="form-control {{value.identification.id}}-promedio" style="border: 1px solid rgb(215, 99, 99);" style="background-color: #acbfad;" type="number" min="0" value="0" readonly></td>
+                                <td style="background-color: #acbfad;"><input id="{{value.identification.id}}-Congestión-promedio" class="form-control {{value.identification.id}}-promedio" style="border: 1px solid rgb(215, 99, 99);" style="background-color: #acbfad;" type="number" min="0" value="0" readonly></td>
+                                <td style="background-color: #acbfad;"><input id="{{value.identification.id}}-Telangiectasia Trombosis-promedio" class="form-control {{value.identification.id}}-promedio" style="border: 1px solid rgb(215, 99, 99);" style="background-color: #acbfad;" type="number" min="0" value="0" readonly></td>
+                                <td style="background-color: #acbfad;"><input id="{{value.identification.id}}-Hemorragia-promedio" class="form-control {{value.identification.id}}-promedio" style="border: 1px solid rgb(215, 99, 99);" style="background-color: #acbfad;" type="number" min="0" value="0" readonly></td>
+                                <td style="background-color: #acbfad;"><input id="{% if type_of_water == 'Dulce' %}{{value.identification.id}}-Protozoos-promedio{% else %}{{value.identification.id}}-optionmar-promedio{% endif %}" class="form-control {{value.identification.id}}-promedio" style="border: 1px solid rgb(215, 99, 99);"style="background-color: #acbfad;" type="number" min="0" value="0" readonly></td>
+                                <td style="background-color: #acbfad;"><input id="{% if type_of_water == 'Dulce' %}{{value.identification.id}}-Hongos-promedio{% else %}{{value.identification.id}}-Otros Parásitos-promedio{% endif %}" class="form-control {{value.identification.id}}-promedio" style="border: 1px solid rgb(215, 99, 99);"style="background-color: #acbfad;" type="number" min="0" value="0" readonly></td>
+                                <td style="background-color: #acbfad;"><input id="{{value.identification.id}}-Zooplancton-promedio" class="form-control {{value.identification.id}}-promedio" style="border: 1px solid rgb(215, 99, 99);" style="background-color: #acbfad;" type="number" min="0" value="0" readonly></td>
+                                <td style="background-color: #acbfad;"><input id="{{value.identification.id}}-Microalgas-promedio" class="form-control {{value.identification.id}}-promedio" style="border: 1px solid rgb(215, 99, 99);" style="background-color: #acbfad;" type="number" min="0" value="0" readonly></td>
+                                <td style="background-color: #acbfad;"><input id="{% if type_of_water == 'Dulce' %}{{value.identification.id}}-Flavobacterium-promedio{% else %}{{value.identification.id}}-Tenacibaculum-promedio{% endif %}" class="form-control {{value.identification.id}}-promedio" style="border: 1px solid rgb(215, 99, 99);"style="background-color: #acbfad;" type="number" min="0" value="0" readonly></td>
+                                <td style="background-color: #acbfad;"><input id="{{value.identification.id}}-Otras Bacterias-promedio" class="form-control {{value.identification.id}}-promedio" style="border: 1px solid rgb(215, 99, 99);" style="background-color: #acbfad;" type="number" min="0" value="0" readonly></td>
+                                <td style="background-color: #acbfad;" class="wide-cell"><input id="{{value.identification.id}}-Score-prom" class="form-control {{value.identification.id}}-score_prom" style="border: 1px solid rgb(215, 99, 99); text-align: center;"  style="background-color: #B0C4DE" type="number"   value="0" readonly></td>
+                                {% elif "promedio_center" in key %}
+                                <th data-center="{{ value.center }}" style="position: sticky; left: 0; text-align: center; vertical-align: middle;">{{ value.center }} X</th>
+                                <td style="background-color: #cecdcb"><input class="form-control {{value.center}}-Hiperplasia lamelar" style="background-color: #cecdcb;" type="number" min="0" value="0" data-center="{{value.center}}" readonly></td>
+                                <td style="background-color: #cecdcb"><input class="form-control {{value.center}}-Fusión lamelar" style="background-color: #cecdcb;" type="number" min="0" value="0" data-center="{{value.center}}" readonly></td>
+                                <td style="background-color: #cecdcb"><input class="form-control {{value.center}}-Espongeosis" style="background-color: #cecdcb;" type="number" min="0" value="0" data-center="{{value.center}}" readonly></td>
+                                <td style="background-color: #cecdcb"><input class="form-control {{value.center}}-Necrosis" style="background-color: #cecdcb;" type="number" min="0" value="0" data-center="{{value.center}}" readonly></td>
+                                <td style="background-color: #cecdcb"><input class="form-control {{value.center}}-Degeneración Ballonizante" style="background-color: #cecdcb;" type="number" min="0" value="0" data-center="{{value.center}}" readonly></td>
+                                <td style="background-color: #cecdcb"><input class="form-control {{value.center}}-Exfoliación" style="background-color: #cecdcb;" type="number" min="0" value="0" data-center="{{value.center}}" readonly></td>
+                                <td style="background-color: #cecdcb"><input class="form-control {{value.center}}-Anormalidades celulares" style="background-color: #cecdcb;" type="number" min="0" value="0" data-center="{{value.center}}" readonly></td>
+                                <td style="background-color: #cecdcb"><input class="form-control {{value.center}}-Edema lamelar" style="background-color: #cecdcb;" type="number" min="0" value="0" data-center="{{value.center}}" readonly></td>
+                                <td style="background-color: #cecdcb"><input class="form-control {{value.center}}-Inflamación" style="background-color: #cecdcb;" type="number" min="0" value="0" data-center="{{value.center}}" readonly></td>
+                                <td style="background-color: #cecdcb"><input class="form-control {{value.center}}-CGE" style="background-color: #cecdcb;" type="number" min="0" value="0" data-center="{{value.center}}" readonly></td>
+                                <td style="background-color: #cecdcb"><input class="form-control {{value.center}}-Deg. Hidrópica" style="background-color: #cecdcb;" type="number" min="0" value="0" data-center="{{value.center}}" readonly></td>
+                                <td style="background-color: #cecdcb"><input class="form-control {{value.center}}-Congestión" style="background-color: #cecdcb;" type="number" min="0" value="0" data-center="{{value.center}}" readonly></td>
+                                <td style="background-color: #cecdcb"><input class="form-control {{value.center}}-Telangiectasia Trombosis" style="background-color: #cecdcb;" type="number" min="0" value="0" data-center="{{value.center}}" readonly></td>
+                                <td style="background-color: #cecdcb"><input class="form-control {{value.center}}-Hemorragia" style="background-color: #cecdcb;" type="number" min="0" value="0" data-center="{{value.center}}" readonly></td>
+                                <td style="background-color: #cecdcb"><input class="form-control {% if type_of_water == 'Dulce' %}{{value.center}}-Protozoos{% else %}{{value.center}}-optionmar{% endif %}" style="background-color: #cecdcb;" type="number" min="0" value="0" data-center="{{value.center}}" readonly></td>
+                                <td style="background-color: #cecdcb"><input class="form-control {% if type_of_water == 'Dulce' %}{{value.center}}-Hongos{% else %}{{value.center}}-Otros Parásitos{% endif %}" style="background-color: #cecdcb;" type="number" min="0" value="0" data-center="{{value.center}}" readonly></td>
+                                <td style="background-color: #cecdcb"><input class="form-control {{value.center}}-Zooplancton" style="background-color: #cecdcb;" type="number" min="0" value="0" data-center="{{value.center}}" readonly></td>
+                                <td style="background-color: #cecdcb"><input class="form-control {{value.center}}-Microalgas" style="background-color: #cecdcb;" type="number" min="0" value="0" data-center="{{value.center}}" readonly></td>
+                                <td style="background-color: #cecdcb"><input class="form-control {% if type_of_water == 'Dulce' %}{{value.center}}-Flavobacterium{% else %}{{value.center}}-Tenacibaculum{% endif %}" style="background-color: #cecdcb;" type="number" min="0" value="0" data-center="{{value.center}}" readonly></td>
+                                <td style="background-color: #cecdcb"><input class="form-control {{value.center}}-Otras Bacterias" style="background-color: #cecdcb;" type="number" min="0" value="0" data-center="{{value.center}}" readonly></td>
+                                <td style="background-color: #cecdcb"class="wide-cell"><input id="center-averages-sum" class="form-control"  style="background-color: #cecdcb; border: 1px solid rgb(215, 99, 99); text-align: center;" type="number" value="0" readonly></td>
+                                {% elif "porcentaje" in key %}
+                                <th style="position: sticky; left: 0; text-align: center; vertical-align: middle;">{{value.identification.cage}} Preval.<br>(%)</th>
+                                <td style="background-color: #f2f1ef"><input class="form-control Hiperplasia lamelar-porcentaje" style="background-color: #f2f1ef" type="text" value="0%" readonly></td>
+                                <td style="background-color: #f2f1ef"><input class="form-control Fusión lamelar-porcentaje" style="background-color: #f2f1ef" type="text" value="0%" readonly></td>
+                                <td style="background-color: #f2f1ef"><input class="form-control Espongeosis-porcentaje" style="background-color: #f2f1ef" type="text" value="0%" readonly></td>
+                                <td style="background-color: #f2f1ef"><input class="form-control Necrosis-porcentaje" style="background-color: #f2f1ef" type="text" value="0%" readonly></td>
+                                <td style="background-color: #f2f1ef"><input class="form-control Degeneración Ballonizante-porcentaje" style="background-color: #f2f1ef" type="text" value="0%" readonly></td>
+                                <td style="background-color: #f2f1ef"><input class="form-control Exfoliación-porcentaje" style="background-color: #f2f1ef" type="text" value="0%" readonly></td>
+                                <td style="background-color: #f2f1ef"><input class="form-control Anormalidades celulares-porcentaje" style="background-color: #f2f1ef" type="text" value="0%" readonly></td>
+                                <td style="background-color: #f2f1ef"><input class="form-control Edema lamelar-porcentaje" style="background-color: #f2f1ef" type="text" value="0%" readonly></td>
+                                <td style="background-color: #f2f1ef"><input class="form-control Inflamación-porcentaje" style="background-color: #f2f1ef" type="text" value="0%" readonly></td>
+                                <td style="background-color: #f2f1ef"><input class="form-control CGE-porcentaje" style="background-color: #f2f1ef" type="text" value="0%" readonly></td>
+                                <td style="background-color: #f2f1ef"><input class="form-control Deg. Hidrópica-porcentaje" style="background-color: #f2f1ef" type="text" value="0%" readonly></td>
+                                <td style="background-color: #f2f1ef"><input class="form-control Congestión-porcentaje" style="background-color: #f2f1ef" type="text" value="0%" readonly></td>
+                                <td style="background-color: #f2f1ef"><input class="form-control Telangiectasia Trombosis-porcentaje" style="background-color: #f2f1ef" type="text" value="0%" readonly></td>
+                                <td style="background-color: #f2f1ef"><input class="form-control Hemorragia-porcentaje" style="background-color: #f2f1ef" type="text" value="0%" readonly></td>
+                                <td style="background-color: #f2f1ef"><input class="form-control {% if type_of_water == 'Dulce' %}Protozoos-porcentaje{% else %}optionmar-porcentaje{% endif %}" style="background-color: #f2f1ef" type="text" value="0%" readonly></td>
+                                <td style="background-color: #f2f1ef"><input class="form-control {% if type_of_water == 'Dulce' %}Hongos-porcentaje{% else %}Otros Parásitos-porcentaje{% endif %}" style="background-color: #f2f1ef" type="text" value="0%" readonly></td>
+                                <td style="background-color: #f2f1ef"><input class="form-control Zooplancton-porcentaje" style="background-color: #f2f1ef" type="text" value="0%" readonly></td>
+                                <td style="background-color: #f2f1ef"><input class="form-control Microalgas-porcentaje" style="background-color: #f2f1ef" type="text" value="0%" readonly></td>
+                                <td style="background-color: #f2f1ef"><input class="form-control {% if type_of_water == 'Dulce' %}Flavobacterium-porcentaje{% else %}Tenacibaculum-porcentaje{% endif %}" style="background-color: #f2f1ef" type="text" value="0%" readonly></td>
+                                <td style="background-color: #f2f1ef"><input class="form-control Otras Bacterias-porcentaje" style="background-color: #f2f1ef" type="text" value="0%" readonly></td>
+                                <td style="background-color: #f2f1ef; text-align: center; vertical-align: middle;"><input class="form-control" style="background-color: #f2f1ef; text-align: center;" type="text" value="-" readonly disabled></td>
+                                {% else %}
+                                <th style="position: sticky; left: 0;text-align: center; vertical-align: middle;">{{value.identification.cage}} ({{value.index}})</th>
+                                <td style="background-color: #e0c093"><input id="{{value.id}}-Hiperplasia lamelar" class="form-control {{value.identification.id}}-Hiperplasia lamelar recalculate-average" style="background-color: #e0c093" type="number" min="0" max="3" value="0" name="{{value.id}}-Hiperplasia lamelar"></td>
+                                <td style="background-color: #e0c093"><input id="{{value.id}}-Fusión lamelar"class="form-control {{value.identification.id}}-Fusión lamelar recalculate-average" style="background-color: #e0c093" type="number" min="0" max="3" value="0" name="{{value.id}}-Fusión lamelar"></td>
+                                <td style="background-color: #dfcfb9"><input id="{{value.id}}-Espongeosis" class="form-control {{value.identification.id}}-Espongeosis recalculate-average" style="background-color: #dfcfb9" type="number" min="0" max="3" value="0" name="{{value.id}}-Espongeosis"></td>
+                                <td style="background-color: #dfcfb9"><input id="{{value.id}}-Necrosis" class="form-control {{value.identification.id}}-Necrosis recalculate-average" style="background-color: #dfcfb9" type="number" min="0" max="3" value="0" name="{{value.id}}-Necrosis"></td>
+                                <td style="background-color: #dfcfb9"><input id="{{value.id}}-Degeneración Ballonizante" class="form-control {{value.identification.id}}-Degeneración Ballonizante recalculate-average" style="background-color: #dfcfb9" type="number" min="0" max="3" value="0" name="{{value.id}}-Degeneración Ballonizante"></td>
+                                <td style="background-color: #dfcfb9"><input id="{{value.id}}-Exfoliación"class="form-control {{value.identification.id}}-Exfoliación recalculate-average" style="background-color: #dfcfb9" type="number" min="0" max="3" value="0" name="{{value.id}}-Exfoliación"></td>
+                                <td style="background-color: #e0c093"><input id="{{value.id}}-Anormalidades celulares"class="form-control {{value.identification.id}}-Anormalidades celulares recalculate-average" style="background-color: #e0c093" type="number" min="0" max="3" value="0" name="{{value.id}}-Anormalidades celulares" readonly></td>
+                                <td style="background-color: #e0c093"><input id="{{value.id}}-Edema lamelar" class="form-control {{value.identification.id}}-Edema lamelar recalculate-average" style="background-color: #e0c093" type="number" min="0" max="3" value="0" name="{{value.id}}-Edema lamelar"></td>
+                                <td style="background-color: #dfda94"><input id="{{value.id}}-Inflamación"class="form-control {{value.identification.id}}-Inflamación recalculate-average" style="background-color: #dfda94" type="number" min="0" max="1" value="0" name="{{value.id}}-Inflamación"></td>
+                                <td style="background-color: #dfda94"><input id="{{value.id}}-CGE" class="form-control {{value.identification.id}}-CGE recalculate-average" style="background-color: #dfda94" type="number" min="0" max="1" value="0" name="{{value.id}}-CGE"></td>
+                                <td style="background-color: #a4c6e1"><input id="{{value.id}}-Deg. Hidrópica" class="form-control {{value.identification.id}}-Deg. Hidrópica recalculate-average" style="background-color: #a4c6e1" type="number" min="0" max="1" value="0" name="{{value.id}}-Deg. Hidrópica"></td>
+                                <td style="background-color: #cecdcb"><input id="{{value.id}}-Congestión" class="form-control {{value.identification.id}}-Congestión recalculate-average" style="background-color: #cecdcb" type="number" min="0" max="1" value="0" name="{{value.id}}-Congestión"></td>
+                                <td style="background-color: #cecdcb"><input id="{{value.id}}-Telangiectasia Trombosis" class="form-control {{value.identification.id}}-Telangiectasia Trombosis recalculate-average" style="background-color: #cecdcb" type="number" min="0" max="1" value="0" name="{{value.id}}-Telangiectasia Trombosis"></td>
+                                <td style="background-color: #cecdcb"><input id="{{value.id}}-Hemorragia" class="form-control {{value.identification.id}}-Hemorragia recalculate-average" style="background-color: #cecdcb" type="number" min="0" max="1" value="0" name="{{value.id}}-Hemorragia"></td>
+                                <td style="background-color: #e4e3e1"><input id="{% if type_of_water == 'Dulce' %}{{value.id}}-Protozoos{% else %}{{value.id}}-optionmar{% endif %}" class="form-control {% if type_of_water == 'Dulce' %}{{value.identification.id}}-Protozoos{% else %}{{value.identification.id}}-optionmar{% endif %} recalculate-average" style="background-color: #e4e3e1;" type="number" min="0" max="1" value="0" name="{% if type_of_water == 'Dulce' %}{{value.id}}-Protozoos{% else %}{{value.id}}-optionmar{% endif %}"></td>
+                                <td style="background-color: #e4e3e1"><input id="{% if type_of_water == 'Dulce' %}{{value.id}}-Hongos{% else %}{{value.id}}-Otros Parásitos{% endif %}" class="form-control {% if type_of_water == 'Dulce' %}{{value.identification.id}}-Hongos{% else %}{{value.identification.id}}-Otros Parásitos{% endif %} recalculate-average" style="background-color: #e4e3e1;" type="number" min="0" max="1" value="0" name="{% if type_of_water == 'Dulce' %}{{value.id}}-Hongos{% else %}{{value.id}}-Otros Parásitos{% endif %}"></td>
+                                <td style="background-color: #e4e3e1"><input id="{{value.id}}-Zooplancton" class="form-control {{value.identification.id}}-Zooplancton recalculate-average" style="background-color: #e4e3e1;" type="number" min="0" max="1" value="0" name="{{value.id}}-Zooplancton"></td>
+                                <td style="background-color: #e4e3e1"><input id="{{value.id}}-Microalgas" class="form-control {{value.identification.id}}-Microalgas recalculate-average" style="background-color: #e4e3e1;" type="number" min="0" max="1" value="0" name="{{value.id}}-Microalgas"></td>
+                                <td style="background-color: #e4e3e1"><input id="{% if type_of_water == 'Dulce' %}{{value.id}}-Flavobacterium{% else %}{{value.id}}-Tenacibaculum{% endif %}" class="form-control {% if type_of_water == 'Dulce' %}{{value.identification.id}}-Flavobacterium{% else %}{{value.identification.id}}-Tenacibaculum{% endif %} recalculate-average" style="background-color: #e4e3e1;" type="number" min="0" max="1" value="0" name="{% if type_of_water == 'Dulce' %}{{value.id}}-Flavobacterium{% else %}{{value.id}}-Tenacibaculum{% endif %}"></td>
+                                <td style="background-color: #e4e3e1"><input id="{{value.id}}-Otras Bacterias" class="form-control {{value.identification.id}}-Otras Bacterias recalculate-average" style="background-color: #e4e3e1;" type="number" min="0" max="1" value="0" name="{{value.id}}-Otras Bacterias"></td>
+
+                                <td style="background-color: #B0C4DE" class="wide-cell-score"><input id="{{value.id}}-Score-prom-cage" class="form-control {{value.identification.id}}-score_prom_cage"  style="background-color: #f3f2f0; text-align: center;" type="number" value="0" readonly></td>
+                            {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            <div class="save">
+                <button id="edit_report" class="btn btn-primary" type="button" data-dismiss="modal" data-toggle="modal" data-target="#report_edit">Generar informe</button>
+                <button id="export_consolidado" class="btn btn-primary" type="button">Exportar</button>
+                <button class="btn btn-primary" type="submit" >Guardar</button>
+            </div>
+    </form>
+
+            <div class="modal fade" id="report_options" aria-labelledby="exampleModalCenterTitle">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalCenterTitle">Seleccione una opcion</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    <div class="modal-body">
+                        <button id="generate_report" onclick="" class="btn btn-primary" type="button">Generar informe</button>
+                        <button id="edit_report" class="btn btn-primary" type="button" data-dismiss="modal" data-toggle="modal" data-target="#report_edit">Editar informe</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <form class="modal fade" id="report_edit" name="report_edit" aria-labelledby="exampleModalCenterTitle" enctype="multipart/form-data">
+                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Informe final</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row pb-1">
+                                <div class="form-group col-4">
+                                    <label>Fecha de informe: </label>
+                                    <label style="padding-left:180px">Correlativo: </label>
+                                    <div class='input-group date' id='date-'>
+                                      <input id="report_date" type='text' class="form-control" name='report_date'/>
+                                      <div class="input-group-append">
+                                        <span class="input-group-text">
+                                          <span class="fa fa-calendar"></span>
+                                        </span>
+                                      </div>
+                                      <div class="col-3 pl-1">
+                                        <input class="form-control" type="number" name="correlative" min=1 value=1 id="report_correlative">
+                                    </div>
+                                    </div>
+
+                                    <div class="pt-1">
+                                        <label>Metodología: </label>
+                                        <input id="reportMethodology" class="form-control" readonly value="" name="methodology" onclick="openMethodologyModal()" />
+                                    </div>
+                                    <nav class="pt-1">
+                                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                          <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Anamnesis</a>
+                                          <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Diagnóstico etiológico</a>
+                                        </div>
+                                      </nav>
+                                      <div class="tab-content" id="nav-tabContent">
+                                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                                            <div class="pt-1">
+                                                <textarea class="form-control" id="anamnesis" rows="3" name="anamnesis"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                                            <div class="pt-1">
+                                                <textarea class="form-control" id="etiological_diagnostic" rows="3" name="etiological_diagnostic"></textarea>
+                                            </div>
+                                        </div>
+                                      </div>
+                                </div>
+                                <div class="col">
+                                    <label>Comentarios: </label><br>
+                                    <textarea class="form-control" id="comment" rows="16" name="comment"></textarea>
+                                </div>
+                            </div>
+                            <div id="images" class="reportSortable">
+                            </div>
+
+                            <div class="form-group">
+                                <button id="addImage" type="button" class="btn btn-outline-primary btn-lg btn-block">Añadir una imagen</button>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="modal fade text-left" id="methodology_modal" role="dialog" data-keyboard="false">
+                <div class="modal-dialog" role="document" style="min-width:50% !important;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title" id="title"> Lista de Metodologías <span></span></h3>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" style="font-size:12px !important;">
+                            <div class="col-md-12" id="methodology_table_div">
+                            </div>
+                            <hr>
+                            <div class="form-group">
+                                <button id="addMethodology" type="button" class="btn btn-outline-primary btn-lg btn-block" onclick="addMethodology()">Añadir una metodología</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </form>
+
+    <script>
+
+      var type_of_water = "{{type_of_water}}";
+      
+
+      $(document).ready(function () {
+        correlative = document.getElementById("report_correlative");
+          correlative.addEventListener('change', function () {
+              if (correlative.value == undefined || correlative.value <= 0) {
+                  correlative.value = 1;
+              }
+          });
+
+          select=$('#select-diagnostic').select2({'width':'100%'});
+          $('#comment').summernote({
+              height: 307,
+              width: 750,
+              lang: 'es-ES',
+              toolbar: [
+              ['style', ['bold', 'italic', 'underline', 'clear']],
+              ['font', ['strikethrough', 'superscript', 'subscript']],
+              ['color', ['color']],
+            ]
+            });
+
+          $('#anamnesis').summernote({
+              height: 120,
+              lang: 'es-ES',
+              toolbar: [
+              ['style', ['bold', 'italic', 'underline', 'clear']],
+              ['font', ['strikethrough', 'superscript', 'subscript']],
+              ['color', ['color']],
+            ]
+          });
+
+          $('#etiological_diagnostic').summernote({
+              height: 120,
+              lang: 'es-ES',
+              toolbar: [
+              ['style', ['bold', 'italic', 'underline', 'clear']],
+              ['font', ['strikethrough', 'superscript', 'subscript']],
+              ['color', ['color']],
+            ]
+          });
+          $("#report_date")
+          .datetimepicker({
+              locale: "es",
+              keepOpen: false,
+              format: "DD/MM/YYYY",
+          });
+
+          $(document).on('hidden.bs.modal', '.modal', function () {
+              $('.modal:visible').length && $(document.body).addClass('modal-open');
+          });
+      });
+      </script>
+<div class="row-flex">
+  <div class="chart-and-table-container">
+    <div class="chart-container">
+      <canvas id="myChart"></canvas>
+    </div>
+  </div>
+
+  <div class="chart-and-table-container">
+    <div class="chart-container">
+      <canvas id="myMixedChart"></canvas>
+    </div>
+    <div id="chartDataTable" class="data-table-container" ></div>
+  </div>
+</div>
+
+<div class="row-flex">
+  <div class="chart-and-table-container">
+    <div class="chart-container">
+      <canvas id="myMixedChart2"></canvas>
+    </div>
+    <div id="chartDataTable2" class="data-table-container" ></div>
+  </div>
+
+  <div class="chart-and-table-container">
+    <div class="chart-container">
+      <canvas id="myBoxChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="row-flex">
+
+  <div class="chart-and-table-container">
+    <div class="chart-container">
+      <canvas id="scoreDistributionChart"></canvas>
+    </div>
+  </div>
+</div>
+
+</div>
+
+{% endblock content %}
+
+{% block scripts %}
+
+
+<!-- include summernote css/js -->
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/lang/summernote-es-ES.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Include PlotBox -->
+<script src="https://cdn.jsdelivr.net/npm/@sgratzl/chartjs-chart-boxplot@4.2.8/build/index.umd.min.js"></script>
+
+
+
+<!-- Include the datalabels plugin -->
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0 "></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+
+<!-- Register the datalabels plugin -->
+<script>
+</script>
+
+<script type="text/javascript" src="{% static '/app/consolidados/consolidados_sg.js' %}" defer></script>
+
+
+{% autoescape off %}
+
+<script>
+
+
+document.addEventListener('DOMContentLoaded', (event) => {
+
+
+  var waterType = "{{type_of_water}}"
+  // Select all inputs that should trigger the recalculation
+  const inputsToRecalculate = document.querySelectorAll('.recalculate-average');
+
+  // Attach an 'input' event listener to each input for real-time updates
+
+  var sampleexamresults={{sampleexamresults}};
+  var identifications = {{identifications | safe}};
+
+  inputsToRecalculate.forEach(input => {    //tiempo real
+    input.addEventListener('input', () => {
+      // Assuming these functions are defined to recalculate and update the UI accordingly
+      calculateIdentificationAverages(identifications);
+      //calculateAveragesAC(identifications);
+      calculateCenterNameAverages(identifications);
+      calculatePromedioCellsPercentage();
+      calculateScoreRowSums(identifications);
+      promedio_cages(sampleexamresults);
+      extractDataForMixedChart(identifications);
+      extractDataForMixedChart2(identifications, waterType);
+      //extractAndPrepareBoxplotDataForScores(identifications);
+      calculateBoxplotData(identifications);
+      createScoreDistributionChart(sampleexamresults)
+
+    });
+  });
+
+  var sampleexamresults={{sampleexamresults}};
+  var result_name = "{{result_name}}";
+  var identifications = {{identifications | safe}};
+
+
+  if (sampleexamresults.length > 0) {
+      load(sampleexamresults, result_name, waterType); // llena las celdas 'individuales', numeros fijos. No los promedios.
+      calculateIdentificationAverages(identifications); //saca los promedios de los numeros fijos (las celdas verdes)
+      calculateCenterNameAverages(identifications); // promedio centros (promedio de los 3 verdes)
+      calculatePromedioCellsPercentage(identifications); // porcentaje
+      calculateScoreRowSums(identifications); //calcula el score de las cells verdes
+      promedio_cages(); //calcula los score (cells morado claro)
+      extractDataForMixedChart(identifications);
+      extractDataForMixedChart2(identifications, waterType);
+      calculateBoxplotData(identifications);
+      createScoreDistributionChart(sampleexamresults)
+  }
+});
+
+  document.querySelectorAll('.recalculate-average').forEach(input => {
+      input.addEventListener('keydown', function(event) {
+          // Permitir solo las flechas del teclado
+          if (event.key === 'ArrowUp' || event.key === 'ArrowDown' ) {
+              input.removeAttribute('readonly');
+          } else {
+              event.preventDefault();
+          }
+      });
+
+      input.addEventListener('blur', function() {
+          input.setAttribute('readonly', true);
+      });
+  });
+
+  document.addEventListener('DOMContentLoaded', (event) => {
+    const inputs = document.querySelectorAll('input[type="number"]');
+  
+    inputs.forEach(input => {
+      input.addEventListener('change', (event) => {
+        const value = parseInt(event.target.value);
+      });
+    });
+  });
+  
+</script>
+{% endautoescape %}
+{% endblock scripts%}
+

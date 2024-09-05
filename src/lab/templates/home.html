@@ -1,0 +1,135 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block content %}
+<!-- MAIN -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <header class="card-header">
+                <h1 class="card-title">DASHBOARD</h1>
+            </header>
+            <main class="card-body">
+                <section class="row">
+                    <div class="col-md-4">
+                        Accesos Directos
+                        <div class="accordion" id="accordionExample">
+                            <div class="card">
+                                <div class="card-header" id="headingOne">
+                                    <h2 class="mb-0">
+                                        <button
+                                            class="btn btn-link btn-block text-left"
+                                            type="button"
+                                            data-toggle="collapse"
+                                            data-target="#collapseOne"
+                                            aria-expanded="true"
+                                            aria-controls="collapseOne"
+                                        >
+                                            Cassettes ({{ cassettes_workload }})
+                                        </button>
+                                    </h2>
+                                </div>
+
+                                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                    <div class="card-body nav flex-column">
+                                        <a class="nav-link" href="{% url 'lab:cassette_build' %}">
+                                            Armado de Cassettes ({{ cassettes_to_build }})
+                                        </a>
+                                        <a class="nav-link" href="{% url 'lab:cassette_process' %}">
+                                            Procesador de Tejidos ({{ cassettes_to_process }})
+                                        </a>
+                                        <a class="nav-link" href="{% url 'lab:cassette_difference' %}">
+                                            Diferencias de Cassettes ({{ cassettes_differences }})
+                                        </a>
+                                        <a class="nav-link" href="{% url 'lab:cassette_index' %}">
+                                            Indice de Cassettes
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header" id="headingTwo">
+                                    <h2 class="mb-0">
+                                        <button
+                                            class="btn btn-link btn-block text-left collapsed"
+                                            type="button"
+                                            data-toggle="collapse"
+                                            data-target="#collapseTwo"
+                                            aria-expanded="false"
+                                            aria-controls="collapseTwo"
+                                        >
+                                            Slides ({{ slides_to_build }})
+                                        </button>
+                                    </h2>
+                                </div>
+                                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                                    <div class="card-body nav flex-column">
+                                        <a class="nav-link" href="{% url 'lab:slide_build' %}">
+                                            Armado de Slides ({{ slides_to_build }})
+                                        </a>
+                                        <a class="nav-link" href="{% url 'lab:slide_index' %}">
+                                            Indice de Slides
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="container" style="width: 100%; height:30rem;"></div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+</div>
+
+<!-- END MAIN -->
+
+{% endblock content %}
+{% block scripts %}
+<script src="https://code.iconify.design/1/1.0.7/iconify.min.js" defer></script>
+<script type="text/javascript" defer>
+ $(document).ready(() => {
+     const cassette_count = parseInt($("#btnCassette").val());
+     const slide_count = parseInt($("#btnSlide").val());
+
+     let chart = echarts.init(document.getElementById("container"))
+
+     const options = {
+         title: {
+             text: "Carga de trabajo"
+         },
+
+         tooltip: {
+             trigger: "item",
+             pointFormat: '{series.name}: <b>{point.y} ({point.percentage:.1f}%)</b>'
+         },
+
+         series: [{
+             name: "Lab",
+             type: "pie",
+             radius: "50%",
+             data: [
+                 { name: 'Cassettes por Armar', value: "{{ cassettes_to_build }}" },
+                 { name: 'Cassettes por Procesar', value: "{{ cassettes_to_process }}" },
+                 { name: 'Slides por Liberar', value: "{{ slides_to_build }}" },
+             ],
+             emphasis: {
+                 itemStyle: {
+                     shadowBlur: 10,
+                     shadowOffsetX: 0,
+                     shadoColor: "rgba(0,0,0,0.5)"
+                 }
+             }
+         }],
+     };
+
+     chart.setOption(options)
+
+     /* END VARIABLES */
+
+ });
+</script>
+
+{% endblock scripts %}

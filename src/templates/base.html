@@ -1,0 +1,1339 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-textdirection="ltr" class="loading">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta name="description" content="Análisis Histologicos Vehice">
+    <meta name="keywords" content="">
+    <meta name="author" content="PIXINVENT">
+    <title>Vehice</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/images/favicon.png' %}">
+    <link
+        href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i%7COpen+Sans:300,300i,400,400i,600,600i,700,700i"
+        rel="stylesheet">
+    <!-- BEGIN VENDOR CSS-->
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/vendors.css' %}">
+    <!-- END VENDOR CSS-->
+    <!-- BEGIN STACK CSS-->
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/app.css' %}">
+    <!-- END STACK CSS-->
+    <!-- BEGIN Page Level CSS-->
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/core/menu/menu-types/vertical-menu.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/vendors/css/tables/datatable/datatables.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/plugins/forms/wizard.min.css' %}">
+    <link rel="stylesheet" type="text/css"
+        href="{% static 'assets/vendors/css/pickers/datetime/bootstrap-datetimepicker.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/vendors/css/forms/selects/select2.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/vendors/css/extensions/toastr.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/plugins/extensions/toastr.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/vendors/css/forms/toggle/switchery.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/vendors/css/extensions/sweetalert.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/vendors/css/file-uploaders/dropzone.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/plugins/file-uploaders/dropzone.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/vendors/css/summernote/summernote-bs4.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/semantic.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/plugins/tagsinput/tagsinput.css' %}">
+    <link rel="stylesheet" type="text/css"
+        href="{% static 'assets/vendors/css/forms/listbox/bootstrap-duallistbox.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/plugins/forms/dual-listbox.css'%}">
+    {% comment %}
+    <link type="text/css" href="{% static 'assets/css/nv.d3.min.css' %}" rel="stylesheet"> {% endcomment %}
+
+    <!-- END Page Level CSS-->
+    <!-- BEGIN Custom CSS-->
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/style.css' %}">
+    <!-- END Custom CSS-->
+    <style>
+        .dropdown-content-avatar {
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            min-width: 160px;
+            overflow: auto;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content-avatar a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown a:hover {
+            background-color: #ddd;
+        }
+
+        .show {
+            display: block;
+        }
+
+        #identifications_wrapper,
+        #workflow_form-p-0 {
+            padding: 0 !important;
+        }
+
+        .table-unit {
+            margin-bottom: 40px;
+        }
+
+        .details-control {
+            padding: 4px !important;
+            vertical-align: middle !important;
+        }
+
+        .form-control-table {
+            padding-top: 5px;
+            padding-bottom: 5px;
+            width: 100%;
+            font-size: 13px !important;
+        }
+
+        .correlative-text {
+            vertical-align: middle !important;
+        }
+
+        .checkbox-1x {
+            transform: scale(1.5);
+            -webkit-transform: scale(1.5);
+        }
+
+        .checkbox-2x {
+            transform: scale(2);
+            -webkit-transform: scale(2);
+        }
+
+        .table-ident th,
+        .table-ident td {
+            padding: 1rem !important;
+            /* margin: 0.5rem !important; */
+        }
+
+        .steps {
+            pointer-events: none;
+        }
+
+        .form-section {
+            color: #404E67;
+            line-height: 3rem;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #404E67;
+        }
+
+        .multiple-action>.swal-footer {
+            display: grid;
+            text-align: center;
+        }
+
+        span>.info {
+            color: blue !important;
+        }
+
+        .bootstrap-duallistbox-container label {
+            font-size: 18px !important;
+            color: black !important;
+        }
+    </style>
+    {% block stylesheets %}{% endblock stylesheets %}
+</head>
+
+<body data-open="click" data-menu="vertical-menu" data-col="2-columns"
+    class="vertical-layout vertical-menu 2-columns menu-expanded fixed-navbar {% block bodyclass %}{% endblock bodyclass %}">
+    {% block body %}{% endblock body %}
+
+    <!-- BEGIN VENDOR JS-->
+    <script src="{% static 'assets/vendors/js/vendors.min.js' %}" type="text/javascript"></script>
+    <!-- BEGIN VENDOR JS-->
+    <!-- BEGIN PAGE VENDOR JS-->
+    <script src="{% static 'assets/js/core/libraries/jquery.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/js/core/libraries/lodash.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/js/core/libraries/moment.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/vendors/js/ui/popper.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/js/core/libraries/bootstrap.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/vendors/js/ui/perfect-scrollbar.jquery.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/vendors/js/extensions/jquery.steps.js' %}" type="text/javascript"></script>
+    <!-- <script src="{% static 'assets/vendors/js/forms/validation/jquery.validate.min.js' %}" type="text/javascript"></script> -->
+    <script src="{% static 'assets/vendors/js/ui/unison.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/vendors/js/ui/jquery-sliding-menu.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/vendors/js/tables/datatable/datatables.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/vendors/js/tables/datatable/dataTables.rowsGroup.js' %}"
+        type="text/javascript"></script>
+    <script src="{% static 'assets/vendors/js/pickers/dateTime/moment-with-locales.min.js' %}"
+        type="text/javascript"></script>
+    <script src="{% static 'assets/vendors/js/pickers/dateTime/bootstrap-datetimepicker.min.js' %}"
+        type="text/javascript"></script>
+    <script src="{% static 'assets/vendors/js/forms/select/select2.full.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/vendors/js/forms/toggle/switchery.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/vendors/js/forms/toggle/bootstrap-checkbox.min.js' %}"
+        type="text/javascript"></script>
+    <script src="{% static 'assets/js/scripts/forms/switch.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/js/scripts/forms/switch.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/vendors/js/ui/blockUI.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/vendors/js/extensions/toastr.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/vendors/js/extensions/sweetalert.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/vendors/js/extensions/dropzone.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/vendors/js/summernote/summernote-bs4.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/js/scripts/tagsinput/tagsinput.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/js/semantic.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/js/echarts.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/vendors/js/modal/bootbox.all.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/vendors/js/forms/listbox/jquery.bootstrap-duallistbox.min.js' %}"
+        type="text/javascript"></script>
+    <script src="{% static 'assets/vendors/js/ui/jquery-ui.min.js' %}"></script>
+
+    {% comment %}
+    <script type="text/javascript" src="{% static 'assets/js/d3.min.js' %}"></script> {% endcomment %}
+    {% comment %}
+    <script type="text/javascript" src="{% static 'assets/js/nv.d3.js' %}"></script> {% endcomment %}
+    <!-- END PAGE VENDOR JS-->
+    <!-- BEGIN STACK JS-->
+    <script src="{% static 'assets/js/core/app-menu.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/js/core/app.js' %}" type="text/javascript"></script>
+    <script src="{% url 'js_reverse' %}" type="text/javascript"></script>
+    <!-- END STACK JS-->
+
+    <script>
+        $(document).ready(function () {
+            toastr.options = {
+                "debug": false,
+                "positionClass": "toast-bottom-right",
+                "fadeIn": 300,
+                "fadeOut": 1000,
+                "timeOut": 1000,
+                "extendedTimeOut": 3000
+            }
+        });
+        function lockScreen(enable) {
+            if (enable) {
+                $.blockUI({
+                    message: '<div class="ft-refresh-cw icon-spin font-medium-1"></div>',
+                    // timeout: timeout , //unblock after 2 seconds
+                    overlayCSS: {
+                        backgroundColor: '#fff',
+                        opacity: 0.8,
+                        cursor: 'wait'
+                    },
+                    css: {
+                        border: 0,
+                        padding: 0,
+                        backgroundColor: 'transparent'
+                    }
+                });
+            } else {
+                $.unblockUI();
+            }
+        }
+
+        function replaceNull(value) {
+            if (!value) {
+                return "";
+            } else {
+                return value;
+            }
+        }
+
+        var case_id;
+        var case_is_closed;
+        var case_is_editable;
+
+        $(document).on('click', '.showSummaryBtn', function (e) {
+            case_id = $(this).data('id');
+            case_is_closed = parseInt($(this).data('closed'));
+            case_is_editable = parseInt($(this).data('editable'));
+            getSummaryData();
+        });
+
+        function getSummaryData() {
+            var url = Urls.entryform_id(case_id);
+            $.ajax({
+                type: "GET",
+                url: url,
+            })
+                .done(function (data) {
+                    fillSummary(data);
+                    if (case_is_closed || !case_is_editable) {
+                        $('.btn_process_summary').hide();
+                    }
+                    else {
+                        $('.btn_process_summary').show();
+                    }
+                    $("#show_summary").modal("show");
+                })
+                .fail(function () {
+                    console.log("Fail")
+                });
+        }
+
+        async function fillSummary(data) {
+            $.ajax({
+                type: "GET",
+                url: Urls.centers_list(),
+            }).done((data) => {
+                const centerDataList = $("#centersDataList");
+                for (const center of data) {
+                    const option = `<option value="${center}">`;
+                    centerDataList.append(option);
+                }
+            });
+
+            var selectClient = '<select class="select2 form-control selectOpt" id="client" name="client" >';
+            $.each(data.customers_list, function (j, o) {
+                selectClient += '<option value="' + o.id + '">' + o.name + '</option>';
+            });
+            selectClient += '</select>';
+
+            var selectCompany = '<select class="select2 form-control selectOpt" id="company_index" name="company_index" >';
+            $.each(data.customers_list, function (j, o) {
+                selectCompany += '<option value="' + o.id + '">' + o.name + '</option>';
+            });
+            selectCompany += '</select>';
+
+            var selectCenter = `<select class="select2 form-control selectOpt" id="company_center" name="company_center" >`;
+            var isCenter = true;
+
+            if (data.entryform.company_index_id != null) {
+                let dataCustomerCenters = await fetchCustomerCenters(data.entryform.company_index_id);
+                if (dataCustomerCenters.length > 0) {
+                    isCenter = true;
+                    dataCustomerCenters.forEach(customerCenter => {
+                        selectCenter += `<option value="${customerCenter.id}" ${customerCenter.id === data.entryform.company_center_id ? "selected" : ""} >${customerCenter.center.name}</option>`;
+                    });
+                } else {
+                    isCenter = false;
+                }
+            }
+            selectCenter += '</select>';
+            inputCenter = `<input type='text' class="form-control" value="${replaceNull(data.entryform.company_laboratory)}" name="company_laboratory" id="center-input" style="display: ${isCenter ? "none" : "block"};" >`;
+
+
+            var selectFix = '<select class="select2 form-control selectOpt" id="fixative" name="fixative" >';
+            $.each(data.fixtatives_list, function (j, o) {
+                selectFix += '<option value="' + o.id + '">' + o.name + '</option>';
+            });
+            selectFix += '</select>';
+
+            var selectEntryformType = '<fieldset>\
+                <div class="d-inline-block mr-1">\
+                <input type="radio" class=" bg-primary" name="entryform_type" id="summary_entryform_type_1" value="1">\
+                <label for="summary_entryform_type_1">Normal</label>\
+                </div>\
+                <div class="d-inline-block mr-1">\
+                <input type="radio" class=" bg-primary" name="entryform_type" id="summary_entryform_type_2" value="2">\
+                <label for="summary_entryform_type_2">Fast</label>\
+                </div>\
+                </fieldset>';
+
+            var selectEntryFormat = '\
+                <select class="form-control" id="entryformat_select" name="entry_format">\
+                <option value="1">Tubo</option>\
+                <option value="2">Cassette</option>\
+                <option value="3">Bloque</option>\
+                <option value="4">Slide s/teñir</option>\
+                <option value="5">Slide teñido</option>\
+                <option value="6">Vivo</option>\
+                <option value="7">Muerto</option>\
+                </select>\
+             ';
+
+            var selectLaboratory = '<select class="select2 form-control selectOpt" id="laboratories" name="laboratory" >';
+            $.each(data.laboratories, function (j, o) {
+                selectLaboratory += '<option value="' + o.id + '">' + o.name + '</option>';
+            });
+            selectLaboratory += '</select>';
+
+            var selectSpecie = '<select class="select2 form-control selectOpt" id="specie" name="specie" >';
+            $.each(data.species_list, function (j, o) {
+                selectSpecie += '<option value="' + o.id + '">' + o.name + '</option>';
+            });
+            selectSpecie += '</select>';
+
+            var selectlarvalstage = '<select class="select2 form-control selectOpt" id="larvalstage" name="larvalstage" >';
+            $.each(data.larvalStages_list, function (j, o) {
+                selectlarvalstage += '<option value="' + o.id + '">' + o.name + '</option>';
+            });
+            selectlarvalstage += '</select>';
+
+            var selectwatersource = '<select class="select2 form-control selectOpt" id="watersource" name="watersource" >';
+            $.each(data.waterSources_list, function (j, o) {
+                selectwatersource += '<option value="' + o.id + '">' + o.name + '</option>';
+            });
+            selectwatersource += '</select>';
+
+            var selectSampledAtAmPm = '<select class="form-control" id="sampled_at_am_pm" name="sampled_at_am_pm" >';
+            selectSampledAtAmPm += '<option value="">--</option>';
+            selectSampledAtAmPm += '<option value="AM">AM</option>';
+            selectSampledAtAmPm += '<option value="PM">PM</option>';
+            selectSampledAtAmPm += '</select>';
+
+
+            $('.NoCasoSummary').html(data.entryform.no_caso);
+            $('.summaryClient').html('<label>{{request.lang.client}}:</label>' + selectClient);
+            $('.summaryCompany').html('<label>{{request.lang.company}}:</label>' + selectCompany);
+            $('.summaryCenterSelect').html(`<label id="company_type">${isCenter ? '{{request.lang.centro}}' : '{{request.lang.lab}}'}:</label>` + selectCenter + inputCenter);
+
+            let $select2 = $('#company_center').select2();
+            if (data.entryform.company_center_id == null && isCenter) {
+                setTimeout(function () {
+                    $("#company_center").append(
+                        $("<option>", {
+                            value: '',
+                            text: '',
+                            selected: true //Placeholder active
+                        })
+                    );
+                    $("#company_center")
+                        .select2({
+                            placeholder: "Seleccione un Centro",
+                            width: "100%",
+                        });
+                }, 0);
+            }
+            else if (data.entryform.company_center_id == null) {
+                setTimeout(function () {
+                    $select2.next('.select2-container').css('display', 'none');
+                }, 0);
+            }
+
+            if (data.entryform.company_index_id == null) {
+                setTimeout(function () {
+                    $("#company_index").append(
+                        $("<option>", {
+                            value: '',
+                            text: '',
+                            selected: true //Placeholder active
+                        })
+                    );
+                    $("#company_index")
+                        .select2({
+                            placeholder: "Seleccione una Empresa",
+                            width: "100%",
+                        });
+                }, 0);
+            }
+
+            $("#company_index").select2({
+                placeholder: "Seleccione un Empresa",
+            }).on("select2:select", async function (e) {
+                let data = await fetchCustomerCenters(e.params.data.id);
+                if (data.length > 0) {
+                    isCenter = true;
+                    document.getElementById('company_type').innerText = '{{request.lang.centro}}:';
+                    // show select component
+                    $("#company_center")
+                        .select2({
+                            placeholder: "Seleccione un Centro",
+                        });
+                    $("#company_center").css("display", "block");
+                    $("#company_center").prop("disabled", false);
+                    $("#company_center").empty();
+                    $("#company_center").append(
+                        $("<option>", {
+                            value: '',
+                            text: '',
+                            selected: true //Placeholder active
+                        })
+                    );
+
+                    $("#center-input").css("display", "none");
+                    $("#center-input").val('');
+
+                    data.forEach(customer_center => {
+                        $("#company_center").append(
+                            $("<option>", {
+                                value: customer_center.id,
+                                text: customer_center.center.name,
+                            })
+                        );
+                    });
+                } else {
+                    // show input text component
+                    isCenter = false;
+                    $("#center-input").css("display", "block");
+                    $("#center-input").prop("disabled", false);
+
+                    $select2.next('.select2-container').css('display', 'none');
+                    document.getElementById('company_type').innerText = '{{request.lang.lab}}:';
+                    $("#company_center").append(
+                        $("<option>", {
+                            value: '',
+                            text: '',
+                            selected: true
+                        })
+                    );
+                }
+            });
+
+            $('.summaryTransferOrder').html('<label>Orden de transporte:</label> <input class="form-control" value="' + replaceNull(data.entryform.transfer_order) + '" name="transfer_order" />');
+
+            $('.summaryResponsible').html('<label>{{request.lang.responsable}}:</label> <input class="form-control responsible_place" readonly value="' + replaceNull(data.entryform.responsible) + '" name="responsable" onclick="responsibleModal()" />');
+
+            $('.summaryReception').html('<label>{{request.lang.reception_date}}:</label> <div class="input-group date" id=""><input type="text" class="form-control" name="recive" value="' + moment(data.entryform.created_at).format("DD/MM/YYYY HH:mm") + '" /><div class="input-group-append"><span class="input-group-text"><span class="fa fa-calendar"></span></span></div></div> ');
+
+            $('.sumarrySampling').html('<label>{{request.lang.sampling_date}}:</label> <div class="input-group date2" id=""><input type="text" class="form-control" name="muestreo" value="' + moment(data.entryform.sampled_at).format("DD/MM/YYYY") + '" /><div class="input-group-append"><span class="input-group-text"><span class="fa fa-calendar"></span></span></div></div> ');
+
+            $('.sumarrySamplingHour').html('<label>{{request.lang.sampling_date_time}}:</label> <div class="input-group date3" id=""><input type="text" class="form-control" name="sampled_at_hour" value="' + data.entryform.sampled_at_hour + '" /><div class="input-group-append"><span class="input-group-text"><span class="fa fa-clock-o"></span></span></div></div> ');
+
+            $('.sumarrySamplingAmPm').html('<label>AM/PM</label>' + selectSampledAtAmPm);
+
+            $('.summaryNoOrder').html('<label>{{request.lang.work_order}}:</label> <input class="form-control" value="' + replaceNull(data.entryform.no_order) + '" name="no_order" />');
+
+            $('.summaryNoRequest').html('<label>{{request.lang.no_request}}:</label> <input class="form-control" value="' + replaceNull(data.entryform.no_request) + '" name="no_solic" />');
+
+            $('.summaryAnamnesis').html('<label>Anamnesis:</label> <textarea class="form-control" row="2" name="anamnesis" >' + replaceNull(data.entryform.anamnesis) + '</textarea>');
+
+            $('.summaryFixative').html('<label>{{request.lang.fixative}}:</label>' + selectFix);
+
+            $('.summaryEntryformType').html('<label>{{request.lang.type_case}}:</label>' + selectEntryformType);
+
+            $('.summarySpecie').html('<label>{{request.lang.specie}}:</label>' + selectSpecie);
+
+            $('.summaryDevStatus').html('<label>{{request.lang.development_stage}}:</label>' + selectlarvalstage);
+
+            $('.summaryWaterSource').html('<label>{{request.lang.water_source}}:</label>' + selectwatersource);
+
+            $('.summaryEntryFormat').html('<label for="entryformat_select">Formato de Ingreso :</label>' + selectEntryFormat);
+
+            $('.summaryLaboratory').html('<label>Laboratorio de Ingreso :</label>' + selectLaboratory);
+
+            var tpl_identification = '<div class="col-sm-12"><h6 class="form-section"> <b>{{request.lang.identification}}</b>';
+
+            tpl_identification += '</h6></div>';
+
+            tpl_identification += '<div class="col-md-12"></div>'
+
+            var tpl_table_identification = `<table id="summary-identifications" class="table table-xs table-condensed table-ident compact" cellpadding="0" cellspacing="0" style="font-size:12px">`
+            tpl_table_identification += '<thead>'
+            tpl_table_identification += '<tr>'
+            tpl_table_identification += '<th>#</th>'
+            tpl_table_identification += '<th>{{request.lang.cage|safe}}</th>'
+            tpl_table_identification += '<th>{{request.lang.group|safe}}</th>'
+            tpl_table_identification += '<th>{{request.lang.extra_features|safe}}</th>'
+            tpl_table_identification += '<th>Son correlativas</th>'
+            tpl_table_identification += '<th>{{request.lang.case_client|safe}}</th>'
+            tpl_table_identification += '<th>{{request.lang.weight|safe}}</th>'
+            tpl_table_identification += '<th>{{request.lang.optimus_condition|safe}}</th>'
+            tpl_table_identification += '<th>{{request.lang.observations|safe}}</th>'
+            tpl_table_identification += '<th>{{request.lang.amount_identifications_units|safe}}</th>'
+            tpl_table_identification += '</tr>'
+            tpl_table_identification += '</thead>'
+            tpl_table_identification += '<tbody class="text-center">'
+            tpl_table_identification += '<tbody class="text-center">'
+            tpl_table_identification += '</tbody>'
+            tpl_table_identification += '</table>'
+
+            $('.summaryIdentification').html(tpl_identification);
+            $('.summaryIdentification').append(tpl_table_identification);
+
+            var table_ident = $('#summary-identifications').DataTable({
+                "rowId": "id",
+                "columnDefs": [
+                    {
+                        "width": "3%",
+                        "targets": 0, "orderable": false, "data": "correlative", "className": 'correlative-text',
+                        "render": function (data, type, row, meta) {
+                            return `${data ? data : ""}`;
+                        }
+                    },
+                    {
+                        "width": "15%",
+                        "targets": 1, "orderable": false, "data": "cage",
+                        "render": function (data, type, row, meta) {
+                            return `<input name="cage" class="form-control-table summary-ident-data" value="${data ? data : ""}" >`;
+                        }
+                    },
+                    {
+                        "width": "15%",
+                        "targets": 2, "orderable": false, "data": "group",
+                        "render": function (data, type, row, meta) {
+                            return `<input name="group" class="form-control-table summary-ident-data" value="${data ? data : ""}" >`;
+                        }
+                    },
+                    {
+                        "width": "20%",
+                        "targets": 3, "orderable": false, "data": "extra_features_detail",
+                        "render": function (data, type, row, meta) {
+                            return `<textarea style="resize:none;" name="extra_features_detail" class="form-control-table summary-ident-data" rows="1" >${data ? data : ""} </textarea>`;
+                        }
+                    },
+                    {
+                        "width": "3%",
+                        "targets": 4, "orderable": false, "data": "samples_are_correlative",
+                        "render": function (data, type, row, meta) {
+
+                            return `
+              <input type="checkbox" style="margin-top:10%" name="samples_are_correlative" class="form-control-table summary-ident-data checkbox-2x" ${data ? 'checked' : ''}>
+                             `;
+                        }
+                    },
+                    {
+                        "width": "8%",
+                        "targets": 5, "orderable": false, "data": "client_case_number",
+                        "render": function (data, type, row, meta) {
+                            return `<input name="client_case_number" class="form-control-table summary-ident-data" value="${data ? data : ""}" >`;
+                        }
+                    },
+                    {
+                        "width": "5%",
+                        "targets": 6, "orderable": false, "data": "weight",
+                        "render": function (data, type, row, meta) {
+                            return `<input name="weight" class="form-control-table summary-ident-data" type="number" step="0.1" min="0" value="${data ? data : "0"}" >`;
+                        }
+                    },
+                    {
+                        "width": "3%",
+                        "targets": 7, "orderable": false, "data": "is_optimum",
+                        "render": function (data, type, row, meta) {
+                            return `
+              <input type="checkbox" style="margin-top:10%" name="is_optimum" class="form-control-table summary-ident-data checkbox-2x" ${data ? 'checked' : ''}>
+                             `;
+                        }
+                    },
+                    {
+                        "width": "20%",
+                        "targets": 8, "orderable": false, "data": "observation",
+                        "render": function (data, type, row, meta) {
+                            return `<textarea name="observation" class="form-control-table summary-ident-data" rows="1">${data ? data : ""} </textarea>`;
+                        }
+                    },
+                    {
+                        "width": "3%",
+                        "targets": 9, "orderable": false, "data": "quantity",
+                        "render": function (data, type, row, meta) {
+                            return `<input disabled id="amount_${row.id}" name="quantity" class="form-control-table amount" type="number" data-ident="${row.id}" value="${data ? data : "0"}" min="${data ? data : ""}">`;
+                        }
+                    },
+                ],
+                "info": false,
+                "paging": false,
+                "searching": false,
+                "order": [[1, 'asc']],
+                "autoWidth": false,
+                "fixedHeader": {
+                    "header": false,
+                    "footer": false
+                },
+            });
+
+            data.entryform.identifications.forEach(element => {
+                table_ident.row.add(element).draw()
+            });
+
+            var tpl_exams = '<div class="col-sm-12"><h6 class="form-section mt-2"> <b>{{request.lang.services}}</b></h6></br>';
+            $.each(data.entryform.analyses, function (i, item) {
+                tpl_exams += '<div class="alert alert-light"><b>' + item.exam__name + ' (Tinción: ' + item.stain + ')</b> <span class="pull-right">'
+                if (item.patologo__first_name != null)
+                    tpl_exams += '<b>Patólogo:</b> ' + item.patologo__first_name + ' ';
+                if (item.patologo__last_name != null)
+                    tpl_exams += item.patologo__last_name;
+                tpl_exams += '</span> <br> <b>{{request.lang.date}}: </b>' + moment(item.created_at).format("DD/MM/YYYY HH:mm");
+                tpl_exams += '</span> <br> <b>{{request.lang.status}}: </b>' + item.status;
+                tpl_exams += '</span> <br> <b>{{request.lang.charge_samples}}: </b>' + (parseInt(item.samples_charged) > 0 ? item.samples_charged : item.samples_count);
+                tpl_exams += '</span> <br> <b>{{request.lang.total_organs}}: </b>' + item.organs_count + '<br>';
+
+                if (item.service_deadline.length > 0) {
+                    tpl_exams += '<b>Tiempos de respuesta:</b>';
+                    $.each(item.service_deadline, function (k, item3) {
+                        tpl_exams += '<p style="margin-left: 5%;"><b>' + item3.type + ':</b> ' + item3.deadline + '</p>'
+                    });
+                }
+
+                if (item.deadline_comments.length > 0) {
+                    tpl_exams += '<b>Comentarios de tiempos de respuesta:</b><br>';
+                    $.each(item.deadline_comments, function (l, item4) {
+                        tpl_exams += '<p style="margin-left: 5%;"><b>' + item4.done_by + ' (' + item4.created_at + '):</b> ' + item4.text + '</p>'
+                    });
+                }
+
+                if (item.service_comments.length > 0) {
+                    tpl_exams += '<b>Comentarios:</b><br>';
+                    $.each(item.service_comments, function (j, item2) {
+                        tpl_exams += '<p style="margin-left: 5%;"><b>' + item2.done_by + ' (' + item2.created_at + '):</b> <br> ' + item2.text + '</p>'
+                    });
+                }
+
+                tpl_exams += '</div>';
+            });
+
+            tpl_exams += '</div>';
+            $('.summaryExams').html(tpl_exams);
+
+            var tpl_samples = '<div class="col-sm-12"><h6 class="form-section mt-2"> <b>{{request.lang.services_by_individual}}</b></h6></br><table class="table table-bordered table-xs">';
+            tpl_samples += '<thead><tr><th>{{request.lang.nro_individual}}</th><th>{{request.lang.identification}}</th><th>{{request.lang.analysis}}</th><th>{{request.lang.stain}}</th><th>{{request.lang.organs}}</th></tr></thead><tbody>';
+            var patologos = {};
+            $.each(data.patologos, function (i, v) {
+                patologos[v.id] = v.first_name + ' ' + v.last_name;
+            })
+
+            var services = [];
+            data.entryform.analyses.forEach(element => {
+                if (element.status != "Anulado") {
+                    services.push(element.exam_id + "-" + element.exam__stain_id)
+                }
+            });
+
+            $.each(data.samples, function (i, item) {
+                var len = 1;
+                var tpl_exams = ""
+
+                $.each(item.sample_exams_set, function (j, v) {
+
+                    services.forEach(service => {
+                        if (v[0].exam_id + "-" + v[0].stain_id == service) {
+                            len += 1;
+                            tpl_exams += '<tr><td>' + v[0].exam_name + '</td>';
+                            tpl_exams += '<td>' + v[0].stain_abbr + '</td>';
+                            tpl_exams += '<td>' + v.map(function (k) { return k.organ_name }).join(", ") + '</td></tr>';
+                        }
+                    })
+
+                });
+                tpl_samples += '<tr id="sample-id-' + item.id + '">';
+                tpl_samples += '<td rowspan="' + len + '">' + item.index + '</td>';
+
+                tpl_samples += '<td rowspan="' + len + '">' + item.identification.cage + '-' + item.identification.group + '</td>';
+                tpl_samples += '</tr>';
+                tpl_samples += tpl_exams;
+
+            });
+
+            tpl_samples += '</tbody></table></div>';
+            $('.summarySamples').html(tpl_samples);
+
+            if (data.entryform.pools.length > 0) {
+                pools_table = $('.summarySamples')
+                pools_table.append(`<div class="col-sm-12"><h6 class="form-section mt-2"> <b>Servicios por pool</b></h6></br><table id="modal_poolTable" class="table table-bordered table-xs">
+                <thead><tr><th>Pool</th><th>{{request.lang.identification}}</th><th>{{request.lang.organs}}</th><th>{{request.lang.analysis}}</th></tr></thead><tbody></tbody></div>`)
+                data.entryform.pools.forEach(pool => {
+                    tbody = document.getElementById('modal_poolTable').getElementsByTagName('tbody')[0];
+                    NoCell = 4
+                    row = tbody.insertRow()
+
+                    for (let i = 0; i < NoCell; i++) {
+                        var newCell = row.insertCell();
+                        switch (i) {
+                            case 0:
+                                newCell.id = `poolName-${pool.id}`
+                                newCell.innerText = pool.name
+                                newCell.rowSpan = pool.exams.length + 1
+                                break;
+
+                            case 1:
+                                newCell.id = `poolIdentification-${pool.id}`
+                                newCell.innerText = `${pool.identification.cage}-${pool.identification.group}-${pool.identification.extra_features_detail}`
+                                newCell.rowSpan = pool.exams.length + 1
+                                break;
+
+                            case 2:
+                                newCell.id = `poolOrgans-${pool.id}`
+                                text = ""
+                                pool.organs.forEach(organ => {
+                                    text += `${organ.name}(${organ.correlative}) `;
+                                })
+                                newCell.innerText = text;
+                                newCell.rowSpan = pool.exams.length + 1
+                                break;
+
+                            case 3:
+                                newCell.remove()
+                                pool.exams.forEach(exam => {
+                                    row = tbody.insertRow()
+                                    examCell = row.insertCell();
+                                    examCell.innerText = exam.name;
+                                })
+                                break;
+                        }
+                    }
+                })
+            }
+
+            if (data.entryform.customer != null) {
+                $('#client').val(data.entryform.customer.id);
+            }
+            if (data.entryform.company_index_id != null) {
+                $('#company_index').val(data.entryform.company_index_id);
+            }
+            if (data.entryform.company_center_id == null && data.entryform.company_laboratory != null) {
+                $('#center-input').val(data.entryform.company_laboratory);
+            }
+
+            if (data.entryform.entry_format != null) {
+                $('#entryformat_select option[value="' + data.entryform.entry_format + '"]').attr('selected', 'selected');
+            }
+
+            if (data.entryform.fixative != null) {
+                $('#fixative').val(data.entryform.fixative.id);
+            }
+
+            if (data.entryform.laboratory_id != null) {
+                $('#laboratories').val(data.entryform.laboratory_id);
+            }
+
+            if (data.entryform.entryform_type != null) {
+                if (data.entryform.entryform_type.id == 1) {
+                    $('#summary_entryform_type_1').prop("checked", true);
+                } else {
+                    $('#summary_entryform_type_2').prop("checked", true);
+                }
+            }
+
+            if (data.entryform.specie != null) {
+                $('#specie').val(data.entryform.specie.id);
+            }
+            if (data.entryform.watersource != null) {
+                $('#watersource').val(data.entryform.watersource.id);
+            }
+            if (data.entryform.larvalstage != null) {
+                $('#larvalstage').val(data.entryform.larvalstage.id);
+            }
+
+            if (data.entryform.sampled_at_am_pm != null) {
+                $('#sampled_at_am_pm option[value="' + data.entryform.sampled_at_am_pm + '"]').attr('selected', 'selected');
+            }
+
+            if (data.entryform.sampled_at_hour != null) {
+                $('#sampled_at_hour').val(data.entryform.sampled_at_hour);
+            }
+
+            $('.selectOpt').select2({ 'width': '100%' });
+            $('.selectOrgs').select2({ 'width': '100%' });
+
+            $('.date').datetimepicker({
+                locale: 'es',
+                keepOpen: false,
+                format: 'DD/MM/YYYY HH:mm'
+            });
+
+            $('.date2').datetimepicker({
+                locale: 'es',
+                keepOpen: false,
+                format: 'DD/MM/YYYY'
+            });
+
+            $('.date3').datetimepicker({
+                locale: 'es',
+                keepOpen: false,
+                format: 'hh:mm'
+            });
+
+            // $('#datetime_sampled_at').datetimepicker({
+            //     locale: 'es',
+            //     keepOpen: false,
+            //     format:'DD/MM/YYYY HH:mm'
+            //   });
+        }
+
+        function submitGeneralData() {
+            swal({
+                title: "Confirmación",
+                text: "¿Está seguro que desea guardar los cambios?",
+                icon: "warning",
+                showCancelButton: true,
+                buttons: {
+                    cancel: {
+                        text: "No, cancelar!",
+                        value: null,
+                        visible: true,
+                        className: "btn-warning",
+                        closeModal: true,
+                    },
+                    confirm: {
+                        text: "Sí!",
+                        value: true,
+                        visible: true,
+                        className: "",
+                        closeModal: true,
+                    }
+                }
+            }).then(isConfirm => {
+                if (isConfirm) {
+                    var data = $('#generalData').serialize();
+                    $.ajax({
+                        type: "POST",
+                        url: '/generalData/' + case_id,
+                        data: data,
+                        async: false,
+                    })
+                        .done(function (data) {
+
+                            $("#summary-identifications").DataTable().rows().every(function (rowIdx, tableLoop, rowLoop) {
+                                let ident_data = this.data();
+
+                                $.each($(`#${ident_data.id} .summary-ident-data`), function (i, v) {
+                                    if ($(v).attr("type") == "checkbox") {
+                                        ident_data[v.name] = v.checked ? 1 : 0
+                                    } else {
+                                        ident_data[v.name] = v.value
+                                    }
+                                });
+
+                                let url = Urls.save_new_identification(ident_data.id)
+                                $.ajax({
+                                    type: "POST",
+                                    url: url,
+                                    async: false,
+                                    data: ident_data
+                                })
+                                    .done(function (data2) {
+                                        return 1
+                                    })
+                            });
+
+                            toastr.success("Se han guardado exitosamente los cambios realizados.", "Listo!");
+
+                        })
+                        .fail(function (data) {
+                            console.log("Fail");
+                        })
+                }
+            });
+        }
+
+        function submitIdentification(id) {
+            swal({
+                title: "Confirmación",
+                text: "¿Confirma que desea guardar los cambios?",
+                icon: "warning",
+                showCancelButton: true,
+                buttons: {
+                    cancel: {
+                        text: "Cancelar",
+                        value: null,
+                        visible: true,
+                        className: "btn-warning",
+                        closeModal: true,
+                    },
+                    confirm: {
+                        text: "Continuar",
+                        value: true,
+                        visible: true,
+                        className: "",
+                        closeModal: true,
+                    }
+                }
+            }).then(isConfirm => {
+                if (isConfirm) {
+                    var data = $('#identification-' + id).serialize();
+                    $.ajax({
+                        type: "POST",
+                        url: '/identification/' + id,
+                        data: data,
+                        async: false,
+                    })
+                        .done(function (data) {
+                            response = data;
+                            summary_edited = true;
+                            toastr.success('Guardado exitosamente!');
+                            getSummaryData();
+                        })
+                        .fail(function (data) {
+                            console.log("Fail");
+                        })
+                }
+            });
+        }
+
+        function deleteSample(id) {
+            swal({
+                title: "Confirmación",
+                text: "Le recordamos que eliminar una muestra puede generar perdida de trabajo realizado si ya se encuentra procesada o tiene servicios asociados. ¿Confirma que desea eliminar?",
+                icon: "warning",
+                showCancelButton: true,
+                buttons: {
+                    cancel: {
+                        text: "Cancelar",
+                        value: null,
+                        visible: true,
+                        className: "btn-warning",
+                        closeModal: true,
+                    },
+                    confirm: {
+                        text: "Continuar",
+                        value: true,
+                        visible: true,
+                        className: "",
+                        closeModal: true,
+                    }
+                }
+            }).then(isConfirm => {
+                if (isConfirm) {
+                    $.ajax({
+                        type: "GET",
+                        url: '/delete-sample/' + id,
+                        async: false,
+                    })
+                        .done(function (data) {
+                            summary_edited = true;
+                            toastr.success('La muestra se ha eliminado exitosamente!');
+                            getSummaryData();
+                        })
+                        .fail(function (data) {
+                            console.log("Fail");
+                        })
+                }
+            });
+        }
+
+        function responsibleModal() {
+            $('#responsible_modal').modal('show');
+            reloadResponsibleTable();
+        }
+
+        function reloadResponsibleTable() {
+            $.ajax({
+                type: "GET",
+                url: '/responsible',
+            })
+                .done(function (data) {
+                    if (data.ok) {
+                        var groupTemplate = document.getElementById("responsible_table_template").innerHTML;
+                        var templateFn = _.template(groupTemplate);
+                        var templateHTML = templateFn(data);
+
+                        $("#responsible_table_div").html(templateHTML);
+
+                        $('#responsible_table').DataTable({
+                            "destroy": true,
+                            "oLanguage": {
+                                "sUrl": "https://cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+                            },
+                            initComplete: function () {
+                                setTimeout(function () { $('#responsible_table_filter input[type=search]').focus(); }, 500);
+                            },
+                        });
+                    }
+                });
+        }
+
+        function saveResponsible(e) {
+            let form_data = $("#responsible_form").serialize();
+            $.ajax({
+                type: "POST",
+                url: '/responsible',
+                data: form_data,
+            })
+                .done(function (data) {
+                    if (data.ok) {
+                        reloadResponsibleTable()
+                        $("#responsible_form")[0].reset();
+                        toastr.success('Se guardó satisfactoriamente', '');
+                    }
+                    else {
+                        toastr.error('No se pudo guardar satisfactoriamente', 'Aviso');
+                    }
+                })
+                .fail(function (data) {
+                    console.log("Fail");
+                })
+        }
+
+        function editResponsible(id, name, email, phone, job) {
+            $('#responsible_form input[name=id]').val(id);
+            $('#responsible_form input[name=name]').val(name);
+            $('#responsible_form input[name=email]').val(email);
+            $('#responsible_form input[name=phone]').val(phone);
+            $('#responsible_form input[name=job]').val(job);
+        }
+
+        function disabledResponsible(id) {
+            $.ajax({
+                type: "DELETE",
+                url: '/responsible/' + id,
+            })
+                .done(function (data) {
+                    if (data.ok) {
+                        reloadResponsibleTable()
+                        toastr.success('Se eliminó satisfactoriamente', '');
+                    }
+                    else {
+                        toastr.error('No se pudo eliminar satisfactoriamente', 'Aviso');
+                    }
+                })
+                .fail(function (data) {
+                    console.log("Fail");
+                })
+        }
+
+        function selectResponsible(id, name, email, phone) {
+            $.each($('.responsible_place'), function (i, v) {
+                $(v).val(name);
+                $(v).attr('id', id);
+            })
+            $.each($('#responsible_input'), function (i, v) {
+                $(v).val(name);
+            })
+            $.each($('#responsible_email'), function (i, v) {
+                $(v).val(email);
+            })
+            $.each($('#responsible_phone'), function (i, v) {
+                $(v).val(phone);
+            })
+        }
+
+        $(document).on('change', '#entryformat_select', function (e) {
+            if (["1", "2", "7"].includes($(this).val())) {
+                $('#fixtative_select').select2("enable");
+                $('#fixative').select2("enable");
+            } else {
+                $('#fixtative_select').val("").trigger('change');
+                $('#fixtative_select').select2("enable", false);
+                $('#fixative').val("").trigger('change');
+                $('#fixative').select2("enable", false);
+            }
+        });
+
+        function myFunction() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+
+        window.onclick = function (event) {
+            if (!event.target.matches('.dropbtn')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content-avatar");
+                var i;
+                for (i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+
+        function forceToStep(form, step) {
+            let url = Urls.force_form_to_step(form, step);
+            $.ajax({
+                type: "POST",
+                url: url,
+                async: false,
+            })
+                .done(function (data) {
+                    location.reload();
+                })
+                .fail(function (data) {
+                    console.log("Fail");
+                })
+        }
+        async function fetchCustomerCenters(customer_id) {
+            const response = await fetch(`api/customer/${customer_id}/centers`, {
+                method: 'GET',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                }
+            });
+            data = await response.json();
+            return data;
+        }
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                var cookies = document.cookie.split(";");
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === name + "=") {
+                        cookieValue = decodeURIComponent(
+                            cookie.substring(name.length + 1)
+                        );
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+    </script>
+    <script id="responsible_table_template" type="text/x-lodash-template">
+         <table class="table table-bordered table-condensed" id="responsible_table" style="font-size:13px;">
+         <thead>
+         <tr>
+         <th>Nombre</th>
+         <th>Correo</th>
+         <th>Teléfono</th>
+         <th>Cargo</th>
+         <th>Acciones</th>
+         </tr>
+         </thead>
+         <tbody>
+         <% _.each(responsibles, function (responsible) { %>
+             <tr id="responsible-<%= responsible.id %>">
+             <td><%= responsible.name %></td>
+             <td><%= _.replace(responsible.email, /;/g, '</br>') %></td>
+             <td><%= responsible.phone %></td>
+             <td><%= responsible.job %></td>
+             <td>
+             <button class="btn btn-success" data-dismiss="modal" onclick="selectResponsible('<%= responsible.id %>','<%= responsible.name %>' ,'<%= responsible.email %>','<%= responsible.phone %>')"><i class="fa fa-check"></i></button>
+             <button class="btn btn-info" onclick="editResponsible('<%= responsible.id %>','<%= responsible.name %>','<%= responsible.email %>','<%= responsible.phone %>','<%= responsible.job %>')"><i class="fa fa-edit"></i></button>
+             <button class="btn btn-danger" onclick="disabledResponsible('<%= responsible.id %>')"><i class="fa fa-times"></i></button>
+             </td>
+             </tr>
+             <% }); %>
+         </tbody>
+         </table>
+        </script>
+    {% block scripts %}{% endblock scripts %}
+
+    <!-- MODAL SUMMARY CASE -->
+    <div class="modal fade text-left" id="show_summary" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" role="document" style="min-width:90% !important;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="title">{{request.lang.summary_case}} <span class="NoCasoSummary"></span>
+                    </h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body"
+                    style="font-size:12px !important; max-height: calc(100vh - 150px); overflow-y:scroll;">
+                    <div class="row">
+                        <div class="col-md-12 pl-3 pr-3 pt-1 pb-1">
+                            <div class="row">
+                                <div class="col-md-12 text-right">
+                                    <div class="btn-group" role="group">
+
+                                        {% if form.state_id == 2 %}
+                                        <a href="javascript:void(0);" onclick="forceToStep('{{form.id}}', 2)"
+                                            class="btn btn-secondary btn_process_summary">
+                                            <i class="fa fa-external-link-square"></i>
+                                            {{request.lang.edit_units}}
+                                        </a>
+                                        {% elif form.state_id == 3 or form.state_id == 4 %}
+                                        <a href="javascript:void(0);" onclick="forceToStep('{{form.id}}', 2)"
+                                            class="btn btn-secondary btn_process_summary">
+                                            <i class="fa fa-external-link-square"></i>
+                                            {{request.lang.edit_units}}
+                                        </a>
+                                        <a href="javascript:void(0);" onclick="forceToStep('{{form.id}}', 3)"
+                                            class="btn btn-warning btn_process_summary">
+                                            <i class="fa fa-external-link-square"></i>
+                                            {{request.lang.edit_services}}
+                                        </a>
+                                        {% endif %}
+                                        <a href="javascript:void(0);" id="btn_save" onclick="submitGeneralData()"
+                                            class="btn btn-blue btn_process_summary">
+                                            <i class="fa fa-save"></i>
+                                            {{request.lang.save_changes}}
+                                        </a>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-12 generalInfo">
+                                    <div class="col-sm-12">
+                                        <h6 class="form-section">
+                                            <b>{{request.lang.general_info}}</b>
+                                        </h6>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <form action="#" id="generalData" class="row">
+                                            <div class="col-sm-3 form-group summaryClient">
+                                            </div>
+                                            <div class="col-sm-3 form-group summaryCompany">
+                                            </div>
+                                            <div class="col-sm-3 form-group summaryCenterSelect">
+                                            </div>
+                                            <div class="col-sm-3 form-group summaryResponsible">
+                                            </div>
+                                            <div class="col-sm-2 form-group summaryReception">
+                                            </div>
+                                            <div class="col-sm-2 form-group sumarrySampling">
+                                            </div>
+                                            <div class="col-sm-2 form-group sumarrySamplingHour">
+                                            </div>
+                                            <div class="col-sm-1 form-group sumarrySamplingAmPm">
+                                            </div>
+                                            <div class="col-sm-2 form-group summaryNoOrder">
+                                            </div>
+                                            <div class="col-sm-3 form-group summaryNoRequest">
+                                            </div>
+                                            <div class="col-sm-3 form-group summaryTransferOrder">
+                                            </div>
+                                            <div class="col-sm-3 form-group summaryEntryFormat">
+                                            </div>
+                                            <div class="col-sm-3 form-group summaryFixative">
+                                            </div>
+                                            <div class="col-sm-3 form-group summaryEntryformType">
+                                            </div>
+                                            <div class="col-sm-3 form-group summaryAnamnesis">
+                                            </div>
+                                            <div class="col-sm-3 summarySpecie">
+                                            </div>
+                                            <div class="col-sm-3 summaryDevStatus">
+                                            </div>
+                                            <div class="col-sm-3 summaryWaterSource">
+                                            </div>
+                                            <div class="col-sm-3 summaryLaboratory">
+                                            </div>
+                                            <datalist id="centersDataList">
+
+                                            </datalist>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 summaryIdentification pl-3 pr-3 pt-1 pb-1">
+                        </div>
+                        <div class="col-sm-5 summaryExams pl-3 pr-1 pt-1 pb-1">
+                        </div>
+                        <div class="col-sm-7 summarySamples pl-1 pr-3 pt-1 pb-1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL SELECT RESPONSIBLE -->
+    <div class="modal fade text-left" id="responsible_modal" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" role="" style="min-width:80% !important;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="title"> Lista de Responsables <span></span></h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="font-size:12px !important;">
+                    <div style="padding: 10px;background-color: #f2efed;">
+                        <form action="#" id="responsible_form" onsubmit="saveResponsible(); return false;">
+                            <h6 class="form-section mt-2">Responsable</h6>
+                            <div class="row generalInfo">
+                                <div class="col-sm-3 form-group">
+                                    <input class="form-control" name="id" hidden />
+                                    <input class="form-control" name="name" placeholder="Nombre*" required />
+                                </div>
+                                <div class="col-sm-3 form-group">
+                                    <input class="form-control" name="email" placeholder="Correos Electrónicos*"
+                                        required />
+                                    <p>* Puede ingresar multiples direcciones separadas por punto y coma (;)</p>
+                                </div>
+                                <div class="col-sm-2 form-group">
+                                    <input class="form-control" name="phone" placeholder="Teléfono" />
+                                </div>
+                                <div class="col-sm-3 form-group">
+                                    <input class="form-control" name="job" placeholder="Cargo*" required />
+                                </div>
+                                <div class="col-sm-1 form-group">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa fa-save"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <hr>
+                    <div class="col-md-12" id="responsible_table_div">
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

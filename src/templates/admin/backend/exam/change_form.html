@@ -1,0 +1,37 @@
+{% extends 'admin/change_form.html' %}
+{% load static %}
+{% comment %} {% block extra_fields %}
+    <div class="form-row field-custom">
+        <div>
+            <label for="service_descripcion"> Descripción del Servicio:</label>
+            <h3 id='service_description'></h3>
+        </div>
+    </div>
+{% endblock %} {% endcomment %}
+
+{% block admin_change_form_document_ready %}
+    {{ block.super }}
+
+    <script>
+        django.jQuery('#id_service').on('change', function(){
+            if (django.jQuery('#id_service').val() == 1){
+                django.jQuery('.service_desc').remove();
+                django.jQuery('.module').append('<h3 class="service_desc">Descripcion Servicio: Procesamiento y análisis histológico completo de muestras. Finalizan con la generación del informe de resultados.</h3>');
+            } else if (django.jQuery('#id_service').val() == 2) {
+                django.jQuery('.service_desc').remove();
+                django.jQuery('.module').append('<h3 class="service_desc">Descripcion Servicio: Procesamiento histológico completo de muestras pero no se analizan. Finalizan con la digitalización del slide creado.</h3>');
+            } else if (django.jQuery('#id_service').val() == 3) {
+                django.jQuery('.service_desc').remove();
+                django.jQuery('.module').append('<h3 class="service_desc">Descripcion Servicio: Procesamiento histológico hasta la fabricación del bloque.</h3>');
+            } else if (django.jQuery('#id_service').val() == 4) {
+                django.jQuery('.service_desc').remove();
+                django.jQuery('.module').append('<h3 class="service_desc">Descripcion Servicio: No involucra ni procesamiento ni análisis histológico, pero sí finalizan con un informe de resultados de distinto formato al generado por la plataforma.</h3>');
+            } else if (django.jQuery('#id_service').val() == 5) {
+                django.jQuery('.service_desc').remove();
+                django.jQuery('.module').append('<h3 class="service_desc">Descripcion Servicio: Sin servicio, registro de muestras a las que no se realizará ni análisis ni procesamiento.</h3>');
+            }
+        });
+        django.jQuery('#id_service').trigger('change');
+    </script>
+   
+{% endblock %}

@@ -1,0 +1,148 @@
+{% extends 'base_pdf.html' %}
+{% load static %}
+{% block stylesheets %}
+
+<style type="text/css">
+  .text-white {
+    color: white !important;
+  }
+  .container {
+    font-family: "Verdana" !important;
+  }
+</style>
+
+{% endblock stylesheets %}
+
+{% block body %}
+<div class="container">
+  <div class="row" style="page-break-inside: avoid !important;">
+    <div class="col-xs-12">
+      <!-- <img src="..." class="rounded float-left" alt="..."> -->
+      <img alt="" src="{% static 'assets/images/logo/logo.png' %}" class="img-fluid float-left" style="width: 290px">
+    </div>
+  </div>
+
+  <div class="row" style="page-break-inside: avoid !important;">
+    <div class="col-xs-12" style="padding-top:5% !important; padding-bottom:3% !important;">
+      <center><h3 class="text-danger"><strong>INFORME RESULTADOS</strong></h3></center>
+    </div>
+    <div class="col-xs-12">
+      <table class="table table-bordered">
+        <tbody>
+          <tr>
+            <td class="danger col-xs-3"> N° Reporte / N° Caso </td>
+            <td>{{ report_final.no_reporte}}</td>
+            <td>{{ analisis.entryform.no_caso}}</td>
+          </tr>
+          <tr>
+            <td class="danger">Empresa</td>
+            <td colspan="2">{{ analisis.entryform.customer.name}}</td>
+          </tr>
+          <tr>
+            <td class="danger">Centro</td>
+            <td colspan="2">{{ analisis.entryform.center|default:""}}</td>
+          </tr>
+          <tr>
+            <td class="danger">Especie - E° Desarrollo</td>
+            <td>
+              {{ analisis.entryform.specie.name }}
+            </td>
+            <td>
+              {{ analisis.entryform.larvalstage.name }}
+            </td>
+          </tr>
+          <tr>
+            <td class="danger">Estanque/Jaula</td>
+            <td>
+              {% for ident in analisis.entryform.identification_set.all %}
+                ({{ ident.cage }}/{{ ident.group }}) -
+              {% endfor %}
+            </td>
+            <td>
+              Nº Solicitud: {{analisis.entryform.no_request}}
+            </td>
+          </tr>
+          <tr>
+            <td class="danger">Fuente de agua</td>
+            <td colspan="2">{{ analisis.entryform.watersource.name }}</td>
+          </tr>
+          <tr>
+            <td class="danger">Análisis</td>
+            <td colspan="2">{{ analisis.exam.name }} {{ analisis.entryform.larvalstage.name }}</td>
+          </tr>
+          <tr>
+            <td class="danger">Fecha muestreo</td>
+            <td colspan="2">{{ analisis.entryform.sampled_at }}</td>
+          </tr>
+          <tr>
+            <td class="danger">Fecha de recepción</td>
+            <td colspan="2">{{ analisis.entryform.created_at }}</td>
+          </tr>
+          <!-- <tr>
+            <td class="danger">Fecha informe</td>
+            <td colspan="2"></td>
+          </tr> -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row" style="page-break-inside: avoid !important;">
+    <div class="col-xs-12" style="padding-top:5% !important; padding-bottom:3% !important;">
+      <center><h3 class="text-danger"><strong>HALLAZGOS</strong></h3></center>
+    </div>
+    <div class="col-xs-12">
+      {{report_final.box_findings | safe}}
+    </div>
+  </div>
+
+  <div class="row" style="page-break-inside: avoid !important;">
+    <div class="col-xs-12" style="padding-top:5% !important; padding-bottom:3% !important;">
+      <center><h3 class="text-danger"><strong>DIAGNÓSTICO</strong></h3></center>
+    </div>
+    <div class="col-xs-12">
+      {{report_final.box_diagnostics|safe}}
+    </div>
+  </div>
+
+  <div class="row" style="page-break-inside: avoid !important;">
+    <div class="col-xs-12" style="padding-top:5% !important; padding-bottom:3% !important;">
+      <center><h3 class="text-danger"><strong>COMENTARIOS</strong></h3></center>
+    </div>
+    <div class="col-xs-12">
+      {{report_final.box_comments|safe}}
+    </div>
+  </div>
+</div>
+
+<div class="row" style="page-break-inside: avoid !important;">
+    <div class="col-xs-12" style="padding-top:5% !important; padding-bottom:3% !important;">
+      <center><h3 class="text-danger"><strong>IMÁGENES</strong></h3></center>
+    </div>
+    <div class="col-xs-12">
+      <div class="col-xs-12">
+        <div class="row">
+          {% for rep in report %}
+            {% for img in rep.images.all|dictsort:"id" %}
+              <div class="col-xs-6">
+                <div class="thumbnail">
+                  <img src="{{img.file.url}}" alt="">
+                  <div class="caption">
+                    <h4>{{img.desc|default:""}}</h4>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{report_final.box_tables|safe}}
+
+{% endblock body %}
+
+{% block scripts %}
+{% endblock scripts %}

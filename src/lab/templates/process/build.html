@@ -1,0 +1,77 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block content %}
+<!-- MAIN -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <header class="card-header">
+                <h4 class="card-title">Procesos</h4>
+                <span class="d-flex flex-row justify-content-between mt-md-1 align-items-center">
+                    <small class="card-subtitle">{{ process_name }}</small>
+                    <span class="input-group" style="width: 33%">
+                        <div class="input-group-prepend">
+                            <label for="doneAt" class="input-group-text">Realizado el:</label>
+                        </div>
+                        <input type="date" name="doneAt" id="doneAt" class="form-control" />
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-primary" id="btnArmarProceso">
+                                ARMAR
+                            </button>
+                        </div>
+                    </span>
+                </span>
+            </header>
+            <section class="card-body table-responsive">
+                <table class="table zero-configuration">
+                    <thead>
+                        <th>#</th>
+                        <th>Caso</th>
+                        <th>Servicio</th>
+                        <th>Identificacion</th>
+                        <th>Muestra</th>
+                        <th>Unidad</th>
+                        <th>Organo</th>
+                    </thead>
+                    <tbody>
+                        {% for sample_exam in sample_exams %}
+                        <tr>
+                            <td>{{ sample_exam.id }}</td>
+                            <td>{{ sample_exam.sample.entryform.no_caso }}</td>
+                            <td>{{ sample_exam.exam }}</td>
+                            <td>{{ sample_exam.sample.identification }}</td>
+                            <td>{{ sample_exam.sample.index }}</td>
+                            <td>{{ sample_exam.unit_organ.unit.correlative }}</td>
+                            <td>{{ sample_exam.organ }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </div>
+</div>
+
+<!-- END MAIN -->
+
+{% endblock content %}
+{% block scripts %}
+<script
+    type="text/javascript"
+    src="https://cdn.datatables.net/buttons/1.7.0/js/dataTables.buttons.min.js"
+    defer>
+</script>
+
+<script
+    type="text/javascript"
+    src="//cdn.jsdelivr.net/npm/sweetalert2@10"
+    defer>
+</script>
+
+<script
+    type="text/javascript"
+    src="{% static 'lab/js/process-build.js' %}"
+    defer>
+</script>
+{% endblock scripts %}

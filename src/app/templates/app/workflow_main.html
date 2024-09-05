@@ -1,0 +1,972 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block stylesheets %}
+
+<style>
+  .steps {
+    pointer-events: none;
+  }
+  .form-section {
+    color: #404E67;
+    line-height: 3rem;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #404E67;
+  }
+  .multiple-action > .swal-footer{
+    display: grid;
+    text-align: center;
+  }
+
+  span > .info {
+    color: blue !important;
+
+}
+
+
+  .bootstrap-duallistbox-container label {
+    font-size: 18px !important;
+    color: black !important;
+  }
+</style>
+
+{% endblock stylesheets %}
+{% block content_header %}
+<div class="content-header row">
+  <div class="content-header-left col-md-6 col-12 mb-2">
+    <h3 class="content-header-title mb-0">{{request.lang.entries}}</h3>
+    <div class="row breadcrumbs-top">
+      <div class="breadcrumb-wrapper col-12">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/">{{request.lang.home}}</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="#">{{request.lang.entries}}</a>
+          </li>
+          <li class="breadcrumb-item active">
+            {{form.content_object.no_caso}}
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content_header %}
+{% block content %}<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <center>
+          {% if reception_finished %}
+            <h3> <strong>{{request.lang.nro_case}} {{form.content_object.no_caso}} - SERVICIOS INGRESADOS</strong></h3>
+          {% else %}
+            <h3> <strong>{{request.lang.nro_case}} {{form.content_object.no_caso}}</strong></h3>
+          {% endif %}
+          <button class="btn btn-secondary square showSummaryBtn hidden" 
+          data-id="{{ form.content_object.pk }}" 
+          data-closed="{% if form.form_closed or form.cancelled %}1{% else %}0{% endif %}" data-editable="{% if edit_case %}1{% else %}0{% endif %}"><i class="fa fa-list fa-fx"></i> {{request.lang.summary_case}}</button>
+          <a class="btn btn-secondary showReceptionFileBtn square hidden" href="{% url 'lab:case_process_state' form.content_object.id %}">
+              <i class="fa ft-clock fa-fx"></i>
+              Progreso Laboratorio
+          </a>
+          <button class="btn btn-secondary square showShareBtn hidden" onclick="shareChoice()"><i class="fa fa-paper-plane fa-fx"></i> {{request.lang.send_case}}</button>
+          <button class="btn btn-secondary square showLogBtn hidden" onclick="logModal()"><i class="fa fa-list fa-fx"></i> {{request.lang.shipment_record}}</button>
+          <button class="btn btn-secondary square showReceptionFileBtn hidden" onclick="receptionFileModal({{form.content_object.id}})"><i class="fa fa-clipboard fa-fx"></i> {{request.lang.reception_receive}} </button>
+          <button class="btn btn-secondary square showAttachedFilesBtn hidden" onclick='showAttachedFilesModal({{form.content_object.id}}, {{closed}})'><i class="fa fa-cloud-upload fa-fx"></i> {{request.lang.attachment_documents}}</button>
+        </center>
+      </div>
+      <div class="card-content">
+        <div class="card-body">
+          <form action="#" id="workflow_form" class="wizard-circle">
+            {% if reception_finished %}
+              {% include "app/flujo_principal/step-4.html" with step_tag=step.tag step_id=step.pk form_id=form_id entryform_id=entryform_id step_tab=4 %}
+            {% else %}
+              {% for step in form.flow.step_set.all %}
+                {% if step.state_id != 4 %}
+                  <h6>{{ step.name }}</h6>
+                  {% include step.route|add:".html" with step_tag=step.tag step_id=step.pk form_id=form_id entryform_id=entryform_id step_tab=forloop.counter0 %}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade text-left" id="log_modal" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="" style="min-width:40% !important;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="title"> {{request.lang.shipment_record_form}} <span></span></h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="font-size:12px !important;">
+        <table class="table table-bordered table-condensed" id="log_table">
+          <thead>
+            <tr>
+              <th>{{request.lang.performed_by}}</th>
+              <th>{{request.lang.type}}</th>
+              <th>{{request.lang.version2}}</th>
+              <th>{{request.lang.date}}</th>
+            </tr>
+          </thead>
+          <tbody id="log_table_tbody">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade text-left" id="email_modal" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="" style="min-width:80% !important;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="title"> {{request.lang.email_form}} <span></span></h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="#" id="email_form" onsubmit="sendEmail(); return false;">
+        <div class="modal-body" style="font-size:12px !important;">
+          <div class="form-group">
+            <label>{{request.lang.receivers}}:</label>
+            <input id="email_to" name="to" class="form-control basic-taginput" data-role="tagsinput" required>
+          </div>
+          <div class="form-group">
+            <label>{{request.lang.template}}:</label>
+            <select class="form-control" id="plantilla" name="plantilla">
+              <option value="0"> {{request.lang.whithout_template}} </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>{{request.lang.message}}: </label>
+            <textarea id="body" name="body" class="form-control" rows="9"></textarea>
+          </div>
+        </div>
+
+        <input type="hidden" id="formId" name="formId">
+        <input type="hidden" id="lang" name="lang">
+        <div class="modal-footer" style="font-size:12px !important;">
+              <button type="submit" class="btn btn-primary">
+              <i class="fa fa-paper-plane fa-fx"></i>
+            </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade text-left" id="service_reports_modal" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">{{request.lang.reports}}</h3>
+      </div>
+      <div class="modal-body">
+        <div class='row'>
+          <div id='service_reports_internal' class='col-sm-12'>
+
+          </div>
+          <div id='service_reports_external' class='col-sm-12'>
+
+          </div>
+
+          <div id='service_final_report' class='col-sm-12'>
+
+          </div>
+
+          <div id='service_reports_external_uploader' class='col-sm-12'>
+
+          </div>
+
+          <div class='col-sm-12 mt-3'>
+            <button class='btn btn-primary submit-file'>{{request.lang.upload_report}}</button>
+            <button class='btn btn-default' data-dismiss="modal">{{request.lang.exit}}</button>
+          </div>
+        </div>       
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade text-left" id="attached_files_modal" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">{{request.lang.attachment_documents}}</h3>
+      </div>
+      <div class="modal-body">
+        <div class='row'>
+          <div id='attached_files' class='col-sm-12'>
+
+          </div>
+
+          <div id='attached_files_uploader' class='col-sm-12'>
+
+          </div>
+
+          <div class='col-sm-12 mt-3'>
+            <button class='btn btn-primary attach-file'>{{request.lang.load}}</button>
+            <button class='btn btn-default' data-dismiss="modal">{{request.lang.exit}}</button>
+          </div>
+        </div>       
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade text-left" id="service_comments_modal" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">{{request.lang.comments}}</h3>
+      </div>
+      <div class="modal-body">
+        <div class='row'>
+          <div id='service_comments' class='col-sm-12'>
+
+          </div>
+
+          <div class='col-sm-12 mt-3'>
+            <button class='btn btn-primary' onclick='saveServiceComment()'>{{request.lang.add_comment}}</button>
+            <button class='btn btn-default' data-dismiss="modal">{{request.lang.exit}}</button>
+          </div>
+        </div>       
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade text-left" id="service_researches_modal" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">{{request.lang.studies}}</h2>
+      </div>
+      <div class="modal-body">
+        <div class='row'>
+          <div id='service_researches' class='col-sm-12'>
+          </div>
+
+          <div class='col-sm-12 mt-3'>
+            <button class='btn btn-primary' id='researches_modal_save_button' onclick='saveServiceResearch()'>{{request.lang.save}}</button>
+            <button class='btn btn-default' data-dismiss="modal">{{request.lang.exit}}</button>
+          </div>
+        </div>       
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade text-left" id="rename_cassettes_modal" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="title"> Renombrando Cassettes Configurados <span></span></h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class='row'>
+          <div class='col-sm-12'>
+            <table class="table table-bordered table-condensed" id="cassette_names_table">
+              <thead>
+                <tr>
+                  <th>Nombre Cassettes Actuales</th>
+                  <th>Ingresa el nuevo nombre</th>
+                </tr>
+              </thead>
+              <tbody id="cassette_names_table_tbody">
+
+              </tbody>
+            </table>
+          </div>
+
+          <div class='col-sm-12 mt-3 pull-right'>
+            <button class='btn btn-primary' onclick='saveCassettesNames()'>Guardar y Reemplazar Nombres</button>
+            <button class='btn btn-default' data-dismiss="modal">{{request.lang.exit}}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade text-left" id="organ_table_keypad" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg" role="">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="organ_table_keypad_body">
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+{% block scripts %}
+
+<script src="{% url 'js_reverse' %}" type="text/javascript"></script>
+
+{% if reception_finished %}
+  {% with "app/flujo_principal/step-4.js" as script_step %}
+    <script src="{% static script_step %}" type="text/javascript"></script>
+  {% endwith %}
+{% else %}
+  {% for step in form.flow.step_set.all %}
+    {% with step.route|add:".js" as script_step %}
+      <script src="{% static script_step %}" type="text/javascript"></script>
+    {% endwith %}
+  {% endfor %}
+{% endif %}
+
+<script language="JavaScript">
+window.onbeforeunload = confirmExit;
+
+formChanged = false;
+function confirmExit(event) {
+  if (formChanged) {
+    event.returnValue = 'You have unfinished changes!';
+  }
+}
+
+var form = $("#workflow_form");
+var summary_edited = false;
+var finalizar = "{{request.lang.finalize}}";
+var continuar =  "{{request.lang.next}}";
+
+let blockButtons = {}; // Bloquear botones para evitar multiples solicitudes innecesarias al backend de parte del usuario 
+
+{% if not reception_finished %}
+  var steps = $("#workflow_form").steps({
+      headerTag: "h6",
+      bodyTag: "fieldset",
+      enableKeyNavigation: false,
+      transitionEffect: "fade",
+      titleTemplate: '<span class="step">#index#</span> #title#',
+      enablePagination: {{closed}} == 0 && {{edit}} == 1,
+      labels: {
+          next: continuar,
+          finish: finalizar
+      },
+      startIndex: 0,
+      onStepChanging: function (events, currentIndex, newIndex)
+      {
+        if ( !(newIndex in blockButtons) ){
+          blockButtons[newIndex] = false;
+        }
+
+        lockScreen(1);
+        window.onbeforeunload = function(){};
+
+        if(!set_state) {
+          var previous_step = false;
+          var form_data;
+          
+          if(currentIndex < newIndex){
+            if (currentIndex == 0){
+              var resp = validate_step_1();
+              if (!resp) {
+                lockScreen(0);
+                window.onbeforeunload = confirmExit;
+                return false
+              }
+            } 
+            else if (currentIndex == 1) {
+              var resp = validate_step_2();
+              if (!resp) {
+                lockScreen(0);
+                return false
+              }
+            }
+          }
+          
+          let index = (currentIndex > newIndex) ? newIndex: currentIndex;
+          previous_step = currentIndex > newIndex;
+          var disform = $("#step_" + index + " :input").find(':disabled').prop('disabled', false);
+          var disform2 = $('.organs-select').prop('disabled', false);
+          var disform3 = $('.stain-select').prop('disabled', false);
+          form_data = $("#step_" + index + " :input").serialize();
+          disform.prop('disabled', true);
+          disform2.prop('disabled', true);
+          disform3.prop('disabled', true);
+
+          if ( !blockButtons[newIndex] ){
+            blockButtons[newIndex] = true; //blocked
+            var url = Urls.workflow();
+            var id_next_step = $("#step_" + newIndex).children("#step_id").val();
+
+            var response;
+            $.ajax({
+              type: "POST",
+              url: url,
+              data: form_data + "&id_next_step=" + id_next_step +"&previous_step=" + previous_step,
+              async: false,
+            })
+            .done(function (data) {
+              response = data;
+            })
+            .fail(function (data) {
+              console.log("Fail");
+            })
+            .always(function (){
+              blockButtons[newIndex] = false; // Habilitar el boton
+            });
+            if (response == undefined) {
+              lockScreen(0);
+              return false
+            }
+            if (response.next_step_permission) {
+              location.reload()
+            } 
+            else {
+              toastr.error('No puedes continuar ya que no tienes permisos para los siguientes pasos.', 'No tienes permisos');
+              setTimeout(function() {
+                window.location.href = '/ingresos'
+              }, 1000);
+            }
+            if(!previous_step) {
+              if(response.process_response) {
+                toastr.success('', 'Paso guardado exitosamente!');
+              }
+            }
+            return response.next_step_permission;
+          }
+
+        } 
+        else {
+          set_state = false;
+          return true
+        }
+      },
+      onStepChanged:function (event, currentIndex, prevIndex){
+        lockScreen(0);
+
+        $('.actions > ul > li:first-child').attr('style', 'display:none');
+
+        return true; 
+      }, 
+      onFinished: function (event, currentIndex)
+      {
+        lockScreen(1);
+        event.preventDefault();
+        var url = Urls.workflow();
+        var disform = $("#step_" + currentIndex + " :input").find(':disabled').prop('disabled', false);
+        var disform2 = $('.organs-select').prop('disabled', false);
+        var disform3 = $('.stain-select').prop('disabled', false);
+        form_data = $("#step_" + currentIndex + " :input").serialize();
+        disform.prop('disabled', true);
+        disform2.prop('disabled', true);
+        disform3.prop('disabled', true);
+
+        $.ajax({
+          type: "POST",
+          url: url,
+          data: form_data,
+        })
+        .done(function () {
+          {% if edit %}
+            swal({
+              title: "{{request.lang.confirmation}}",
+              text: "{{request.lang.close_case_text}}",
+              icon: "warning",
+              showCancelButton: true,
+              buttons: {
+                cancel: {
+                    text: "{{request.lang.cancel_case}}",
+                    value: null,
+                    visible: true,
+                    className: "btn-warning",
+                    closeModal: true,
+                },
+                confirm: {
+                    text: "{{request.lang.confirm_case}}",
+                    value: true,
+                    visible: true,
+                    className: "",
+                    closeModal: true,
+                }
+              }
+            }).then(isConfirm => {
+              if (isConfirm) {
+                var url = Urls.finish_reception({{form_id}});
+                $.ajax({
+                  type: "GET",
+                  url: url,
+                  async: false,
+                })
+                .done(function (data) {
+                  response = data;
+                  if (response.ok) {
+                    toastr.success('', '{{request.lang.reception_done}}');
+                    var timer = setTimeout(function() {
+                      location.reload();
+                    }, 2000);
+
+                  } else {
+                    toastr.error('', 'No ha sido posible finalizar la recepción del caso.');
+                  }
+                })
+                .fail(function (data) {
+                  toastr.error('', 'No ha sido posible finalizar la recepción del caso.');
+                });
+              }
+            });
+            
+          {% else %}
+            swal({
+                title: "Información",
+                text: "Lo sentimos, usted no posee los permisos necesarios para finalizar la recepción del caso.",
+                icon: "info",
+                showCancelButton: true,
+              });
+          {% endif %}
+
+        })
+        .fail(function () {
+          console.log("Fail")
+        })
+        lockScreen(0);
+      }
+  });
+{% endif %}
+
+$(window).on('load', function (e) {
+  set_state = true;
+  {% if set_step_tag != "step_1" %}
+  window.onbeforeunload = function(){};
+  {% endif %}
+  
+  {% if not reception_finished %}
+    var step_wizard = parseInt("{{ set_step_tag }}".split("_")[1]) - 1;
+    var step_tag_function = "init_{{ set_step_tag }}";
+    
+    form.steps("setStep", step_wizard);
+    set_state = false;
+
+    window[step_tag_function]({{edit}} == 1);
+  {% else %}
+    window["init_step_4"]({{edit}} == 1);
+  {% endif %}
+});
+
+$("#show_summary").on("hidden.bs.modal", function () {
+    if (summary_edited){
+      location.reload();
+    }
+});
+
+$(document).on('change', '.just_increasing', function(){
+  var original_value = $(this).data('val');
+  if ( $(this).val() < original_value) {
+    $(this).val(original_value);
+  }
+});
+
+$(document).on('click', '.stepsToStep2', function(e){
+    form.steps("previous");
+    $("#show_summary").modal("hide");
+});
+
+function shareChoice(){
+  swal({
+    title: "{{request.lang.information}}",
+    text: "{{request.lang.information_action}}",
+    icon: "info",
+    className: "multiple-action",
+    closeOnClickOutside: false,
+    closeOnEsc: false,
+    showCancelButton: false,
+    buttons: {
+      download: {
+        text: "{{request.lang.download}}",
+        value: "download",
+        visible: true,
+        className: "",
+        closeModal: true,
+      },
+      email: {
+        text: "{{request.lang.send_to_mail}}",
+        value: "email",
+        visible: true,
+        className: "",
+        closeModal: true,
+      },
+      downloadEmail: {
+        text: "{{request.lang.download_send}}",
+        value: "downloadEmail",
+        visible: true,
+        className: "",
+        closeModal: true,
+      },
+      continue: {
+        text: "{{request.lang.next}}",
+        visible: true,
+        className: "",
+        closeModal: true,
+      }
+    }
+  })
+  .then(value => {
+    emailOnly = true;
+    downloadOption = false;
+    emailOption = false;
+    switch (value) {
+      case "downloadEmail":
+        emailOnly = false;
+      case "email":
+        emailOption = true;
+        if(emailOnly)
+          break
+      case "download":
+      downloadOption = true;
+        break
+      default:
+        return;
+    }
+    swal({
+      title: "{{request.lang.information}}",
+      text: "{{request.lang.send_document_languaje}}",
+      icon: "info",
+      className: "multiple-action",
+      closeOnClickOutside: false,
+      closeOnEsc: false,
+      showCancelButton: true,
+      buttons: {
+        
+        En: {
+          text: "{{request.lang.english}}",
+          value: "en",
+          visible: true,
+          className: "",
+          closeModal: true,
+        },
+        Es: {
+          text: "{{request.lang.spanish}}",
+          value: "es",
+          visible: true,
+          className: "",
+          closeModal: true,
+        },
+        cancel: {
+            text: "{{request.lang.cancel}}",
+            value: "",
+            visible: true,
+            className: "btn-warning",
+            closeModal: true,
+        },
+      }
+    })
+    .then(lang => {
+      if(lang == "") return;
+      shareAction(emailOption, downloadOption, lang)
+   
+    });
+    
+  });
+}
+
+function shareAction(email, download, lang){
+  //Accion de generar un pdf
+  // Una vez terminada realizar el resto de las acciones con la referencia al documento
+  if(download){
+    // Modificar el request del download
+      window.open('/download-resumen-report/{{form.id}}?lang='+lang, '_blank');
+    }
+  if(email){
+    $.ajax({
+      type: "GET",
+      url: '/emailTemplate?form={{form.object_id}}',
+    })
+    .done(function (data) {
+      if (data.ok)
+      {
+        $('#email_modal').modal('show');
+        $('#email_to').tagsinput();
+        
+        $.each(data.email.split(";"), function(index, elem){
+          if (elem != "") {
+            $('#email_to').tagsinput('add', elem);
+          }
+        });
+        $('#lang').val(lang);
+        $('#formId').val({{form.id}});
+        let template = '<option value="0">{{request.lang.without_template}}</option>';
+        $.each(data.templates, function(i, v){
+          template += '<option value="'+v.id+'">'+v.name+'</option>'
+        });
+        $('#plantilla').html(template);
+      }
+    });
+  }
+}
+
+function sendEmail(){
+  var form_data = $("#email_form").serialize();
+  lockScreen(1);
+  $.ajax({
+    type: "POST",
+    url: '/emailTemplate',
+    data: form_data,
+  })
+    .done(function (data) {
+      $('#email_modal').modal('hide');
+      lockScreen(0);
+
+
+      if (data.ok)
+      {
+        // reloadResponsibleTable()
+        // $("#responsible_form")[0].reset();
+        toastr.success("", "Mail enviado exitosamente.");
+        
+
+      }
+      else
+      {
+        
+        toastr.error("", "No ha sido posible enviar el Mail satisfactoriamente.");
+        
+      }
+      
+    })
+    .fail(function (data) {
+      console.log("Fail");
+    })
+}
+
+function showAttachedFilesModal(id, closed){
+
+  $('#attached_files').html('');
+  var title = '<h4>{{request.lang.files}}</h4>';
+  filesText = title + '<div id="file_list" class="col-sm-12 pl-2 pb-1">';
+  var subTitle = '<h4>{{request.lang.outsources_files}}</h4>';
+  filesTextOutsources = subTitle + '<div id="file_list_outsources" class="col-sm-12 pl-2 pb-3">';
+  var url = Urls.case_files(id);
+  $.ajax({
+    type: "GET",
+    url: url,
+  })
+  .done(function (data) {
+
+    // Normal files
+    if (data.files.length > 0) {
+      if (!closed) {  
+        $.each(data.files, function(index, value){
+          filesText += '<div id="cf-'+value.id+'"><button class="btn btn-sm btn-danger" onclick="deleteCaseFile('+id+', '+value.id+')"><i class="fa fa-close"></i></button> <a target="_blank" href="'+value.path+'"><i class="fa fa-download"></i> '+value.name+'</a></div>';
+        });
+      } else {
+        $.each(data.files, function(index, value){
+          filesText += '<div id="cf-'+value.id+'"><a target="_blank" href="'+value.path+'"><i class="fa fa-download"></i> '+value.name+'</a></div>';
+        });
+      }
+    } else {
+      filesText += '<div><h5 class="not_available_text">No hay archivos disponibles</h5>';
+    }
+    filesText += '</div>';
+
+    // Outsources files
+    let hasOutsourcesFiles = false;
+    if (data.outsourcesFiles.length > 0) {
+      hasOutsourcesFiles = true;
+      if (!closed) {  
+        $.each(data.outsourcesFiles, function(index, value){
+          filesTextOutsources += '<div id="cf-'+value.id+'"><button class="btn btn-sm btn-danger" disabled onclick="deleteCaseFile('+id+', '+value.id+')"><i class="fa fa-close"></i></button> <a target="_blank" href="'+value.path+'"><i class="fa fa-download"></i> '+value.name+'</a></div>';
+        });
+      } else {
+        $.each(data.files, function(index, value){
+          filesTextOutsources += '<div id="cf-'+value.id+'"><a target="_blank" href="'+value.path+'"><i class="fa fa-download"></i> '+value.name+'</a></div>';
+        });
+      }
+    }
+    filesTextOutsources += '</div>';
+
+    if (hasOutsourcesFiles){
+      filesText += filesTextOutsources
+    }
+
+    $('#attached_files').html(filesText);
+  })
+  .fail(function () {
+    console.log("Fail")
+  });
+
+  if (!closed) {
+    var url = Urls.case_files(id);
+    var temp_uploader = "<h4>{{request.lang.file_loader}}</h4>";
+    temp_uploader += '<div class="col-sm-12"><form id="case_files_uploader" action="'+url+'" class="dropzone needsclick">';
+    temp_uploader += '<div class="dz-message" data-dz-message>';
+    temp_uploader += '<center><span><h3>{{request.lang.drag_select_file}}</h3></span></center>';
+    temp_uploader += '</div>';    
+    temp_uploader += '</form></div>';
+    $('#attached_files_uploader').html('');
+    $('#attached_files_uploader').html(temp_uploader);
+
+    $("#case_files_uploader").dropzone({
+      autoProcessQueue: false,
+      acceptedFiles: ".doc, .docx, .pdf, .xls, .xlsx, .png, .jpg",
+      init: function() {
+        var submitButton = document.querySelector(".attach-file")
+        myDropzone = this;
+        submitButton.addEventListener("click", function() {
+          myDropzone.processQueue();
+        });
+        this.on('sending', function(file, xhr, formData){
+          lockScreen(1);
+        });
+
+        this.on("success", function(file, responseText) {
+          if (responseText.ok) {
+            toastr.success('', 'Archivo cargado exitosamente.');
+            this.removeFile(file);
+            $('.not_available_text').remove();
+            $('#file_list').prepend('<div id="cf-'+responseText.file.id+'"><button class="btn btn-sm btn-danger" onclick="deleteCaseFile('+id+', '+responseText.file.id+')"><i class="fa fa-close"></i></button> <a target="_blank" href="'+responseText.file.path+'"><i class="fa fa-download"></i> '+responseText.file.name+'</a></div>');
+          } else {
+            toastr.error('', 'No ha sido posible cargar el archivo. Intente nuevamente.');
+          }
+          lockScreen(0);
+        });
+
+        this.on("error", function(file, response) {
+          this.removeFile(file);
+          bootbox.hideAll();
+          toastr.error('', 'No ha sido posible cargar el archivo. Intente nuevamente.');
+          lockScreen(0);
+        });
+
+        this.on("addedfile", function() {
+          if (this.files[1]!=null){
+            this.removeFile(this.files[0]);
+          }
+        });
+      },
+    });
+  }
+
+  $('#attached_files_modal').modal('show');
+}
+
+function deleteCaseFile(entryform_id, id){
+  var url = Urls.case_files_id(entryform_id, id);
+  $.ajax({
+    type: "DELETE",
+    url: url,
+  })
+  .done(function (data) {
+    toastr.success('', 'Archivo eliminado exitosamente.');
+    $('#cf-'+id).remove();
+  })
+  .fail(function () {
+    toastr.error('', 'No ha sido posible eliminar el archivo. Intente nuevamente.');
+  });
+}
+
+$(document).on('change', '#plantilla', function(){
+  if($(this).val() == "0")
+    return;
+  $.ajax({
+    type: "GET",
+    url: '/emailTemplate/'+$(this).val(),
+  })
+  .done(function (data) {
+    if (data.ok)
+    {
+      $('#body').val(data.template.body);
+    }
+  });
+})
+
+function logModal() {
+  $('#log_modal').modal('show');
+  reloadLogTable();
+}
+
+function reloadLogTable(entry) {
+  $.ajax({
+    type: "GET",
+    url: '/logactions/{{form.content_object.id}}',
+  })
+    .done(function (data) {
+      if (data.ok)
+      {
+        $('#log_table_tbody').html("");
+        var template = "";
+        $.each(data.data, function(i, v){
+          template += "<tr>";
+          template += "<td>"+ v['done_by'] + "</td>";
+          template += "<td>"+ v['type'] + "</td>";
+          template += "<td>"+ v['version'] + "</td>";
+          template += "<td>"+ v['action_date'] + "</td>";
+          template += "</tr>";
+        })
+        var language = "{{request.lang.version}}",
+          url = "";
+        if (language === "English"){url="https://cdn.datatables.net/plug-ins/1.10.16/i18n/English.json"}
+        else {url="https://cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"}
+        $("#log_table_tbody").html(template);
+        $('#log_table').DataTable({
+          "destroy": true,
+          "oLanguage": {
+            "sUrl": url
+          }
+        });
+      }
+    });
+}
+
+function receptionFileModal(id){
+  swal({
+    title: "{{request.lang.reception_receive}}",
+    text: "{{request.lang.reception_receive_question}}",
+    icon: "warning",
+    showCancelButton: true,
+    buttons: {
+      cancel: {
+          text: "{{request.lang.cancel_case}}",
+          value: null,
+          visible: true,
+          className: "btn-warning",
+          closeModal: true,
+      },
+      confirm: {
+          text: "{{request.lang.next}}",
+          value: true,
+          visible: true,
+          className: "",
+          closeModal: true,
+      }
+    }
+  }).then(isConfirm => {
+    if (isConfirm) {
+      let url = '/download-reception/'+id;
+      window.open(url, '_blank');
+    }
+  });
+}
+
+$(document).on('click', '[data-toggle="buttons"] .btn', function () {
+    let $btn = $(this);
+    $(this).toggleClass('btn-warning');
+    
+    // toggle checkbox
+    let $chk = $(this).find('[type=checkbox]');
+
+    if ($btn.hasClass('btn-warning')){
+      $chk.prop('checked', true);
+    } else {
+      $chk.prop('checked', false);
+    }
+    
+    return false;
+});
+
+</script> {% endblock scripts %}

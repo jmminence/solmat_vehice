@@ -1,0 +1,144 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block content %}
+<!-- MAIN -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <header class="card-header">
+                <h1 class="card-title">CASSETTES</h1>
+            </header>
+            <main class="card-body">
+                <table class="table table-sm table-bordered table-striped compact" id="differenceTable">
+                    <thead>
+                        <tr>
+                            <th>Caso</th>
+                            <th>Identificacion</th>
+                            <th>Unidad</th>
+                            <th>Diferencia</th>
+                            <th>Resolver</th>
+                            <th>Corregir</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for difference in differences %}
+                        <tr>
+                            <td>{{ difference.unit.identification.entryform.no_caso }}</td>
+                            <td>{{ difference.unit.identification }}</td>
+                            <td>{{ difference.unit.correlative }}</td>
+                            <td>{{ difference.organ.abbreviation }} ({{difference.difference}})</td>
+                            <td>
+                                <button
+                                    id="{{difference.pk}}"
+                                    class="btn btn-warning markAsFixed"
+                                >
+                                    SIN REVISAR
+                                </button>
+                            </td>
+                            <td class="d-flex flex-column">
+                                <a href="{% url 'lab:cassette_index' %}" >Editar Cassettes</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </main>
+        </div>
+    </div>
+</div>
+
+<!-- END MAIN -->
+
+{% endblock content %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.2/dist/sweetalert2.all.min.js"></script>
+<script type="text/javascript">
+ function getCookie(name) {
+     var cookieValue = null;
+     if (document.cookie && document.cookie !== "") {
+         var cookies = document.cookie.split(";");
+         for (var i = 0; i < cookies.length; i++) {
+             var cookie = jQuery.trim(cookies[i]);
+             // Does this cookie string begin with the name we want?
+             if (cookie.substring(0, name.length + 1) === name + "=") {
+                 cookieValue = decodeURIComponent(
+                     cookie.substring(name.length + 1)
+                 );
+                 break;
+             }
+         }
+     }
+     return cookieValue;
+ }
+
+ $("#differenceTable").DataTable();
+
+ $(document).ready(() => {
+     $(document).on("click", ".markAsFixed", (e) => {
+         const differenceId = e.target.id;
+
+         Swal.fire({
+             title: "Se marcará como Revisado",
+             icon: "info",
+             text: "Puede agregar un comentario opcional:",
+             input: "text",
+             confirmButtonText: "Listo, ir a editar identificaciones/unidades",
+             denyButtonText: "Listo, solamente marcar como revisado",
+             cancelButtonText: "Cancelar, no marcar como revisado",
+             showCancelButton: true,
+             showDenyButton: true,
+             denyButtonColor: "#006699"
+         }).then((result) => {
+             let message = null;
+             if (result.value) {
+                 message = result.value
+             }
+             let data = {
+                 message: message,
+                 fix_differences: 0,
+             }
+
+             if (result.isConfirmed) {
+                 data.fix_differences = 1;
+             }
+
+             if (result.isDenied) {
+                 data.fix_differences = 0;
+             }
+
+             if (result.isDismissed) {
+                 return;
+             }
+
+            $.ajax(Urls["lab:update_unit_difference"](differenceId), {
+                data: data,
+
+                method: "POST",
+
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),
+                },
+                success: (data, textStatus) => {
+                    if (data.redirect != undefined) {
+                        location.href = data.redirect
+                    } else {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Se ha marcado como revisado",
+                        }).then(() => {
+                            location.reload();
+                        });
+                    }
+                },
+                error: (xhr, textStatus, error) => {
+                    Swal.fire({
+                        icon: "error",
+                    });
+                },
+            });
+         })
+     })
+ })
+</script>
+{% endblock scripts %}

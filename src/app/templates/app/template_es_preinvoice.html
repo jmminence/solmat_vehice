@@ -1,0 +1,235 @@
+{% extends 'base_pdf.html' %}
+{% load static %}
+{% block stylesheets %}
+
+<style type="text/css">
+ 
+  body{
+    height:100% !important;
+  }
+
+  .container {
+    min-height:100% !important;
+    font-family: "Helvetica" !important;
+    font-size: 10px !important;
+  }
+ 
+  .t1 {
+    font-family: "Helvetica" !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    
+  }
+ 
+  .t2 {
+    font-family: "Helvetica" !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+  }
+ 
+  .t3 {
+    font-family: "Helvetica" !important;
+    font-size: 11px !important;
+    font-weight: bold !important;
+    
+  }
+ 
+  .t3_n {
+    font-family: "Helvetica" !important;
+    font-size: 11px !important;
+    font-weight: normal !important;
+    
+  }
+ 
+  div {
+    font-family: "Helvetica" !important;
+    font-size: 10px;
+  }
+ 
+  table.table-bordered > tbody > tr > td{
+    border:1px solid black !important;
+    vertical-align:middle;
+    text-align: center;
+  }
+
+  .table-white > tbody > tr > td{
+    border:1px solid white !important;
+    vertical-align:middle;
+    text-align: center;
+  }
+
+  .info-right{
+    font-family: "Helvetica" !important;
+    font-size: 11px !important;
+    font-weight: normal !important;
+    text-align:right !important;
+  }
+
+  .firma{
+    text-align: center !important;
+  }
+
+  .content{
+    padding-bottom: 60px !important;
+  }
+
+  .total{
+    float:right;
+    text-align:right;
+  }
+
+  .table-top{
+    background-color: orange !important;
+    color: white !important;
+  }
+
+ </style>
+
+{% endblock stylesheets %}
+
+{% block body %}
+<div class="container">
+  <div class="content">
+    <div class="row" style="page-break-inside: avoid !important;">
+      <table class="table table-bordered">
+        <tr>
+          <td style="border:1px solid white !important;"></td>
+          <td class="col-xs-5" style="border:1px solid white !important; border-right:1px solid black !important;">
+          </td>
+          <td class="col-xs-2">
+            <div clas="row">
+              <div class="col-xs-12">
+                <span class="t2">Prefactura N°:</span>
+              </div>
+              <div class="col-xs-12">
+                <span class="t2">Fecha:</span>
+              </div>
+            </div>
+          </td>
+          <td class="col-xs-2">
+            <div class="">
+              <div class="col-xs-12">
+                <span class="t2">{{preinvoice.number}}</span>
+              </div>
+              <div class="col-xs-12">
+                <span class="t2">{{preinvoice.updated_at|date:'d-m-Y'}}</span>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" class="col-xs-3" style="border:1px solid white !important; border-right:1px solid black !important; text-align: left;">
+            <img src="{% static 'assets/images/logo/logo.png' %}" class="" style="width: 400px;">
+          </td>
+          <td class="info-right" colspan="4">
+            <span>VeHiCe SpA</span><br>
+            <span>Laboratorio de diagnóstico</span><br>
+            <span>Rut: 76.431.675-4</span><br>
+            <span>Dirección: Libertad #590, Puerto Montt</span><br>
+            <span>Teléfono: 56 65 2 710232</span><br>
+            <span>admin@vehice.com</span><br>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div style="margin-top:20px">
+      <span class="t1">Cliente:    </span><span class="t2">{{preinvoice.customer}}</span><br><br>
+      <span class="t1">Contacto:   </span><span class="t2">{{responsible}}</span><br><br>
+      <span class="t1">Moneda:     </span><span class="t2">{{currency}}</span>
+    </div>
+  
+    <div class="row" style="margin-top:50px">
+      <table class="table table-bordered">
+        <tbody>
+          <tr>
+            <td class="col-xs-2 t3" style="background-color: #fc8d3d !important;">
+              <span class="t3 " style="color: white !important;">Informe/Caso</span>
+            </td>
+            <td class="col-xs-2 t3" style="background-color: #fc8d3d !important;">
+              <span class="t3 " style="color: white !important;">Fecha Solicitud</span>
+            </td>
+            <td class="col-xs-2 t3" style="background-color: #fc8d3d !important;">
+              <span class="t3 " style="color: white !important;">Fecha Servicio</span>
+            </td>
+            <td class="col-xs-2 t3" style="background-color: #fc8d3d !important;">
+              <span class="t3 " style="color: white !important;">Centro</span>
+            </td>
+            {%if preinvoice.customer.inter_lab%}
+            <td class="col-xs-2 t3" style="background-color: #fc8d3d !important;">
+              <span class="t3 " style="color: white !important;">Caso</span>
+            </td>
+            {%endif%}
+            <td class="col-xs-2 t3" style="background-color: #fc8d3d !important;">
+              <span class="t3 " style="color: white !important;">Id. Muestras</span>
+            </td>
+            <td class="col-xs-2 t3" style="background-color: #fc8d3d !important;">
+              <span class="t3 " style="color: white !important;">Servicio</span>
+            </td>
+            <td class="col-xs-2 t3" style="background-color: #fc8d3d !important;">
+              <span class="t3 " style="color: white !important;">N° Muestras</span>
+            </td>
+            <td class="col-xs-2 t3" style="background-color: #fc8d3d !important;">
+              <span class="t3 " style="color: white !important;">Valor U.</span>
+            </td>
+            <td class="col-xs-2 t3" style="background-color: #fc8d3d !important;">
+              <span class="t3 " style="color: white !important;">Valor Total({{currency}})</span>
+            </td>
+          </tr>
+          {% for idx, values in analysis.items %}
+          <tr>
+            {%if values.report_code == null or values.report_code == "REALIZADO" %}
+              <td class="col-xs-2 t3_n">{{values.entryform.no_caso}}</td>
+            {%else%}
+            <td class="col-xs-2 t3_n">{{values.report_code}}</td>
+            {%endif%}
+            <td class="col-xs-2 t3_n">{{values.created_at|date:'d-m-Y'}}</td>
+            <td class="col-xs-2 t3_n">{{values.manual_closing_date|date:'d-m-Y'}}</td>
+            {%if values.entryform.center == "" %}
+              <td class="col-xs-2 t3_n">n/a</td>
+            {%else%}
+            <td class="col-xs-2 t3_n">{{values.entryform.center}}</td>
+            {%endif%}
+            {%if preinvoice.customer.inter_lab%}
+            <td class="col-xs-2 t3_n">{{values.entryform.no_request}}</td>
+            {%endif%}
+            <td class="col-xs-2 t3_n">
+              {% for identification in values.identifications %}
+                {%if identification == "" or identification == Nulo%}
+                <span class="t3_n">(n/a)</span>
+                {%else%}
+                <span class="t3_n"> ({{identification}})</span>
+                {%endif%}
+              {% endfor %}
+            </td>
+            <td class="col-xs-2 t3_n">{{values.exam.name}}</td>
+            <td class="col-xs-2 t3_n">{{values.samples_studied}}</td>
+            <td class="col-xs-2 t3_n">{{values.unit_value}}</td>
+            <td class="col-xs-2 t3_n">{{values.total_value}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div style="width:200px;" class="total">
+      
+      {%if currency == "UF" or currency == "CLP"%}
+        <span class="t1">Subtotal: </span><span class="t1">{{subtotal}}</span><br><br>
+        <span class="t1">IVA: </span><span class="t1">{{iva}}</span><br><br>
+        <span class="t1">Total: </span><span class="t1">{{total}}</span>
+      {%else%}
+        <span class="t1">Total: </span><span class="t1">{{subtotal}}</span>
+      {%endif%}
+    
+    </div>
+  </div>
+</div>
+<div class="firma">
+  <img style="width: 250px !important;" src="{% static '/assets/images/Gabriela Vera - Firma VeHiCe.png'%}"><br>
+  <span class="t1">Gabriela Vera Gaedicke</span><br>
+  <span class="t1">CEO VeHiCe</span>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+{% endblock scripts %}

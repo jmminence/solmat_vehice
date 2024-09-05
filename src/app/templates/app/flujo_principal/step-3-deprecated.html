@@ -1,0 +1,100 @@
+<fieldset>
+  <div id="step_{{ step_tab }}">
+    <input type="hidden" id="step_id" name="step_id" value="{{step_id}}">
+    <input type="hidden" id="step_tag" name="step_tag" value="{{step_tag}}">
+    <input type="hidden" id="form_id" name="form_id" value="{{form_id}}" >
+    <input type="hidden" id="entryform_id" name="entryform_id" value="{{entryform_id}}" >
+    <h4 class="form-section">
+      <i class="ft-user"></i> Cargar Procesador Tejido
+    </h4>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Fecha / Hora Procesado Tejido : </label>
+          <div class='input-group date' id='datetime_processor_loaded_at'>
+            <input type="text" class="form-control" name="processor_loaded_at" id="processor_loaded_at" {% if not edit %}disabled{% endif %}/>
+            <div class="input-group-append">
+              <span class="input-group-text">
+                <span class="fa fa-calendar"></span>
+              </span>
+            </div>
+          </div>
+          <input type="hidden" name="processor_loaded_at_submit" id="processor_loaded_at_submit" />
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+        </div>
+      </div>
+      <!-- <div class="col-md-6">
+        <div class="form-group">
+          <label for="date3">Nro muestras por cassettes</label>
+          <select class="select2 form-control" id="no_cassette" name="cassette">
+            <option value='1' selected>x1</option>
+            <option value='2'>x2</option>
+            <option value='3'>x3</option>
+            <option value='4'>x4</option>
+          </select>
+        </div>
+      </div> -->
+    </div>
+    <div id="cassette_group">
+      <table id="cassettes_table" class="table table-bordered table-hover table-condensed" width="100%">
+        <thead>
+          <tr>
+            <th>No. Muestra</th>
+            <th>Identificación</th>
+            <th>Nombre Cassette</th>
+            <th>Organos</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        </table>
+    </div>
+    <div class='pull-right mb-2'>
+      <button type="button"class='btn btn-secondary' onclick='renameCassettes();'><i class='fa fa-edit fa-fx'></i> Renombrar Cassettes Configurados</button>
+    </div>
+  </div>
+</fieldset>
+
+<script id="cassette_row" type="text/x-lodash-template">
+  <tr id="cassette-index-<%= cassette_index %>">
+    <input type="hidden" name="cassette[sample_id][<%= sample_index %>]" value="<%= sample_id %>" >
+    {% comment %} <input type="hidden" name="cassette[cassette_name][<%= cassette_index %>]" value="<%= cassette_name %>" > {% endcomment %}
+    <td>
+      <%= sample_index %>
+    </td>
+    <td>
+      <%= sample_name %>
+    </td>
+    <td>
+      {% comment %} <%= cassette_name %> {% endcomment %}
+      <select class="form-control cassetteSelector" name="cassette[cassette_name][<%= sample_index %>]" style="width:85%">
+        <% _.each( cassettes, function( cassette ){ %>
+          <% if (cassette.sample_id == sample_id) { %>
+            <option selected value="<%= cassette.cassette_name %>"><%= cassette.cassette_name %></option>
+          <% } else { %>
+            <option value="<%= cassette.cassette_name %>"><%= cassette.cassette_name %></option>
+          <% } %>
+        <% }); %>
+      </select>
+    </td>
+    <td style="width:40%">
+      <select class="select2 form-control form-control-sm" style="width:100%" {% if not edit %}disabled{% endif %}
+        id="cassette-organ-<%= sample_index %>" name="cassette[organ][<%= sample_index %>]" multiple="multiple">
+        <% _.each( organs, function( organ ){ %>
+          <option value=<%= organ.id %>> <%= organ.name %> </option>
+        <% }); %>
+      </select>
+    </td>
+    <td>
+      <% if (extra) { %>
+        <button title="Eliminar Cassette" tooltip="" type="button" data-cassette="<%= cassette_index %>" class="btn btn-icon btn-danger remove_cassette"><i class="fa fa-trash"></i></button>
+      <% } else { %>
+        <button {% if not edit %}disabled{% endif %} title="Añadir cassette a la muestra" tooltip="" type="button" data-sample="<%= sample_id %>" class="btn btn-icon btn-secondary add_cassette_to_sample"><i class="fa fa-plus"></i></button>
+      <% } %>
+    </td>
+  </tr>
+</script>

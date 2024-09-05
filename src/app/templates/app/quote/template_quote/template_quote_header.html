@@ -1,0 +1,102 @@
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body,
+		html {
+			font-family: Verdana, Geneva, Tahoma, sans-serif;
+			color: white;
+			height: 100%;
+			width: 100%;
+		}
+
+		.container {
+			width: 100%;
+		}
+
+		.header {
+			width: 100%;
+			background-color: #0D0344;
+			height: 150px;
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			right: 0;
+
+			display: -webkit-box;
+			-webkit-box-pack: justify;
+		}
+
+		.image {
+			width: 30%;
+
+			display: -webkit-box;
+			-webkit-box-align: center;
+			padding-left: 25px;
+		}
+
+		img {
+			width: 250px;
+		}
+
+		.title {
+			width: 30%;
+			font-size: 20;
+
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-box-align: center;
+			-webkit-box-pack: center;
+		}
+		.title p {
+			padding: 5px 0px;
+		}
+
+		.contact {
+			width: 30%;
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-box-align: end;
+			-webkit-box-pack: center;
+			padding-right: 25px;
+		}
+
+		.contact p {
+			padding-bottom: 5px;
+			text-align: right;
+		}
+
+		#date {
+			padding-top: 15px;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<div class="header">
+			<div class="image">
+				<img src="{{logo_image_url}}" alt="">
+			</div>
+			<div class="title">
+				<p>N° cotización {{ quote_number }}</p>
+				<p style="font-size: 18px;">AC-PR01-R01</p>
+			</div>
+			<div class="contact">
+				<p><strong>Contacto: {{responsible.name}}</strong></p>
+				<p><strong>EMPRESA ASOCIADA</strong></p>
+				<p>{{email}}</p>
+				<p id="date">{{created_at}}</p>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

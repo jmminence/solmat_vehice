@@ -1,0 +1,58 @@
+# Python and Django
+*.egg-info
+*.pot
+*.py[co]
+*.log
+*.exe
+*.lnk
+**/settings.py
+.tox/
+__pycache__
+MANIFEST
+dist/
+docs/_build/
+docs/locale/
+node_modules/
+tests/coverage_html/
+tests/.coverage
+build/
+public/
+tests/report/
+
+# Non Source
+/bin/
+/include/
+/lib/
+env/
+virtualenv/
+venv/
+django3/
+local/
+.vscode/
+unixODBC-2.3.7/
+.python-version
+unixODBC-2.3.7.tar.gz
+
+
+# Mac
+.Python
+.DS_Store
+
+# Cache files for Sublime Text
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+*.sublime-project
+
+# Docker
+Dockerfile
+
+# PDF
+*.pdf
+
+# Diagramas
+*.mwb*
+
+# Instaladores
+*.deb

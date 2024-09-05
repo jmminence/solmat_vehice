@@ -1,0 +1,338 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block stylesheets %}
+
+<style type="text/css">
+    th {
+        background-color: #008385;
+        color: white;
+      }
+    tr{
+        text-align: center;
+    }
+    tr:nth-child(even) {background: #f2f2f2;}
+
+    table tbody {
+        width: 100%;
+    }
+
+    table{
+        margin-top: 20px;
+    }
+
+    td{
+        vertical-align: middle !important;
+    }
+
+    th{
+        vertical-align: middle !important;
+    }
+
+    .scrollit {
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .distribucion{
+        min-width: 250px;
+    }
+
+    .sample{
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+        min-width: 78px;
+    }
+
+    .save{
+        padding-top: 15px;
+        text-align: right;
+    }
+
+    .table .sticky{
+        position: sticky;
+        left:0;
+    }
+
+    tbody .sticky{
+        background: #f5f7f9;
+        border: 1px solid #e3ebf3d;
+    }
+
+    .one{
+        background-color: #d7fae1;
+    }
+
+    .two{
+        background-color: #fafcba;
+    }
+
+    .three{
+        background-color: #fcbaba;
+    }
+
+    tbody .sticky tr:nth-child(2n) {background: #f2f2f2 !important;}
+
+    .custom-file-input:lang(en) ~ .custom-file-label::after {
+        content: "Seleccionar";
+      }
+
+    .drag-handle{
+        cursor: pointer;
+        padding-left:20px;
+    }
+
+    .modal {
+        overflow-y:auto;
+      }
+
+</style>
+
+{% endblock stylesheets %}
+
+{% block content_header %}
+<div class="content-header row">
+    <div class="content-header-left col-md-6 col-12 mb-2">
+        <h3 class="content-header-title mb-0">Consolidado</h3>
+        <div class="row breadcrumbs-top">
+            <div class="breadcrumb-wrapper col-12">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/">INICIO</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="#">CONSOLIDADO</a>
+                    </li>
+                    <li class="breadcrumb-item active">
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content_header %}
+
+{% block content %}
+    {% if diagnosticos %}
+        <form id="dataForm">
+            <div class="container-sm">
+                <div class="container">
+                    <h4>Seleccione los diagnósticos:</h4>
+                    <select required class="select2 form-control select-diagnostic" id="select-diagnostic" multiple>
+                        {% for diagnostico in diagnosticos %}
+                            <option value="{{diagnostico.id}}">{{diagnostico.organo}} - {{diagnostico.resultado.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="container-sm scrollit">
+                    <table class="table table-striped table-bordered " id="table-diagnostic">
+                        <thead>
+                            <tr>
+                                <th rowspan="3" colspan="1">{{request.lang.organ}}</th>
+                                <th class="sticky" rowspan="3">{{request.lang.diagnostic}}</th>
+                                <th rowspan="3">{{request.lang.distribution}}</th>
+                                <th id="diagnosticIntensity">{{request.lang.DiagnosticIntensity}}</th>
+                            </tr>
+                            <tr>
+                            </tr>
+                            <tr>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="save">
+                <button id="edit_report" class="btn btn-primary" type="button" data-dismiss="modal" data-toggle="modal" data-target="#report_edit">Generar informe</button>
+                <button id="export_consolidado" class="btn btn-primary" type="button">Exportar</button>
+                <button class="btn btn-primary" type="submit" >Guardar</button>
+            </div>
+        </form>
+
+        <div class="modal fade" id="report_options" aria-labelledby="exampleModalCenterTitle">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle">Seleccione una opcion</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                <div class="modal-body">
+                    <button id="generate_report" onclick="" class="btn btn-primary" type="button">Generar informe</button>
+                    <button id="edit_report" class="btn btn-primary" type="button" data-dismiss="modal" data-toggle="modal" data-target="#report_edit">Editar informe</button>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <form class="modal fade" id="report_edit" name="report_edit" aria-labelledby="exampleModalCenterTitle" enctype="multipart/form-data">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Informe final</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row pb-1">
+                            <div class="form-group col-4">
+                                <label>Fecha de informe: </label>
+                                <label style="padding-left:180px">Correlativo: </label>
+                                <div class='input-group date' id='date-'>
+                                  <input id="report_date" type='text' class="form-control" name='report_date'/>
+                                  <div class="input-group-append">
+                                    <span class="input-group-text">
+                                      <span class="fa fa-calendar"></span>
+                                    </span>
+                                  </div>
+                                  <div class="col-3 pl-1">
+                                    <input class="form-control" type="number" name="correlative" mix=1 value=1 id="report_correlative">
+                                </div>
+                                </div>
+
+                                <div class="pt-1">
+                                    <label>Metodología: </label>
+                                    <input id="reportMethodology" class="form-control" readonly value="" name="methodology" onclick="openMethodologyModal()" />
+                                </div>
+                                <nav class="pt-1">
+                                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                      <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Anamnesis</a>
+                                      <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Diagnóstico etiológico</a>
+                                    </div>
+                                  </nav>
+                                  <div class="tab-content" id="nav-tabContent">
+                                    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                                        <div class="pt-1">
+                                            <textarea class="form-control" id="anamnesis" rows="3" name="anamnesis"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                                        <div class="pt-1">
+                                            <textarea class="form-control" id="etiological_diagnostic" rows="3" name="etiological_diagnostic"></textarea>
+                                        </div>
+                                    </div>
+                                  </div>
+                            </div>
+                            <div class="col">
+                                <label>Comentarios: </label><br>
+                                <textarea class="form-control" id="comment" rows="16" name="comment"></textarea>
+                            </div>
+                        </div>
+                        <div id="images" class="reportSortable">
+                        </div>
+
+                        <div class="form-group">
+                            <button id="addImage" type="button" class="btn btn-outline-primary btn-lg btn-block">Añadir una imagen</button>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="modal fade text-left" id="methodology_modal" role="dialog" data-keyboard="false">
+            <div class="modal-dialog" role="document" style="min-width:50% !important;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="title"> Lista de Metodologías <span></span></h3>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="font-size:12px !important;">
+                        <div class="col-md-12" id="methodology_table_div">
+                        </div>
+                        <hr>
+                        <div class="form-group">
+                            <button id="addMethodology" type="button" class="btn btn-outline-primary btn-lg btn-block" onclick="addMethodology()">Añadir una metodología</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% endif %}
+
+{% endblock content %}
+
+{% block scripts %}
+<script type="text/javascript"
+        src="{% static '/app/consolidados/consolidados.js' %}"
+        defer>
+</script>
+
+<!-- include summernote css/js -->
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/lang/summernote-es-ES.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% autoescape off %}
+<script>
+    var sampleExams={{sampleExams}}
+    var results={{results}}
+    var sampleResults= {{sampleResults}}
+
+    $(document).ready(function () {
+        select=$('#select-diagnostic').select2({'width':'100%'});
+        $('#comment').summernote({
+            height: 307,
+            width: 750,
+            lang: 'es-ES',
+            toolbar: [
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['font', ['strikethrough', 'superscript', 'subscript']],
+            ['color', ['color']],
+          ]
+          });
+
+        $('#anamnesis').summernote({
+            height: 120,
+            lang: 'es-ES',
+            toolbar: [
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['font', ['strikethrough', 'superscript', 'subscript']],
+            ['color', ['color']],
+          ]
+        });
+
+        $('#etiological_diagnostic').summernote({
+            height: 120,
+            lang: 'es-ES',
+            toolbar: [
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['font', ['strikethrough', 'superscript', 'subscript']],
+            ['color', ['color']],
+          ]
+        });
+
+
+        if("{{diagnosticos}}" != "[]"){
+            identificationsTable({{samples}});
+        }
+        if(results.length>0){
+            load(sampleResults);
+        }else{
+            select.val(null).trigger('change');
+        }
+
+        $("#report_date")
+        .datetimepicker({
+            locale: "es",
+            keepOpen: false,
+            format: "DD/MM/YYYY",
+        })
+
+        $(document).on('hidden.bs.modal', '.modal', function () {
+            $('.modal:visible').length && $(document.body).addClass('modal-open');
+        });
+    });
+</script>
+{% endautoescape %}
+{% endblock scripts %}

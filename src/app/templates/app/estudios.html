@@ -1,0 +1,459 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block stylesheets %}
+{% endblock stylesheets %}
+{% block content_header %}
+<div class="content-header row">
+  <div class="content-header-left col-md-6 col-12 mb-2">
+    <h3 class="content-header-title mb-0">Estudios</h3>
+    <div class="row breadcrumbs-top">
+      <div class="breadcrumb-wrapper col-12">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/">Home</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="#">Estudios</a>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+  <div class="content-header-right col-md-6 col-12">
+    <div class="float-md-right">
+      {% if can_edit %}
+      <button class="btn btn-success btn-lg round" id="add_new_research">
+        <i class="fa fa-plus"></i>
+        Nuevo Estudio
+      </button>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content_header %} {% block content %}
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Listado de Estudios</h4>
+      </div>
+      <div class="card-content">
+        <div class="card-body card-dashboard">
+          <table class="table table-striped table-bordered research-table">
+            <thead>
+              <tr>
+                <!-- <th>Id</th> -->
+                <th>Código</th>
+                <th>Clientes</th>
+                <th>Nombre Estudio</th>
+                <th>Tipo</th>
+                <th>Estado</th>
+                <th>Fecha Apertura</th>
+                <th>Responsable <br>Interno</th>
+                <th>Responsable <br>Externo</th>
+                <th>Opciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for research in research_list %}
+                  <tr id="research-{{ research.id }}">
+                    <!-- <td>{{ research.id }}</td> -->
+                    <td>
+                      <strong>{{ research.code }}</strong>
+                    </td>
+                    <td>
+                      {{ research.clients.all|join:", " }}
+                    </td>
+                    <td>
+                      {{ research.name|default:"" }}
+                    </td>
+                    <td>
+                      {{ research.get_type_display|default:"" }}
+                    </td>
+                    <td>
+                      {% if research.status %} 
+                        <label class='text-success'>Habilitado</label>
+                      {% else %}
+                        <label class='text-danger'>Deshabilitado</label>
+                      {% endif %}
+                    </td>
+                    <td>
+                      {{ research.init_date|date:'d/m/Y H:i'}}
+                    </td>
+                    <td>
+                      {{ research.internal_responsible.get_full_name}}
+                    </td>
+                    <td>
+                      {{ research.external_responsible|default:""}}
+                    </td>
+                    <td>
+                      <div class="btn-group" role="group">
+                        <button 
+                          class="btn btn-info editResearch" 
+                          data-id="{{ research.id }}" 
+                          data-toggle="tooltip" 
+                          data-placement="top" 
+                          title="Editar Estudio">
+                          <i class="fa fa-edit fa-fx"></i>
+                        </button>
+                        {% if research.status %}
+                        <a href="/research/{{research.id}}"
+                          class="btn btn-warning get-more-information"
+                          data-toggle="tooltip" 
+                          data-placement="top" 
+                          title="Ingresar al Estudio">
+                          <i class="fa fa-sign-in fa-fx"></i>
+                        </a>
+                        {% endif %}
+
+                      </div>
+                    </td>
+                  </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade text-left" id="new_research_modal" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document" style="min-width: 50% !important;" >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="title"></h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="font-size:14px !important; max-height: calc(100vh - 150px); overflow-y:scroll;">
+        <form method="POST" action="/research/new" id="create_research_form" class="form">
+          
+          <div class="row">
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="input-name">Nombre de Estudio</label>
+                <input required type="text" class="form-control" name="name" id="input-name" />
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="select-clients">Clientes</label>
+                <select required class="select2 form-control select-clients" id="select-clients" name="clients" multiple>
+                  {% for client in clients_available %}
+                    <option value="{{client.id}}">{{client.name}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="input-init-date">Fecha Apertura</label>
+                <input required type="text" class="form-control date" name="init_date" id="input-init-date" />
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="input-type">Tipo de Estudio</label>
+                <select required class="form-control" name="type" id="select-type">
+                  <option value="1">Estudio Vehice</option>
+                  <option value="2">Seguimiento de rutina</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="input-name">Responsable Externo</label>
+                <input required class="form-control responsible_place" name="external_responsible" id="input-external-responsible" onclick="responsibleModal()" value=""/>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="input-name">Responsable Interno</label>
+                <select required class="select2 form-control select-users" name="internal_responsible" id="select-internal-responsible">
+                  {% for usr in users_available %}
+                    <option value="{{usr.id}}">{{usr.get_full_name}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            
+            <div class="col-md-8">
+              <div class="form-group">
+                <label for="input-type">Descripción</label>
+                <textarea required row="3" class="form-control" name="description" id="input-description"></textarea>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="select-status">Estado</label>
+                <select required class="form-control" name="status" id="select-status">
+                  <option selected value="1">HABILITADO</option>
+                  <option value="0">DESHABILITADO</option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+          
+          <input id="input-id" name="id" type="hidden" value="" />
+
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-lg btn-primary" id="submit-research">
+              <i class="fa fa-sign-in"></i> <span id="modal_research_button"></span>
+            </button>
+          </div>
+
+        </form>   
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade text-left" id="responsible_modal" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="" style="min-width:80% !important;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="title"> Lista de Responsables <span></span></h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="font-size:12px !important;">
+        <div style="padding: 10px;background-color: #f2efed;">
+          <form action="#" id="responsible_form" onsubmit="saveResponsible(); return false;">
+            <h6 class="form-section mt-2">Responsable</h6>
+            <div class="row generalInfo">
+              <div class="col-sm-3 form-group">
+                <input class="form-control" name="id" hidden />
+                <input class="form-control" name="name" placeholder="Nombre*" required/>
+              </div>
+              <div class="col-sm-3 form-group">
+                <input class="form-control" name="email" placeholder="Correos Electrónicos*" required/>
+                <p>* Puede ingresar multiples direcciones separadas por punto y coma (;)</p>
+              </div>
+              <div class="col-sm-2 form-group">
+                <input class="form-control" name="phone" placeholder="Teléfono" />
+              </div>
+              <div class="col-sm-3 form-group">
+                <input class="form-control" name="job" placeholder="Cargo*" required/>
+              </div>
+              <div class="col-sm-1 form-group">
+                <button type="submit" class="btn btn-primary">
+                  <i class="fa fa-save"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <hr>
+        <div class="col-md-12" id="responsible_table_div">
+          
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock content %} {% block scripts %}
+
+<script id="responsible_table_template" type="text/x-lodash-template">
+  <table class="table table-bordered table-condensed" id="responsible_table" style="font-size:13px;">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Correo</th>
+        <th>Teléfono</th>
+        <th>Cargo</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% _.each(responsibles, function (responsible) { %>
+        <tr id="responsible-<%= responsible.id %>">
+        <td><%= responsible.name %></td>
+        <td><%= _.replace(responsible.email, /;/g, '</br>') %></td>
+        <td><%= responsible.phone %></td>
+        <td><%= responsible.job %></td>
+        <td>
+          <button class="btn btn-success" data-dismiss="modal" onclick="selectResponsible('<%= responsible.id %>','<%= responsible.name %>')"><i class="fa fa-check"></i></button>
+          <button class="btn btn-info" onclick="editResponsible('<%= responsible.id %>','<%= responsible.name %>','<%= responsible.email %>','<%= responsible.phone %>','<%= responsible.job %>')"><i class="fa fa-edit"></i></button>
+          <button class="btn btn-danger" onclick="disabledResponsible('<%= responsible.id %>')"><i class="fa fa-times"></i></button>
+        </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</script>
+
+<script type="text/javascript">
+
+
+
+  $(document).ready(function () {
+    var tableChildRows = $('.research-table').DataTable({
+      language: {
+        url: "https://cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+      },
+      "order": [[ 0, "desc" ]],
+      "orderable": false,
+      "targets": 'no-sort',
+      "bSort": true,
+    });
+
+    $('.select-clients').select2({'width':'100%'});
+    $('.select-users').select2({'width':'100%'});
+    
+    $('.date').datetimepicker({
+      locale: 'es',
+      keepOpen: false,
+      format:'DD/MM/YYYY HH:mm',
+      defaultDate: moment()
+    });   
+    
+    const btn_researchs_more_informations = document.querySelectorAll('.get-more-information');
+    const blockButtonsResearch = Array(btn_researchs_more_informations.length).fill(false);
+
+    for(let i=0; i<btn_researchs_more_informations.length; i++){
+
+      btn_researchs_more_informations[i].addEventListener('click', function(event){
+        // Acción personalizada antes de seguir con el enlace
+        if (blockButtonsResearch[i]) {
+            // Previene la acción predeterminada del enlace
+            event.preventDefault();
+        } else {
+            // Permite que el enlace se comporte como de costumbre
+            blockButtonsResearch[i] = true;
+            
+            setTimeout(() => {
+              blockButtonsResearch[i] = false; // Habilitar el botón después del tiempo de espera
+            }, 8000);
+        }
+      });
+    }
+
+
+  });
+
+  $(document).on('click', '#add_new_research', function(e){
+    $('#title').html("Formulario de Ingreso de Estudio");
+    $('#modal_research_button').html("Abrir");
+    $('#submit-research').removeClass("saveEditResearch");
+
+    // reset form
+    $('#input-name').val('');
+    $('#select-clients').val('').trigger('change');
+    $('#input-init-date').val('');
+    $('#input-external-responsible').val('');
+    $('#input-description').val('');
+    $('#new_research_modal').modal('show');
+  });
+
+  $(document).on('click', '.editResearch', function(e){
+    var research_id = $(this).data('id');
+    $('#title').html("Editar Estudio");
+    $('#modal_research_button').html("Guardar");
+    $('#submit-research').addClass("saveEditResearch");
+
+    var url = Urls.get_research(research_id);
+
+    $.ajax({
+      type: "GET",
+      url: url,
+    })
+    .done(function (data) {
+      if (data.ok){
+        r = data.research;
+        $('#input-id').val(r.id);
+        $('#input-name').val(r.name);
+        $('#select-clients').val('').trigger('change');
+        $('#select-clients').val(r.clients).trigger('change');
+        $('#input-init-date').val(r.init_date);
+        $('#select-type').val(r.type);
+        $('#input-external-responsible').val(r.external_responsible);
+        $('#select-internal-responsible').val(r.internal_responsible).trigger('change');
+        $('#input-description').val(r.description);
+        console.log(r.status)
+        $('#select-status').val(r.status);
+        
+        $('#new_research_modal').modal('show');
+      }
+    })
+    .fail(function () {
+      console.log("Fail")
+    });
+
+  });
+
+  $(document).on('click', '.saveEditResearch', function(e){
+    e.preventDefault();
+    var research_id = $('#input-id').val();
+    var url = Urls.get_research(research_id);
+    $.ajax({
+      type: "GET",
+      url: url,
+      async: false
+    })
+    .done(function (data) {
+      if (data.ok){
+        r = data.research;
+        var selected_clients = $('#select-clients').val();
+        
+        var removing_services = false;
+        $.each(r.client_services, function(key, value){
+          if (!selected_clients.includes(key)){
+            if (!removing_services){
+              removing_services = true;
+            }
+          }
+        });
+
+        if (removing_services){
+          swal({
+            title: "Confirmación",
+            text: "Estás eliminando un cliente que tiene servicios asociados al presente estudio, ¿deseas continuar?",
+            icon: "warning",
+            showCancelButton: true,
+            buttons: {
+              cancel: {
+                  text: "Cancelar!",
+                  value: null,
+                  visible: true,
+                  className: "btn-warning",
+                  closeModal: true,
+              },
+              confirm: {
+                  text: "Continuar",
+                  value: true,
+                  visible: true,
+                  className: "",
+                  closeModal: true,
+              }
+            }
+          }).then(isConfirm => {
+            if (isConfirm) {
+              $('#create_research_form').submit();
+            }
+          });
+        
+        } else {
+          $('#create_research_form').submit();
+        }
+      }
+    })
+    .fail(function () {
+      console.log("Fail")
+    });
+    
+  });
+
+</script> {% endblock scripts %}

@@ -1,0 +1,89 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block stylesheets %}
+<link
+    rel="stylesheet"
+    href="https://cdn.datatables.net/select/1.3.3/css/select.dataTables.min.css"
+    type="text/css"
+    media="screen"
+/>
+{% endblock stylesheets %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <header class="card-header">
+                <h4 class="card-title">Cassettes</h4>
+                <small class="card-subtitle">Disponibles para procesador de tejidos</small>
+                <section class="row mt-2">
+                    <div class="col-md-7 offset-md-3 input-group mb-3">
+                        <input class="form-control" type="datetime-local" id="processAt" min="{{ min_date }}" max="{{ max_date }}"/>
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-primary" id="btnProcess">
+                                Guardar fecha de procesado para los seleccionados
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </header>
+            <section class="card-body table-responsive">
+                <table class="table table-bordered table-striped" id="datatable">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Cassette (Caso,Identificacion,Unidad,Cassette)</th>
+                            <th scope="col">Fecha Armado</th>
+                            <th scope="col">Observacion</th>
+                            <th scope="col">Info.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cassette in cassettes %}
+                        <tr>
+                            <td>{{ cassette.id }}</td>
+                            <td>{{ cassette.tag }}</td>
+                            <td>{{ cassette.build_at|date }}</td>
+                            <td>{{ cassette.observation }}</td>
+                            <td>
+                                <a href="{% url 'lab:case_detail' cassette.unit.identification.entryform.id %}" class="detailTrigger">Detalle</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </div>
+</div>
+
+<!-- End Main Content -->
+
+{% endblock content %}
+{% block scripts %}
+<script
+    type="text/javascript"
+    src="https://cdn.datatables.net/select/1.3.3/js/dataTables.select.min.js"
+    defer>
+</script>
+
+<script
+    type="text/javascript"
+    src="https://cdn.datatables.net/buttons/1.7.0/js/dataTables.buttons.min.js"
+    defer>
+</script>
+
+<script
+    type="text/javascript"
+    src="//cdn.jsdelivr.net/npm/sweetalert2@10"
+    defer>
+</script>
+
+<script type="text/javascript"
+        src="{% static 'lab/js/cassette-process.js' %}"
+        defer>
+</script>
+
+{% endblock scripts %}

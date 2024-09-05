@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body,
+        html {
+            background-color: white;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            height: 100%;
+            width: 100%;
+        }
+
+        .section-cover {
+            display: -webkit-flex;
+            -webkit-box-orient: vertical;
+
+            width: 100%;
+            padding: 0px 20px;
+
+        }
+
+        .title {
+            width: 100%;
+            color: #42A292;
+
+            display: -webkit-box;
+            -webkit-box-pack: center;
+            -webkit-box-align: center;
+
+            padding: 25px 15px;
+            font-size: 22px;
+
+        }
+
+        table {
+            width: 100%;
+            padding: 10px 50px;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: rgb(242, 242, 242);
+            color: #030a67;
+            border-top: 0.5px solid rgb(139, 138, 138);
+            border-bottom: 1px solid rgb(139, 138, 138);
+        }
+
+        thead th {
+            padding: 10px 15px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        tbody th {
+            font-weight: 300;
+            color: #030a67;
+            font-size: 14px;
+        }
+
+        tbody tr th:nth-child(1) {
+            font-weight: 600;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid rgb(98, 98, 98);
+        }
+
+        tbody th {
+            padding: 15px 5px;
+        }
+
+        table tr th:nth-child(2) {
+            width: 35%;
+        }
+
+        table tr th:nth-child(6) {
+            width: 15%;
+        }
+
+
+        .comment {
+            width: 100%;
+            padding: 0% 15%;
+        }
+
+        .title-comment {
+            width: 100%;
+            color: #42A292;
+
+            display: -webkit-box;
+            -webkit-box-pack: start;
+
+            padding: 35px 0px;
+            font-size: 24px;
+        }
+
+        .content-comment {
+            padding: 0px 30px;
+            /* font-weight: 300; */
+            color: #030a67;
+            font-size: 15px;
+        }
+
+        .content-comment {
+            line-height: 1.5;
+        }
+
+        .aditionalImage {
+            width: 100%;
+            padding: 20px 20px;
+            display: -webkit-box;
+            -webkit-box-pack: center;
+            -webkit-box-align: center;
+        }
+
+        .aditionalImage img {
+            width: 100%;
+            object-fit: contain;
+        }
+
+        .servicesImages {
+            width: 170px;
+            object-fit: cover;
+            {% comment %} height: {% endcomment %}
+        }
+    </style>
+</head>
+
+<body>
+    <section class="section-cover">
+        <div class="title"><strong>{{title}}</strong></div>
+
+        <table border="0">
+            <thead>
+                <tr>
+                    <th>SERVICIO</th>
+                    <th>DESCRIPCIÓN</th>
+                    <th>N° DE MUESTRAS</th>
+                    <th>VALOR UNITARIO (UF)</th>
+                    <th>VALOR TOTAL (UF)</th>
+                    <th>IMAGEN</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for service in services %}
+                <tr>
+                    <th>{{service.exam.name}}</th>
+                    <th>{{service.exam.description}}</th>
+                    <th>{{service.quantity}}</th>
+                    <th>{{service.price}}</th>
+                    <th>{{service.total}}</th>
+                    <th>
+                        <img class="servicesImages" src="https://storage.googleapis.com/vehice-media/{{service.exam.id}}.png" alt="{{service.exam.name}}-image">
+                    </th>
+                </tr>
+                {% endfor %}
+                <tr style="border-bottom: 0px solid white;">
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th style="color: #42A292; font-weight: 600; font-size: 14px;">TOTAL:</th>
+                    <th style="color: #42A292; font-weight: 600; font-size: 14px;">{{total_to_pay}}</th>
+                    <th></th>
+                </tr>
+            </tbody>
+        </table>
+        {% if hasComment %}
+        <div class="comment">
+            <div class="title-comment"><strong>NOTA</strong></div>
+            <div class="content-comment">
+                {{comment|safe}}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if hasImage %}
+        <div class="aditionalImage"><img src="{{additional_image_url}}" alt="aditional-image"></div>
+        {% endif %}
+    </section>
+</body>
+
+</html>

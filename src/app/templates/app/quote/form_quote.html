@@ -1,0 +1,1179 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block stylesheets %}
+{% endblock stylesheets %}
+{% block content_header%}
+<style>
+  .list-group-item-action {
+    margin: 0;
+    padding: 5px 10px 5px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .list-group-item-action p {
+    margin: 0;
+    padding: 0;
+  }
+
+  .list-group-item-action button {
+    margin: 0;
+    padding: 5px 10px;
+  }
+
+  .form-control {
+    font-size: 100%;
+  }
+
+  /* to remove default padding of col class */
+  #autocomplete-list {
+    padding: 0;
+    width: 93%;
+    position: absolute;
+    z-index: 99;
+    top: 100%;
+    top: 100%;
+    left: 15px;
+    right: 0;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  .field_extensed {
+    text-align: left;
+    vertical-align: middle;
+    max-width: 450px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+</style>
+
+<div class="content-header row">
+  <div class="content-header-left col-md-6 col-12 mb-2">
+    <h3 class="content-header-title mb-0">Cotizaciones</h3>
+    <div class="row breadcrumbs-top">
+      <div class="breadcrumb-wrapper col-12">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/">Home</a>
+          </li>
+          <li class="breadcrumb-item active"><a href="/quotes">Cotizaciones</a>
+          </li>
+          <li class="breadcrumb-item active">{{title}}
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content_header %} {% block content %}
+<div class="row form-quote" id='{{quote_id}}'>
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">{{title}}</h4>
+      </div>
+      <div class="card-body">
+        <!-- Cotizacion -->
+        <div class="row">
+          <div class="col-6" style="border-right: 1px solid gray;">
+            <label for="customers_datalist" class="form-label">Empresa:</label>
+            <select class="custom-select" id="customers_datalist" onchange="selectedCustom()">
+            </select>
+            <div class="pt-1 pl-1">
+              <label for="exampleDataList1" class="form-label">RUT:</label>
+              <input class="form-control" id="input_rut"
+                placeholder="Este campo contiene el RUT de la empresa seleccionada" readonly>
+            </div>
+            <div class="pt-2">
+              <label for="input_title" class="form-label">Título de cotización:</label>
+              <input class="form-control" id="input_title"
+                placeholder="Escriba un título para la portada de la cotización">
+            </div>
+          </div>
+          <div class="col-5">
+            <div class="form-group" id="responsible">
+              <label for="responsible">
+                {{request.lang.responsable}}:
+              </label>
+              <div class='input-group'>
+                <input type='text' class="form-control responsible_place" onclick="responsibleModal()" readonly />
+                <div class="input-group-append">
+                  <span class="input-group-text">
+                    <span class="fa fa-user"></span>
+                  </span>
+                </div>
+              </div>
+              <input type='text' class="form-control" id="responsible_input" name="responsible" hidden />
+            </div>
+            <div class="pt-1 pl-1">
+              <label for="email" class="form-label">Correo:</label>
+              <input class="form-control" name="email" id="responsible_email"
+                placeholder="Este campo contiene el correo del responsable seleccionado" readonly>
+              <label for="phone" class="form-label mt-1">Teléfono:</label>
+              <input class="form-control" name="phone" id="responsible_phone"
+                placeholder="Este campo contiene el teléfono del responsable seleccionado" readonly>
+            </div>
+          </div>
+        </div>
+
+        <!-- Servicios -->
+        <div class="row align-items-center mt-2">
+          <div class="col-6 pl-1 text-label">
+            Listado de Servicios
+          </div>
+          <div class="col-6 text-right style=">
+            <button type="button" class="btn btn-success btn-lg round" data-toggle="modal"
+              data-target="#staticBackdrop">
+              <i class="fa fa-plus"></i>
+              Añadir Servicios
+            </button>
+
+            <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
+              aria-labelledby="staticBackdropLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Servicios seleccionados</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="model-body modal-body-scrollable ">
+                    <div class="m-2">
+                      <div class="row align-items-center">
+                        <div class="col-2">
+                          <label for="searchService" class="col-">Nombre:</label>
+                        </div>
+                        <div class="col-10">
+                          <input type="text" name="searchService" class="form-control"
+                            placeholder="Escriba el nombre del servicio aquí..." id="input_nameService">
+                        </div>
+                      </div>
+                      <div class="row align-items-center mt-1">
+                        <div class="col-2">
+                          <label for="lab_datalist">Laboratorio:</label>
+                        </div>
+                        <div class="col-10">
+                          <select class="custom-select" id="lab_datalist" onchange="selectedLab()">
+                          </select>
+                        </div>
+                      </div>
+                      <div class="row align-items-center mt-1">
+                        <div class="col-2">
+                          <label for="prelisted">Listado:</label>
+                        </div>
+                        <div class="col-10 input-group" id="autocomplete">
+                          <input type="text" name="prelisted" class="form-control"
+                            placeholder="Escriba una lista pre determinada" id="autocomplete-input"
+                            style="position:relative;">
+                          <div id="autocomplete-list" class="list-group col-12">
+                          </div>
+
+                          <div class="input-group-prepend">
+                            <button class="btn btn-success" type="button" id="addPreListed"
+                              style="border-radius: 0px 5px 5px 0px;">
+                              <li class="fa fa-plus"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <p class="text-rigth placeholder col-12 placeholder-sm pt-1 pb-1">Total de servicos seleccionados:
+                        <span id="counterServices">0</span>
+                      </p>
+                    </div>
+                    <div class="list-group text-left"
+                      style="max-height: 300px; overflow-y: auto; margin: 0px 10px; background-color: #eeeeee;"
+                      id="listServices">
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                      onclick="closedDialogService()">Cerrar</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"
+                      onclick="aceptedDialogServices()">Aceptar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-2">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col" class="col-1">#</th>
+                <th scope="col" class="col-3">Servicio</th>
+                <th scope="col" class="col-3">Descripción</th>
+                <th scope="col" class="col-1">N° de Muestras</th>
+                <th scope="col" class="col-1">Valor Unitario (UF)</th>
+                <th scope="col" class="col-1">Valor Total</th>
+                <th scope="col" class="col-2">Opciones</th>
+              </tr>
+            </thead>
+            <tbody id="data-table-body">
+              <tr class="table-full-width">
+                <td colspan="7" class="text-center p-1">Seleccione servicios a cotizar</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+
+        <div class="col-6 text-label pl-0 pt-2 pb-1 ">
+          <label for="more-information">Información adicional</label>
+        </div>
+        <div name="more-information" class="row ml-0 mr-1">
+          <div class="col-sm-12 col-md-10 col-lg-6 pr-4">
+            <label for="input_comment">Comentarios:</label>
+            <textarea type="text" name="input_comment" class="form-control ml-1" rows="8" id="quote-comment"></textarea>
+          </div>
+
+          <div class="col-sm-12 col-md-10 col-lg-6 mt-0 mb-4">
+            <label for="coverImage">Imagen de portada:</label>
+            <div class="input-group ml-1" name="coverImage">
+              <div class="input-group-prepend">
+                <span class="input-group-text btn-info" id="inputGroupFileAddon02">Cargar Imagen</span>
+              </div>
+              <div class="custom-file">
+                <input type="file" class="custom-file-input" id="inputGroupFile02"
+                  aria-describedby="inputGroupFileAddon02" accept="image/*">
+                <label class="custom-file-label" for="inputGroupFile02">Buscar</label>
+              </div>
+            </div>
+            <label for="aditionalImage" class="mt-1">Imagen adicional:</label>
+            <div class="input-group ml-1" name="aditionalImage">
+              <div class="input-group-prepend">
+                <span class="input-group-text btn-info" id="inputGroupFileAddon01">Cargar Imagen</span>
+              </div>
+              <div class="custom-file">
+                <input type="file" class="custom-file-input" id="inputGroupFile01"
+                  aria-describedby="inputGroupFileAddon01" accept="image/*">
+                <label class="custom-file-label" for="inputGroupFile01">Buscar</label>
+              </div>
+            </div>
+            <label for="expiredDate" class="pt-2">Fecha de expiración:</label>
+            <div class='input-group date ml-1' id='datetime_expiration_date'>
+              <input type="text" class="form-control" id="expiration_date" name="expiration_date" />
+              <div class="input-group-append">
+                <span class="input-group-text">
+                  <span class="fa fa-calendar"></span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row d-flex justify-content-end mr-2 mb-1">
+          <button type="button" class="btn btn-danger mr-1" id="btn_pdf">PDF</button>
+          <button type="button" class="btn btn-primary mr-1" id="btn_save">Guardar</button>
+          <button type="button" class="btn btn-primary" id="form-exit">Salir</button>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+
+{% endblock content %} {% block scripts %}
+<script src="{% url 'js_reverse' %}" type="text/javascript"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<script type="text/javascript">
+
+  let services = []; // All services of backend
+  let filteredServices = []; // Service list filtered
+  let selectedServices = []; // Service list selected  
+  let pre_selectedServices = []; // Pre-selection of services
+  let customers = []; // All customers of backend
+  let labs = []; // All labs-groups
+  let preListed = [];
+  let preListedSelected = null;
+  let responsibles = [] // All responsibles of backend
+  let suggestions = [] // All suggestions services
+  let quote_id = null; // Id of this quote
+  let quote_title = '';
+
+  // Auxiliaries
+  let servicesQuantity = {};
+  let servicesPrice = {};
+  let isFocusList = false;
+  let isFocusItem = false;
+
+
+
+  $(document).ready(function () {
+    $('.zero-configuration').DataTable({
+      "oLanguage": {
+        "sUrl": "https://cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+      }
+    });
+
+    async function initialize() {
+      await fetchCustomers();
+      await fetchServices();
+
+      await fetchPreListed();
+
+      form = document.getElementsByClassName('form-quote');
+      formArray = Array.from(form);
+      id = formArray[0].id;
+      if (id !== '') {
+        await fetchQuote(id);
+      }
+
+
+      // Filter by service name
+      let inputService = document.getElementById('input_nameService');
+      inputService.addEventListener('input', function () {
+        let lab_group = document.getElementById('lab_datalist').value;
+        let value = inputService.value;
+
+        filteredServices = services.filter(function (element) {
+          return element.name.toString().toLowerCase().includes(value.toString().toLowerCase()) && (element.group.toString() === lab_group.toString() || lab_group.toString() === 'all');
+        });
+
+        buildButtonsServices();
+      });
+
+
+      // JQuery configurations
+      $("#datetime_expiration_date").datetimepicker({
+        locale: "es",
+        keepOpen: false,
+        format: "DD/MM/YYYY",
+      });
+      $('.custom-file-input').on('change', function () {
+        var fileName = $(this).val().split('\\').pop(); // Obtener solo el nombre del archivo
+        $(this).next('.custom-file-label').html(fileName); // Actualizar la etiqueta del archivo seleccionado
+      });
+      $('#quote-comment').summernote({
+        height: 200,
+        // width: 750,
+        lang: 'es-ES',
+        toolbar: [
+          ['style', ['bold', 'italic', 'underline', 'clear']],
+          ['font', ['strikethrough', 'superscript', 'subscript']],
+          ['para', ['ul', 'ol', 'paragraph']],
+          ['color', ['color']],
+        ]
+      });
+
+
+      // PDF disable initial
+      btn_pdf = document.getElementById('btn_pdf');
+      btn_pdf.addEventListener('click', async function () {
+        inputGroupFile01 = document.getElementById('inputGroupFile01');
+        aditional_image = inputGroupFile01.files[0];
+
+        inputGroupFile02 = document.getElementById('inputGroupFile02');
+        cover_image = inputGroupFile02.files[0];
+
+        const formData = new FormData();
+        formData.append('additional_image', aditional_image);
+        formData.append('cover_image', cover_image);
+        pathFetch = 'download-quote/';
+        const currentPath = window.location.pathname;
+        if (currentPath.includes('edit'))
+          pathFetch = '../download-quote/';
+
+        const response = await fetch(`${pathFetch}${quote_id}`, {
+          method: 'POST',
+          headers: {
+            // 'Content-Type': 'multipart/form-data',
+            'X-CSRFToken': getCookie('csrftoken'),
+          },
+          body: formData
+        }).then(response => {
+          if (!response.ok) {
+            throw new Error('Error en la solicitud: ' + response.status);
+          }
+          return response.blob();
+        })
+          .then(blob => {
+            // Crear una URL para el blob
+            const url = window.URL.createObjectURL(blob);
+
+            // Crear un enlace de descarga
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = `${quote_title}.pdf`; // Nombre del archivo que se descargará automáticamente
+            document.body.appendChild(a);
+            a.click();
+
+            // Limpiar
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+          })
+          .catch(error => {
+            console.error('Error al recibir el PDF:', error);
+          });
+      });
+      if (quote_id == null) {
+        hide_pdf();
+      } else {
+        visible_pdf();
+      }
+
+
+      //Events
+      btn_save = document.getElementById('btn_save');
+      btn_save.addEventListener('click', async function () {
+        try {
+          data = getAndValidateQuotePost();
+
+          if (quote_id == null) {
+            await postQuote(data);
+          } else {
+            await putQuote(data, quote_id);
+          }
+
+          visible_pdf();
+          toastr.success("Se guardó satisfactoriamente", "");
+
+        } catch (error) {
+          toastr.error(error, "Aviso");
+          hide_pdf();
+        }
+      })
+      btn_addPrelisted = document.getElementById('addPreListed');
+      btn_addPrelisted.addEventListener('click', function () {
+        try {
+          data = validatePreListPost();
+
+          postPrelisted(data);
+          toastr.success("Se guardó satisfactoriamente", "");
+        } catch (error) {
+          toastr.error(error, "Aviso");
+        }
+      })
+      btn_exit = document.getElementById('form-exit');
+      btn_exit.addEventListener('click', function () {
+        Swal.fire({
+          title: "Atención",
+          text: "¿Estás seguro que deseas salir? Cerciorate que hayas guardados tus cambios.",
+          icon: "warning",
+          confirmButtonText: "Sí",
+          showCancelButton: true,
+          cancelButtonText: "No",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // window.location.href = '/quotes';
+            window.location.assign('/quotes');
+          }
+        });
+      })
+    }
+
+    initialize();
+
+
+
+  });
+
+  // Services to Backend methods
+  async function fetchQuote(id) {
+    const response = await fetch(`api/quote/${id}`, {
+      method: 'GET',
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken'),
+      }
+    });
+    quote = await response.json();
+    quote_id = quote.id;
+    quote_title = `${quote.title}-${quote.responsible.name}`;
+
+    document.getElementById('input_title').value = quote.title;
+    document.getElementById('customers_datalist').value = quote.customer.id; // Esto va a ser null.
+    document.getElementById('quote-comment').value = quote.comment;
+
+    let responsible_input = document.getElementsByClassName('responsible_place')[0];
+    responsible_input.id = quote.responsible.id;
+    responsible_input.value = quote.responsible.name;
+    document.getElementById('responsible_email').value = quote.responsible.email;
+    document.getElementById('responsible_phone').value = quote.responsible.phone;
+
+
+    split_date = quote.expiration_date.split('-');
+    document.getElementById('expiration_date').value = `${split_date[2]}/${split_date[1]}/${split_date[0]}`;
+
+    for (let j = 0; j < services.length; j++) {
+      for (let i = 0; i < quote.quoteExams.length; i++) {
+        if (services[j].id === quote.quoteExams[i].exam) {
+          selectedServices.push(services[j]);
+          pre_selectedServices.push(services[j]);
+          servicesQuantity[services[j].id] = quote.quoteExams[i].quantity;
+          servicesPrice[services[j].id] = quote.quoteExams[i].price;
+
+          if (quote.quoteExams[i].isRecommended) {
+            suggestions.push(services[j]);
+          }
+
+        }
+      }
+    }
+    buildButtonsServices();
+    buildCounterServices();
+    buildDataTableServices();
+  }
+  async function fetchCustomers() {
+    const response = await fetch('api/customers', {
+      method: 'GET',
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken'),
+      }
+    });
+    data = await response.json();
+    customers = data.results;
+
+    buildCustomersDataList();
+  }
+  async function fetchPreListed() {
+    const response = await fetch('api/quote/prelisteds', {
+      method: 'GET',
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken'),
+      }
+    });
+    data = await response.json();
+    preListed = data;
+
+    buildPreListedSelected();
+  }
+  async function fetchServices() {
+    const response = await fetch('api/exams', {
+      method: 'GET',
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken'),
+      }
+    });
+    services = await response.json();
+    services = services.results;
+    services = services.filter(function(service){
+      return service.chargeable;
+    });
+
+    filteredServices = services;
+
+
+    buildButtonsServices();
+    buildFilterByLabs();
+  }
+  async function postQuote(quote) {
+    csrftoken = $('input[name=csrfmiddlewaretoken]').val();
+
+    const response = await fetch('api/quote', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+        'X-CSRFToken': getCookie('csrftoken'),
+      },
+      body: JSON.stringify(quote)
+    });
+
+    if (!response.ok) {
+      await response.json().then(errorInfo => {
+        throw new Error(errorInfo.error);
+      });
+    } else {
+      let result = await response.json();
+      let data = JSON.parse(JSON.stringify(result));
+      quote_id = data.quote_id;
+      quote_title = data.title;
+    }
+  }
+  async function putQuote(quote, pk) {
+    csrftoken = $('input[name=csrfmiddlewaretoken]').val();
+
+    const response = await fetch(`api/quote/${pk}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+        'X-CSRFToken': getCookie('csrftoken'),
+      },
+      body: JSON.stringify(quote)
+    });
+
+    if (!response.ok) {
+      await response.json().then(errorInfo => {
+        throw new Error(errorInfo.error);
+      });
+    }
+  }
+
+  async function postPrelisted(prelisted) {
+    try {
+      csrftoken = $('input[name=csrfmiddlewaretoken]').val();
+
+      const response = await fetch('api/quote/prelisteds', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+          'X-CSRFToken': getCookie('csrftoken'),
+        },
+        body: JSON.stringify(prelisted)
+      });
+
+      let result = await response.json();
+      let data = JSON.parse(JSON.stringify(result));
+
+    } catch (error) {
+      throw new Error('Hubo algun problema con la creación.');
+    }
+
+    fetchPreListed();
+    return true;
+  }
+  async function putPrelisted(prelisted) {
+    try {
+      csrftoken = $('input[name=csrfmiddlewaretoken]').val();
+
+      const response = await fetch(`api/quote/prelisteds/${prelisted.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+          'X-CSRFToken': getCookie('csrftoken'),
+        },
+        body: JSON.stringify(prelisted)
+      });
+
+      let result = await response.json();
+      let data = JSON.parse(JSON.stringify(result));
+
+    } catch (error) {
+      throw new Error('Hubo un problema en la edición.');
+    }
+
+    fetchPreListed();
+    return true;
+  }
+  async function deletePrelisted(id) {
+    try {
+      csrftoken = $('input[name=csrfmiddlewaretoken]').val();
+
+      const response = await fetch(`api/quote/prelisteds/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+          'X-CSRFToken': getCookie('csrftoken'),
+        },
+      });
+    } catch (error) {
+      throw new Error('Hubo un problema en la eliminación.');
+    }
+
+    fetchPreListed();
+    return true;
+  }
+
+  // General Informations methods 
+  function buildDataTableServices() {
+    let content = ``
+    selectedServices.forEach(service => {
+      content += `
+      <tr id="${service.id}-row">
+                <th scope="row" >${selectedServices.indexOf(service) + 1}</th>
+                <td style="vertical-align: middle !important;">${service.name}</td>
+                <td style="vertical-align: middle !important;" class='field_extensed'>${service.description != null ? service.description : ''}</td>
+                <td style="vertical-align: middle !important;"><input type="text" class="form-control" onkeypress='return event.charCode >= 48 && event.charCode <= 57' placeholder="0" id="${service.id}-quantity" value="${servicesQuantity[service.id]}"></td>
+                <td style="vertical-align: middle !important;"><input type="text" class="form-control" onkeypress='return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46' placeholder="$0.00" id="${service.id}-price" value="${servicesPrice[service.id]}"></td>
+                <td id="${service.id}-subTotal" style="vertical-align: middle !important;">${truncateDecimal((servicesQuantity[service.id] * servicesPrice[service.id]).toString())}</td>
+                <td style="vertical-align: middle !important;">
+                  <div class="col d-flex justify-content-between align-items-center">
+                    <button class="btn btn-danger" style="margin:2px; padding: 5px 8px;" id="${service.id}-remove">
+                      <i class="fa fa-remove"></i>
+                    </button>
+                    <button class="btn btn-info" style="margin:2px; padding: 5px 8px;" data-toggle="tooltip" data-placement="top" title="Sugerir servicio" id="${service.id}-suggest">
+                      <i class="fa fa-star"></i>
+                      Recomendar
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              `;
+    });
+    let table = document.getElementById('data-table-body');
+    table.innerHTML = content;
+
+    //Adding suggest event
+    selectedServices.forEach(service => {
+      // Quantity and price fields
+      let quantity_field = document.getElementById(`${service.id}-quantity`);
+      let price_field = document.getElementById(`${service.id}-price`);
+
+      quantity_field.addEventListener('input', function (event) {
+        servicesQuantity[service.id] = event.target.value;
+
+        subTotal = document.getElementById(`${service.id}-subTotal`);
+        value = servicesQuantity[service.id] * servicesPrice[service.id];
+
+        truncatedValue = truncateDecimal(value.toString());
+        subTotal.innerHTML = `${truncatedValue}`;
+      });
+      price_field.addEventListener('input', function (event) {
+        if (isNumber(event.target.value.toString())) {
+          servicesPrice[service.id] = event.target.value;
+
+          subTotal = document.getElementById(`${service.id}-subTotal`);
+          value = servicesQuantity[service.id] * servicesPrice[service.id];
+          
+          truncatedValue = truncateDecimal(value.toString());
+          subTotal.innerHTML = `${truncatedValue}`;
+        } else {
+          price_field.value = servicesPrice[service.id] != null ? servicesPrice[service.id] : '';
+        }
+      });
+
+
+
+      // Options
+      let remove_btn = document.getElementById(`${service.id}-remove`);
+      let row = document.getElementById(`${service.id}-row`);
+
+      remove_btn.addEventListener('click', function () {
+
+        index = -1;
+        for (let i = 0; i < selectedServices.length; i++) {
+          if (selectedServices[i].id == service.id) {
+            index = i;
+            delete servicesQuantity[service.id];
+            delete servicesPrice[service.id];
+
+
+            break;
+          }
+        }
+
+        if (index != -1) {
+          selectedServices.splice(index, 1);
+          pre_selectedServices.splice(index, 1);
+
+          row.remove();
+
+          btn = document.getElementById(`${service.id}-btn`);
+
+          buildButtonsServices();
+          buildCounterServices();
+        }
+      });
+
+
+      let sugg_btn = document.getElementById(`${service.id}-suggest`);
+
+      sugg_btn.addEventListener('click', function () {
+
+        if (!suggestions.includes(service)) {
+          suggestions.push(service);
+          row.style.background = 'rgb(210, 210, 210, 1)';
+        } else {
+          suggestions.splice(suggestions.indexOf(service), 1);
+          row.style.background = 'rgb(0, 0, 0, 0)';
+        }
+      });
+
+      if (suggestions.includes(service)) {
+        row.style.background = 'rgb(210, 210, 210, 1)';
+      } else {
+        row.style.background = 'rgb(0, 0, 0, 0)';
+
+      }
+    });
+  }
+
+  function buildCustomersDataList() {
+    let datalist = document.getElementById('customers_datalist');
+
+    content = ``;
+    customers.forEach(custom => {
+      content += `<option value="${custom.id}">${custom.name}</option>`
+    });
+
+    datalist.innerHTML = content;
+  }
+
+  function buildPreListedSelected() {
+    const container = document.getElementById("autocomplete");
+    const prelistedInput = document.getElementById("autocomplete-input");
+    const prelistedItem = document.getElementById("autocomplete-list");
+
+    prelistedInput.addEventListener("input", function () {
+      const value = this.value;
+      prelistedItem.innerHTML = "";
+      if (!value) {
+        return false;
+      }
+
+      const filteredOptions = preListed.filter(option => option.name.toLowerCase().includes(value.toLowerCase()));
+      showPreListedOptions(filteredOptions, prelistedInput, prelistedItem);
+    });
+
+    prelistedInput.addEventListener("focus", function () {
+      if (this.value.length === 0) {
+        showPreListedOptions(preListed, prelistedInput, prelistedItem);
+      }
+    });
+    container.addEventListener("focusout", function () {
+      hidePreListedOptions(prelistedItem);
+    });
+
+  }
+
+  function showPreListedOptions(filteredOptions, prelistedInput, prelistedItem) {
+    prelistedItem.innerHTML = "";
+    filteredOptions.forEach(option => {
+      const item = document.createElement("div");
+      item.id = `${option.id}-${option.name}`;
+      item.className = "list-group-item list-group-item-action";
+
+      const label = document.createElement("p");
+      label.innerHTML = option.name;
+      const delete_prelisted = document.createElement("button");
+      delete_prelisted.className = "btn btn-danger btn-sm";
+      delete_prelisted.innerHTML = '<li class="fa fa-remove"></li>';
+
+
+      item.appendChild(label);
+      item.appendChild(delete_prelisted);
+
+      item.addEventListener("mousedown", function () {
+        prelistedInput.value = option.name;
+        prelistedItem.innerHTML = "";
+        preListedSelected = option;
+
+        pre_selectedServices = [];
+
+        for (let i = 0; i < services.length; i++) {
+          if (pre_selectedServices.length < option.exams.length) {
+            for (let j = 0; j < option.exams.length; j++) {
+              if (services[i].id === option.exams[j]) {
+                pre_selectedServices.push(services[i]);
+              }
+            }
+          } else {
+            break;
+          }
+        }
+
+        buildButtonsServices();
+        buildCounterServices();
+      });
+      delete_prelisted.addEventListener("mousedown", function (event) {
+        event.stopPropagation();
+        item.remove();
+        deletePrelisted(option.id);
+        fetchPreListed();
+
+      })
+
+      prelistedItem.appendChild(item);
+    });
+  }
+  function hidePreListedOptions(prelistedItem) {
+    prelistedItem.innerHTML = '';
+  }
+
+
+  function selectedCustom() {
+    let custom_id = document.getElementById('customers_datalist').value;
+    let rut = document.getElementById('input_rut');
+
+    for (let custom of customers) {
+      if (custom.id.toString() === custom_id.toString()) {
+        rut.value = custom.rut != null ? custom.rut : 'Sin especificar';
+        break;
+      }
+    }
+  }
+
+  function selectedResponsable() {
+    let responsable_id = document.getElementById('responsibles_datalist').value;
+    let email = document.getElementById('input_email');
+    let phone = document.getElementById('input_phone');
+
+    for (let responsible of responsibles) {
+      if (responsible.id.toString() === responsable_id.toString()) {
+        email.value = responsible.email != null ? responsible.email : 'Sin especificar';
+        phone.value = responsible.phone != null ? responsible.phone : 'Sin especificar';
+        break;
+      }
+    }
+  }
+
+
+
+  // Dialog methods
+
+  function buildButtonsServices() {
+    const serviceSelectedButtons = document.getElementById('listServices');
+    serviceSelectedButtons.innerHTML = '';
+
+    filteredServices.forEach(service => {
+      let btn = document.createElement('button');
+
+      btn.id = `${service.id}-btn`;
+      btn.textContent = `${service.name}`;
+      btn.classList.add('list-group-item');
+      btn.classList.add('btn');
+      btn.setAttribute('data-toggle', 'button');
+      btn.style.backgroundColor = '#eeeeee';
+
+      if (pre_selectedServices.includes(service)) {
+        btn.setAttribute('arial-pressed', 'true');
+        btn.classList.add('btn-primary');
+        btn.classList.add('active');
+      } else {
+        btn.setAttribute('arial-pressed', 'false');
+        btn.classList.remove('btn-primary');
+      }
+
+
+      btn.addEventListener('click', function () {
+        isPreSelected = false;
+        for (let i = 0; i < pre_selectedServices.length; i++) {
+          if (pre_selectedServices[i].id == service.id) {
+            isPreSelected = true;
+            break;
+          }
+        }
+
+        if (!isPreSelected) {
+          btn.setAttribute('arial-pressed', 'true');
+          btn.classList.add('btn-primary');
+          pre_selectedServices.push(service);
+        } else {
+          btn.setAttribute('arial-pressed', 'false');
+          btn.classList.remove('btn-primary');
+
+          pre_selectedServices.splice(pre_selectedServices.indexOf(service), 1);
+        }
+        buildCounterServices();
+      });
+
+      serviceSelectedButtons.appendChild(btn);
+    });
+  }
+
+  function buildCounterServices() {
+    let counter = document.getElementById('counterServices');
+    counter.textContent = `${pre_selectedServices.length}`;
+  }
+
+  function selectedLab() {
+    let lab_group = document.getElementById('lab_datalist').value;
+    let inputService = document.getElementById('input_nameService');
+
+    let value = inputService.value;
+    filteredServices = services.filter(function (element) {
+      let check = element.name.toString().includes(value.toString()) && (element.group.toString() === lab_group.toString() || lab_group.toString() === 'all');
+
+      return check;
+    });
+
+    buildButtonsServices();
+  }
+
+  function buildFilterByLabs() {
+    let lab_datalist = document.getElementById('lab_datalist');
+
+
+    let content = `<option value="all">Todos</option>`;
+    filteredServices.forEach(service => {
+      if (!labs.includes(service.group)) {
+        labs.push(service.group);
+        content += `<option value="${service.group}">${service.group}</option>`;
+      }
+    });
+
+    lab_datalist.innerHTML = content;
+  }
+
+  function closedDialogService() {
+    pre_selectedServices = selectedServices.slice();
+
+    buildCounterServices();
+  }
+
+  function aceptedDialogServices() {
+    selectedServices = pre_selectedServices.slice();
+    selectedServices.forEach(service => {
+      servicesQuantity[service.id] = servicesQuantity[service.id] === undefined ? '1' : servicesQuantity[service.id]
+      servicesPrice[service.id] = servicesPrice[service.id] === undefined ? (service.unit_price != null ? service.unit_price : '') : servicesPrice[service.id]
+    });
+
+    buildDataTableServices();
+
+    if (preListedSelected != null) {
+      // Editar
+      try {
+        data = validatePreListPost(isUpdated = true);
+
+        putPrelisted(data);
+      } catch (error) {
+        toastr.error(error, "Aviso");
+      }
+    }
+  }
+
+
+  // Utils methods:
+  // Validation data
+  function getAndValidateQuotePost() {
+    let customer_id = document.getElementById('customers_datalist').value;
+    let title = document.getElementById('input_title');
+
+    let responsible_input = document.getElementsByClassName('responsible_place')[0];
+    let responsible_id = responsible_input.id;
+
+    if (customer_id === undefined) {
+      throw new Error('No ha seleccionado una empresa');
+    } else if (responsible_id === undefined || responsible_id.length == 0) {
+      throw new Error('No ha seleccionado un representante');
+    }
+
+    {% comment %} if (title.value === undefined || title.value.length === 0) {
+      title.style.border = '2px solid red';
+      throw new Error('Faltó especificar un título de cotización');
+    } else {
+      title.style.border = '';
+    } {% endcomment %}
+
+    let services_to_post = [];
+    let countNotRecommend = 0;
+    for (let i = 0; i < selectedServices.length; i++) {
+      quantity = document.getElementById(`${selectedServices[i].id}-quantity`);
+      price = document.getElementById(`${selectedServices[i].id}-price`);
+
+      if (quantity.value === undefined || quantity.value.length == 0) {
+        quantity.style.border = '2px solid red';
+        throw new Error(`El servicio ${selectedServices[i].name} no tiene asignado el N° de Muestras`);
+      } else {
+        quantity.style.border = '';
+      }
+
+      if (price.value === undefined || price.value.length == 0) {
+        price.style.border = '2px solid red';
+        throw new Error(`El servicio ${selectedServices[i].name} no tiene asignado el Precio`);
+      } else {
+        price.style.border = '';
+      }
+
+      services_to_post.push({
+        'service_id': selectedServices[i].id,
+        'quantity': quantity.value,
+        'price': price.value,
+        'isRecommended': suggestions.includes(selectedServices[i]),
+      });
+    }
+    if (services_to_post.length == 0)
+      throw new Error(`Faltó añadir los servicios`);
+    else if (services_to_post.length == suggestions.length) {
+      throw new Error(`Faltó añadir los servicios de una propuesta`);
+    }
+
+    let comment = document.getElementById('quote-comment').value;
+    let split_date = document.getElementById('expiration_date');
+
+    if (split_date.value === undefined || split_date.value.length == 0) {
+      split_date.style.border = '2px solid red';
+      throw new Error(`Faltó especificar una fecha de expiración`);
+    } else {
+      split_date.style.border = '';
+      split_date = split_date.value.split('/');
+    }
+
+    let expiration_date = `${split_date[2]}-${split_date[1]}-${split_date[0]}`;
+
+    if (isEmpty(comment)) {
+      comment = '';
+    }
+
+    return {
+      'customer_id': customer_id,
+      'title': title.value,
+      'responsible_id': responsible_id,
+      'services': services_to_post,
+      'comment': comment,
+      'expiration_date': expiration_date,
+    };
+  }
+  function validatePreListPost(isUpdated = false) {
+    preListedField = document.getElementById('autocomplete-input');
+
+    if (isEmpty(preListedField.value)) {
+      throw new Error('Faltó establecer el nombre del listado.');
+    }
+
+    for (let i = 0; i < preListed.length && !isUpdated; i++) {
+      if (preListed[i].name == preListedField.value)
+        throw new Error('Ese listado ya existe, intente con otro nombre.');
+    }
+
+    if (pre_selectedServices.length == 0) {
+      throw new Error('Faltó seleccionar los exámenes.');
+    }
+
+    return {
+      'id': preListedSelected != null ? preListedSelected.id : null,
+      'name': preListedField.value,
+      'exams': pre_selectedServices.map(element => element.id),
+    }
+  }
+  // Request to backend for more information.
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      var cookies = document.cookie.split(";");
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = jQuery.trim(cookies[i]);
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(
+            cookie.substring(name.length + 1)
+          );
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  function hide_pdf() {
+    let btn_pdf = document.getElementById('btn_pdf');
+    btn_pdf.style.visibility = 'hidden';
+  }
+  function visible_pdf() {
+    let btn_pdf = document.getElementById('btn_pdf');
+    btn_pdf.style.visibility = 'visible';
+    // btn_pdf.href = `quotes/download-quote/${quote_id}`
+  }
+  function isNumber(txt) {
+    let pointCounter = 0;
+    for (let i = 0; i < txt.length; i++) {
+      if (txt[i] === '.') {
+        if (pointCounter < 1)
+          pointCounter++;
+        else return false;
+      }
+    }
+    return true;
+  }
+  function isEmpty(text) {
+    return text.trim().replace(/\s/g, '').length === 0
+  }
+  function truncateDecimal(value){
+    valueString = value.toString();
+        decimalIndex = valueString.indexOf('.');
+        if (valueString.length > decimalIndex + 4) {
+          valueString = valueString.substr(0, decimalIndex + 4);
+        }
+    return valueString;
+  }
+
+</script> {% endblock scripts %}

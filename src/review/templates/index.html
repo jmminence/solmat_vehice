@@ -1,0 +1,427 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block content %}
+<!-- MAIN -->
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <header class="card-header">
+                <h1 class="card-title">revision servicios</h1>
+            </header>
+            <main class="card-body">
+                <section class="row align-items-center my-2">
+                    <div class="col-md-2 text-right">
+                        <label for="">Buscar:</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control" id="search"/>
+                    </div>
+                </section>
+                <section class="d-flex flex-row align-items-stretch justify-content-between border-top pt-2">
+                    <section class="card m-0">
+                        <header class="card-header">
+                            <h2 class="card-title">
+                                En Espera
+                                <small id="waitingCount"></small>
+                            </h2>
+                        </header>
+                        <ul id="waiting" class="state list-group p-1" style="background-color: #595959"></ul>
+                    </section>
+                    <section class="card m-0">
+                        <header class="card-header">
+                            <h2 class="card-title">
+                                Formato
+                                <small id="formatingCount"></small>
+                            </h2>
+                        </header>
+                        <ul id="formating" class="state list-group p-1" style="background-color: #7f7f7f"></ul>
+                    </section>
+                    <section class="card">
+                        <header class="card-header">
+                            <h2 class="card-title">
+                                Revision
+                                <small id="reviewingCount"></small>
+                            </h2>
+                        </header>
+                        <ul id="reviewing" class="state list-group p-1" style="background-color: #a5a5a5"></ul>
+                    </section>
+                    <section class="card">
+                        <header class="card-header">
+                            <h2 class="card-title">
+                                Para Enviar
+                                <small id="sendingCount"></small>
+                            </h2>
+                        </header>
+                        <ul id="sending" class="state list-group p-1" style="background-color: #cccccc"></ul>
+                    </section>
+                    {% if perms.review.send_email %}
+                    <section class="card">
+                        <header class="card-header">
+                            <h2 class="card-title">
+                                Finalizado
+                                <small id="finishedCount"></small>
+                            </h2>
+                        </header>
+                        <ul id="finished" class="state list-group p-1" style="background-color: #f2f2f2"></ul>
+                    </section>
+                    {% endif %}
+                </section>
+            </main>
+        </div>
+    </div>
+</div>
+
+<!-- END MAIN -->
+
+<!-- MODAL -->
+
+<!-- DIALOG FILES -->
+<div class="modal" tabindex="-1" id="fileDialog"  data-backdrop="static" data-keyboard="false" >
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body container-fluid py-1 px-2">
+                <header class="row">
+                    <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link active" id="recipient-tab" data-toggle="tab" href="#recipients" role="tab" aria-controls="recipients" aria-selected="true">Destinatarios</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="file-tab" data-toggle="tab" href="#files" role="tab" aria-controls="files" aria-selected="false">Archivos</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="final-tab" data-toggle="tab" href="#finals" role="tab" aria-controls="finals" aria-selected="false">Informe Final</a>
+                        </li>
+                    </ul>
+                </header>
+                <main class="tab-content mt-2" id="myTabContent">
+                    <div class="tab-pane fade show active p-1" id="recipients" role="tabpanel" aria-labelledby="recipient-tab">
+                        <h3>Destinatarios</h3>
+                        <div class="d-inline-flex flex-row justify-content-around w-100 my-2">
+                            <button id="btnSaveRecipients" class="btn btn-success">Guardar los destinatarios para este servicio</button>
+                            <button id="btnCreateRecipient" class="btn btn-secondary">Crear un nuevo destinatario</button>
+                            <button id="btnCreateMailList" class="btn btn-secondary">Crear una nueva lista de correos</button>
+                            <button id="btnUpdateMailList" class="btn btn-secondary">Actualizar la lista de correos seleccionada</button>
+                        </div>
+                        <select id="selectMailList" style="width:100%">
+                        </select>
+                        <div class="row">
+                            <div class="col-md-6 pt-3">
+                                <h3>Principal</h3>
+                                <select class="selectRecipients" id="mainRecipient" multiple style="width:100%">
+                                    {% for recipient in recipients %}
+                                    <option value="{{ recipient.id }}">{{ recipient.full_name }}&lt;{{ recipient.email }}&gt;</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6 pt-3">
+                                <h3>CC</h3>
+                                <select class="selectRecipients" id="ccRecipient" multiple style="width:100%">
+                                    {% for recipient in recipients %}
+                                    <option value="{{ recipient.id }}">{{ recipient.full_name }}&lt;{{ recipient.email }}&gt;</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade p-1" id="files" role="tabpanel" aria-labelledby="file-tab">
+                        <h3>Archivos de revisiones</h3>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <form action="/"
+                                      class="dropzone"
+                                      id="newFiles"
+                                >
+                                </form>
+                                <small class="text-muted my-1">
+                                    Arrastre un archivo en el cuadro, o haga click en el mismo para seleccionar un archivo, el archivo se sube automáticamente.
+                                </small>
+                            </div>
+                            <div class="col-md-4">
+                                <h4>Archivos subidos por patologos</h4>
+                                <ul class="list-group" id="prereportList">
+                                </ul>
+                            </div>
+                            <div class="col-md-4">
+                                <h4>Archivos subidos en revisiones</h4>
+                                <ul class="list-group" id="reviewList">
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade p-1" id="finals" role="tabpanel" aria-labelledby="final-tab">
+                        <h3>Archivos para enviar</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <form action="/"
+                                      class="dropzone"
+                                      id="fR"
+                                >
+                                </form>
+                                <h4>Informes finales para enviar</h4>
+                                <ul class="list-group" id="finalReportsList">
+
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <form action="/"
+                                      class="dropzone"
+                                      id="attachedFiles"
+                                >
+                                </form>
+                                <h4>Archivos adjuntos para enviar</h4>
+                                <ul class="list-group" id="attachmentsList">
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- RECIPIENT MODAL -->
+
+<div class="modal" tabindex="-1" id="recipientDialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Crear Destinatario</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body container-fluid">
+                <main class="row">
+                    <form class="col-md-12" id="newRecipientForm">
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label for="">Nombre:</label>
+                                <input required name="first_name" type="text" value="" class="form-control"/>
+                                <small>Obligatorio</small>
+                            </div>
+
+                            <div class="col-md-6 form-group">
+                                <label for="">Apellido:</label>
+                                <input name="last_name" type="text" value="" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 form-group">
+                                <label for="">Email:</label>
+                                <input required class="form-control" name="email" type="email" value=""/>
+                                <small>Obligatorio</small>
+                            </div>
+                        </div>
+                        <div class="row align-items-end">
+                            <div class="col-md-4">
+                                <label for="">Cargo:</label>
+                                <input class="form-control" name="role" type="text" value=""/>
+                            </div>
+                            <div class="col-md-2 offset-md-2">
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                            </div>
+                        </div>
+                    </form>
+                </main>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- NEW MAIL LIST -->
+<div class="modal" tabindex="-1" id="mailListDialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Crear Lista de Correo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body container-fluid">
+                <main class="row">
+                    <form class="col-md-12" id="newMailListForm">
+                        <div class="row align-items-center">
+                            <div class="col-md-6 form-group">
+                                <label for="">Nombre:</label>
+                                <input required name="name" type="text" value="" class="form-control"/>
+                                <small>Obligatorio</small>
+                            </div>
+
+                            <div class="col-md-2 offset-md-2">
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                            </div>
+                        </div>
+                    </form>
+                </main>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FINAL REPORT MODAL -->
+
+<div class="modal" tabindex="-1" id="finalDialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Listo para enviar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body container-fluid">
+                <main class="row mb-2">
+                    <div class="col-md-3">
+                        <h4>Informes finales</h4>
+                        <ul class="list-group" id="finalDlgReportList">
+
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <h4>Archivos adjuntos</h4>
+                        <ul class="list-group" id="finalDlgAttachmentList">
+
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <h4>Plantilla:</h4>
+                        <select id="template" class="form-control">
+                            <option value="-1" selected>Seleccione una opcion</option>
+                            <option value="1">Envio Normal</option>
+                            <option value="0">Rectificacion</option>
+                            <option value="2">Re-emision</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <h4>Idioma del correo:</h4>
+                        <select id="language" class="form-control">
+                            <option value="-1" selected>Seleccione una opcion</option>
+                            <option value="1">Español</option>
+                            <option value="0">Ingles</option>
+                        </select>
+                        <h4>Destinatarios:</h4>
+                        <ul id="finalRecipientsList">
+                        </ul>
+                    </div>
+                </main>
+                <div class="row">
+                    <div class="col-md-6">
+
+                        <button id="sendTestEmailBtn" type="button" class="btn btn-secondary btn-lg btn-block">PREVISUALIZAR CORREO</button>
+                    </div>
+                    <div class="col-md-6">
+
+                        <button id="sendEmailBtn" type="button" class="btn btn-primary btn-lg btn-block">ENVIAR</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- END MODAL -->
+
+<!-- SCORE MODAL -->
+
+<div class="modal fade text-left" id="reportScore_modal" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="max-width:20% !important;" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Notas</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="score_service_id" />
+                <input type="hidden" id="reportScore_type" />
+                <form id="reportScore_form" class="form form-horizontal">
+                    <div class="form-group row">
+                        <label class="col-md-7 label-control">
+                            Nota de informe:
+                        </label>
+                        <div class="col-md-5">
+                            <input type="text" class="form-control" id="score_report" min="0" name="score_report" />
+                        </div>
+                    </div>
+                    <p><small>Recuerda que el separador decimal es el punto (.)</small></p>
+                    <div class="form-group pull-right">
+                        <button type="button" class="btn btn-primary saveScores">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade text-left" id="diagnosticScore_modal" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="max-width:20% !important;" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Notas</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="score_service_id" />
+                <input type="hidden" id="diagnosticScore_type" />
+                <form id="diagnosticScore_form" class="form form-horizontal">
+                    <div class="form-group row">
+                        <label class="col-md-7 label-control">
+                            Nota de diagnóstico:
+                        </label>
+                        <div class="col-md-5">
+                            <input type="text" class="form-control" id="score_diagnostic" min="0" name="score_diagnostic" />
+                        </div>
+                    </div>
+                    <p><small>Recuerda que el separador decimal es el punto (.)</small></p>
+                    <div class="form-group pull-right">
+                        <button type="button" class="btn btn-primary saveScores">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- END MODAL -->
+
+{% endblock content %}
+{% block scripts %}
+<script
+    type="text/javascript"
+    src="//cdn.jsdelivr.net/npm/sweetalert2@10"
+    defer>
+</script>
+
+
+<script type="text/javascript"
+        src="{% static 'assets/vendors/js/ui/jquery-ui.min.js' %}"
+        defer>
+</script>
+
+<script type="text/javascript"
+        src="{% static 'assets/js/scripts/extensions/dropzone.min.js' %}"
+        defer>
+</script>
+
+<script type="text/javascript"
+        src="{% static 'review/js/index.js' %}"
+        defer>
+</script>
+
+{% endblock scripts %}

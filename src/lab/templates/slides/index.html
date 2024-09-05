@@ -1,0 +1,181 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block content %}
+<!-- MAIN -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <header class="card-header">
+                <h4 class="card-title">Slides</h4>
+                <span class="d-flex flex-row justify-content-between mt-md-1 align-items-center">
+                    <small class="card-subtitle">Indice</small>
+                </span>
+            </header>
+            <section class="card-body table-responsive">
+                <div class="row justify-content-between mb-1">
+                    <div class="col-md-3">
+                        <form class="d-flex flex-row" method="GET">
+                            <select class="form-control mr-1" name="range">
+                                <option selected value="1">Ultima Semana</option>
+                                <option value="2">Ultimo Mes</option>
+                                <option value="3">Ultimos 3 Meses</option>
+                                <option value="4">Ultimos 6 Meses</option>
+                            </select>
+                            <button class="btn btn-info" type="submit">Filtrar lista de cassettes</button>
+                        </form>
+                    </div>
+                    <div class="col-md-2">
+                        <button id="btnCreate" class="btn btn-primary">Crear un nuevo slide</button>
+                    </div>
+                </div>
+                <table class="table table-bordered table-striped zero-configuration">
+                    <thead>
+                        <tr>
+                            <th scope="col">Caso</th>
+                            <th scope="col">Identificacion</th>
+                            <th scope="col"># Unidad</th>
+                            <th scope="col"># Slide</th>
+                            <th scope="col">Tincion</th>
+                            <th scope="col">Error <br /> Armado</th>
+                            <th scope="col">Fecha Recepcion</th>
+                            <th scope="col">Fecha Armado</th>
+                            <th scope="col">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for slide in slides %}
+                        <tr>
+                            <td>{{ slide.unit.identification.entryform.no_caso }}</td>
+                            <td>{{ slide.unit.identification }}</td>
+                            <td>{{ slide.unit.correlative }}</td>
+                            <td>{{ slide.correlative }}</td>
+                            <td>{{ slide.stain.abbreviation }}</td>
+                            <td>
+                                {{ slide.hidden|yesno:"Si, No" }}
+                                {% if slide.hidden_message %}
+                                ({{ slide.hidden_message }})
+                                {% endif %}
+                            </td>
+                            <td>{{ slide.unit.identification.entryform.created_at|date:"d/m/Y G:i" }}</td>
+                            <td>{{ slide.build_at|date:"d/m/Y G:i" }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button class="btn btn-outline-primary btnEdit id-{{slide.id}}">Editar</button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </div>
+</div>
+
+<!-- END MAIN -->
+
+<!-- MODALS -->
+
+<!-- MODAL EDIT SLIDE -->
+<div class="modal" id="dlgEdit" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Slide</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <main class="container">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="form-label" for="">Correlativo:</label>
+                            <input id="correlative" type="number" name="correlative" class="form-control"/>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="">Tincion:</label>
+                            <select id="editStain" class="form-control stainSelect">
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="">Fecha Armado:</label>
+                            <input id="buildDate" type="datetime-local" name="build_date" class="form-control"/>
+                        </div>
+                    </div>
+                </main>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-close" data-bs-dismiss="modal">Cancelar</button>
+                <button id="btnSave" type="button" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CREATE SLIDE-->
+<div class="modal" id="dlgCreate" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Crear Slide</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <main class="container">
+                    <div class="row">
+                        <div class="col-md">
+                            <label class="form-label" for="">Caso / Identificacion / Unidad / Cassette:</label>
+                        </div>
+                    </div>
+                    <div class="row my-1">
+                        <div class="col-md">
+                            <select id="newSelectUnit" class="w-full">
+                            </select>
+                            <small>Correlativo se ingresa automaticamente al guardar.</small>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md">
+                            <label class="form-label" for="">Fecha Armado:</label>
+                            <input id="newBuildDate" type="datetime-local" name="build_date" class="form-control"/>
+                        </div>
+                        <div class="col-md">
+                            <label class="form-label" for="">Tincion:</label>
+                            <select id="newStain" class="form-control stainSelect">
+                            </select>
+                        </div>
+                    </div>
+                </main>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-close" data-bs-dismiss="modal">Cancelar</button>
+                <button id="btnSaveNew" type="button" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- END MODALS-->
+
+
+{% endblock content %}
+{% block scripts %}
+<script
+    type="text/javascript"
+    src="https://cdn.datatables.net/buttons/1.7.0/js/dataTables.buttons.min.js"
+    defer>
+</script>
+
+<script
+    type="text/javascript"
+    src="//cdn.jsdelivr.net/npm/sweetalert2@10"
+    defer>
+</script>
+
+<script type="text/javascript"
+        src="{% static 'lab/js/slide-index.js' %}"
+        defer>
+</script>
+
+{% endblock scripts %}

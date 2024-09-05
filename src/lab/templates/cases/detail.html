@@ -1,0 +1,137 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-sm table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col" class="text-right">
+                            Dato</th>
+                        <th class="text-left" scope="row">
+                            Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row" class="text-right">#
+                            Caso</th>
+                        <td class="text-left">{{case.no_caso}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-right">Recepcion del caso</th>
+                        <td class="text-left">
+                            {{case.created_at}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-right">Fecha
+                            muestreo</th>
+                        <td class="text-left">
+                            {{case.sampled_at}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-right">
+                            Cliente</th>
+                        <td class="text-left">
+                            {{case.customer}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-right">
+                            Fijador</th>
+                        <td class="text-left">
+                            {{case.fixative}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-right">
+                            Crecimiento</th>
+                        <td class="text-left">
+                            {{case.larvalstage}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-right">
+                            Especie</th>
+                        <td class="text-left">{{case.specie}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-right">Fuente
+                            de agua</th>
+                        <td class="text-left">
+                            {{case.watersource}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-right">
+                            Centro</th>
+                        <td class="text-left">{{case.center}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-right">
+                            Responsable</th>
+                        <td class="text-left">
+                            {{case.responsible}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-right">
+                            Cliente</th>
+                        <td class="text-left">
+                            {{case.responsible}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-right">
+                            Anamnesis</th>
+                        <td class="text-left">
+                            {{case.anamnesis}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-right">
+                            Tipo</th>
+                        <td class="text-left">
+                            {{case.entryform_type}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-right">
+                            Formato</th>
+                        <td class="text-left">
+                            {{case.entry_format}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% with identifications=case.identification_set.all %}
+    {% if identifications %}
+    <h4>Identificaciones: {{ identifications|length }}</h4>
+    <div class="row my-2">
+        <div class="col-md-12 d-flex flex-column table-responsive">
+            <table class="table table-sm table-striped">
+                <thead>
+                    <tr>
+                        <th scope="row">Nombre</th>
+                        <th scope="row"># Peces</th>
+                        <th scope="row">Unidades</th>
+                        <th scope="row"># Contenedor</th>
+                        <th scope="row">Grupo</th>
+                        <th scope="row">Detalles</th>
+                        <th scope="row">Observaciones</th>
+                        <th scope="row">Peso</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for identification in identifications %}
+                    <tr>
+                        <td>{{ identification.cage }}</td>
+                        <td>{{ identification.no_fish }}</td>
+                        <td>{{ identification.unit_set.count }}</td>
+                        <td>{{ identification.no_container }}</td>
+                        <td>{{ identification.group }}</td>
+                        <td>{{ identification.extra_features_details }}</td>
+                        <td>{{ identification.observation }}</td>
+                        <td>{{ identification.weight }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% endif %}
+    {% endwith %}
+</div>

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body %}
+<!-- navbar-fixed-top-->
+{% include "partials/header.html" %}
+
+{% include "partials/menu.html" %}
+
+<div class="app-content content">
+  <div class="content-wrapper">
+    {% block content_header %}
+    {% endblock content_header %}
+    <div class="content-body">
+      {% block content %}
+      {% endblock content %}
+    </div>
+  </div>
+</div>
+
+{% include "partials/footer.html" %}
+
+{% endblock body %}

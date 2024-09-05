@@ -1,0 +1,98 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block content %}
+<!-- MAIN -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <header class="card-header">
+                <h1 class="card-title">SLIDES</h1>
+            </header>
+            <main class="card-body table-responsive">
+                <section class="row d-flex justify-content-around mt-2">
+                    <a
+                        class="btn btn-outline-success"
+                        href="{% url 'lab:slide_build' %}"
+                    >
+                        Armado de Slides ({{ build_count }})
+                    </a>
+                    <a
+                        class="btn btn-outline-info"
+                        href="{% url 'lab:slide_release' %}"
+                    >
+                        Disponibilizacion de Slides ({{ release_count }})
+                    </a>
+                    <a
+                        class="btn btn-outline-primary"
+                        href="{% url 'lab:slide_index' %}"
+                    >
+                        Indice de Slides
+                    </a>
+                </section>
+                <section class="row my-2">
+                    <div class="col-md-12">
+                        <h5>Reporte de Slides Generados</h5>
+                        <form class="row align-items-center" method="POST" action="{% url 'lab:slide_home' %}">
+                            {% csrf_token %}
+                            <div class="form-group col-md-2">
+                                <label for="">Desde:</label>
+                                <input class="form-control" name="from_date" type="date" value=""/>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="">Hasta:</label>
+                                <input class="form-control" name="to_date" type="date" value=""/>
+                            </div>
+                            <div class="col-md-3 offset-md-2">
+                                <button name="report_type" value="0" class="btn btn-info">Generar reporte en pantalla</button>
+                            </div>
+                            <div class="col-md-3">
+                                <button name="report_type" value="1" class="btn btn-secondary">Generar reporte en csv/excel</button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+                {% if show_report %}
+                <section class="row my-1">
+                    <div class="col-md-12 table-responsive">
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Caso</th>
+                                    <th>Identificacion</th>
+                                    <th>Unidad</th>
+                                    <th>Slide</th>
+                                    <th>Tincion</th>
+                                    <th>Organos</th>
+                                    <th>Codigo</th>
+                                    <th>Fecha Armado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for slide in rows %}
+                                <tr>
+                                    <td>{{ slide.unit.identification.entryform.no_caso }}</td>
+                                    <td>{{ slide.unit.identification }}</td>
+                                    <td>{{ slide.unit.correlative }}</td>
+                                    <td>{{ slide.correlative }}</td>
+                                    <td>{{ slide.stain }}</td>
+                                    <td>{{ slide.organs|join:"," }}</td>
+                                    <td>{{ slide.tag }}</td>
+                                    <td>{{ slide.created_at|date:"d/m/Y" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+                {% endif %}
+            </main>
+        </div>
+    </div>
+</div>
+
+<!-- END MAIN -->
+
+{% endblock content %}
+{% block scripts %}
+{% endblock scripts %}

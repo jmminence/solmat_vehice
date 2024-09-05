@@ -1,0 +1,141 @@
+{% load static %}
+<!doctype html>
+<html class="no-js" lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Email Template</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style type="text/css" media="screen">
+         @media only screen and (max-width: 768px) {
+             .container {
+                 margin: 0.25rem;
+                 padding: 1rem;
+                 background-color: #f1f1f1;
+             }
+
+
+             .footer {
+                 margin: 0.25rem;
+                 padding: 1rem;
+             }
+         }
+         @media only screen and (min-width: 769px) {
+             .container {
+                 margin: 3rem;
+                 padding: 2rem;
+                 background-color: #f1f1f1;
+             }
+
+             .footer {
+                 margin: 3rem;
+                 padding: 2rem;
+             }
+         }
+
+         .title {
+             text-align: center;
+             font-family: sans-serif;
+             border-bottom: 1px gray solid;
+         }
+
+         .text {
+             text-align: justify;
+             font-family: sans-serif;
+             background-color: white;
+             padding: 1rem;
+         }
+
+         .link {
+             text-decoration: none;
+             color: orange;
+         }
+
+         .img-fluid {
+             width: 100%;
+             height: auto;
+         }
+
+         small {
+             font-family: sans-serif;
+         }
+
+         .sign-container {
+             padding-top: 0.25rem;
+         }
+
+         .blog-container {
+             display: flex;
+             flex-direction: row;
+         }
+
+         .footer-aside {
+             width: 25%;
+         }
+
+         .footer-main {
+             width: 75%;
+             display: flex;
+         }
+
+         .footer-title {
+             text-align: center;
+             font-family: sans-serif;
+             border-bottom: 1px orange solid;
+         }
+
+         .blog-img {
+             display: inline-block;
+             width: 45%;
+         }
+
+         
+        </style>
+
+    </head>
+    <body>
+        <div class="container">
+            <h3 class="title">
+                Informe {{ report_code }}
+            </h3>
+            <p class="text">
+                <b>Saludos,</b>
+                <br />
+                Adjunto se encuentra disponible el informe {{ report_code }} para
+                el centro <b>{{ center }}</b> de la empresa <b>{{ customer }}</b>
+                sobre el servicio <b>{{ exam }}</b>.
+            </p>
+        </div>
+        <div class="footer">
+            <small>
+                Para consultas técnicas puede comunicarse con nosotros <a href="mailto:carlos.sandoval@vehice.com">aquí.</a>
+            </small>
+            <br />
+            <small>
+                Para consultas administrativas puede comunicarse con nosotros <a href="mailto:admin@vehice.com">aquí</a>.
+            </small>
+            <br />
+            <small>
+                Para consultas comerciales puede comunicarse con nosotros <a href="mailto:marcelo.vera@vehice.com">aquí</a>.
+            </small>
+            <br />
+            <small>
+                Para cualquier otro tipo de consulta puede comunicarse con nosotros <a href="mailto:info@vehice.com">aquí</a>.
+            </small>
+            <br />
+            <table style="max-width: 500px">
+                <tr>
+                    <td colspan="2">
+                        <a href="https://linktr.ee/vehicelab" target="_BLANK">
+                        <img
+                            class="img-fluid"
+                            src="https://storage.googleapis.com/vehice-media/VehiceReports.png"
+                            alt="">
+                        </a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,273 @@
+{% extends 'base_pdf.html' %}
+{% load static %}
+{% block stylesheets %}
+
+<style type="text/css">
+  .text-white {
+    color: white !important;
+  }
+
+  .container {
+    font-family: "Helvetica" !important;
+    font-size: 10px !important;
+
+  }
+
+  .t1 {
+    font-family: "Helvetica" !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    text-transform: uppercase;
+  }
+
+  .t2 {
+    font-family: "Helvetica" !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+
+  }
+
+  .t3 {
+    font-family: "Helvetica" !important;
+    font-size: 11px !important;
+    font-weight: bold !important;
+
+  }
+
+  .t3_n {
+    font-family: "Helvetica" !important;
+    font-size: 11px !important;
+    font-weight: normal !important;
+
+  }
+
+  div {
+    font-family: "Helvetica" !important;
+    font-size: 10px !important;
+
+
+  }
+
+  table.table-bordered {
+    border: 1px solid gray;
+  }
+
+  table.table-bordered>thead>tr>th {
+    border: 1px solid gray;
+  }
+
+  table.table-bordered>tbody>tr>td {
+    border: 1px solid gray;
+  }
+</style>
+
+{% endblock stylesheets %}
+
+{% block body %}
+<div class="container">
+  <div class="row" style="page-break-inside: avoid !important;">
+    <table class="table table-bordered">
+      <tr>
+        <td class="col-xs-3" style="text-align: center;""><img alt="" src=" {% static 'assets/images/logo/logo.png' %}"
+          class="img-fluid float-left" style="width: 180px;"></td>
+        <td class="col-xs-5">
+          <center>
+            <span class="t1">
+              comprobante de recepción
+            </span>
+          </center>
+        </td>
+        <td class="col-xs-4">
+          <div clas="row">
+            <div class="col-xs-12">
+              <span class="t3">Fecha:</span>
+            <span class="t3_n">{{ requested|date:'d-m-Y'}}</span>
+            </div>
+            <div class="col-xs-12">
+              <span class="t3">Hora:</span>
+            <span class="t3_n">{{ requested|date:'H:i'}}</span>
+          </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="row" style="page-break-inside: avoid !important;">
+    <table class="table table-bordered mt-2">
+      <tbody>
+        <tr>
+          <td colspan="6" class="text-center" style="background-color: #fbe9e7;">
+            <span class="t2" style="text-transform: uppercase;">Información del caso</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-xs-2">
+            <span class="t3">No. Caso:</span>
+          </td>
+          <td colspan="2" class="col-xs-4">
+            <span class="t3_n">{{entryform.no_caso}}</span>
+          </td>
+          <td class="col-xs-2">
+            <span class="t3">Fecha Recepción:</span>
+          </td>
+          <td colspan="2" class="col-xs-4 ">
+            <span class="t3_n">{{ entryform.created_at|date:'d-m-Y, H:i'}}</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-xs-2">
+            <span class="t3">Cliente:</span>
+          </td>
+          <td colspan="2" class="col-xs-4">
+            <span class="t3_n">{{entryform.customer.name | default:""}}</span>
+          </td>
+          <td class="col-xs-2">
+            <span class="t3">Nro Solicitud:</span>
+          </td>
+          <td colspan="2" class="col-xs-4">
+            <span class="t3_n">{{ entryform.no_request | default:"" }}</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-xs-2">
+            <span class="t3">Centro:</span>
+          </td>
+          <td colspan="2" class="col-xs-4">
+            <span class="t3_n">{{center | default:""}}</span>
+          </td>
+          <td class="col-xs-2">
+            <span class="t3">Solicitante:</span>
+          </td>
+          <td colspan="2" class="col-xs-4">
+            <span class="t3_n">{{entryform.responsible | default:""}}</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-xs-2">
+            <span class="t3">Orden de Transporte:</span>
+          </td>
+          <td colspan="2" class="col-xs-4">
+            <span class="t3_n">{{entryform.transfer_order | default:""}}</span>
+          </td>
+          <td class="col-xs-2">
+            <span class="t3">Tipo de Ingreso:</span>
+          </td>
+          <td colspan="2" class="col-xs-4">
+            <span class="t3_n">{{entryform.entryform_type | default:""}}</span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="6" class="text-center" style="background-color: #fbe9e7;">
+            <span class="t2" style="text-transform: uppercase;">Información de la muestra</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-xs-2">
+            <span class="t3">Fecha Muestreo:</span>
+          </td>
+          <td colspan="2" class="col-xs-4">
+            <span class="t3_n">{{ entryform.sampled_at|date:'d-m-Y'}}</span>
+          </td>
+          <td class="col-xs-2">
+            <span class="t3">Especie:</span>
+          </td>
+          <td class="col-xs-2">
+            <span class="t3_n">{{entryform.specie.name |default:""|title}}</span>
+          </td>
+
+        </tr>
+
+        <tr>
+          <td class="col-xs-2">
+            <span class="t3">Formato de Ingreso:</span>
+          </td>
+          <td colspan="2" class="col-xs-4">
+            <span class="t3_n">{{entryform.entry_format |default:""|title}}</span>
+          </td>
+          <td class="col-xs-2">
+            <span class="t3">Estadío:</span>
+          </td>
+          <td colspan="2" class="col-xs-4">
+            <span class="t3_n">{{entryform.larvalstage.name |default:""|title}}</span>
+          </td>
+        </tr>
+
+        <tr>
+
+          <td class="col-xs-2">
+            <span class="t3">Fijador:</span>
+          </td>
+          <td colspan="2" class="col-xs-4">
+            <span class="t3_n">{{entryform.fixative.name|default:""|title}}</span>
+          </td>
+          <td class="col-xs-2">
+            <span class="t3">Fuente de Agua:</span>
+          </td>
+          <td class="col-xs-2">
+            <span class="t3_n">{{entryform.watersource.name |default:""|title}}</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="2" style="background-color: #fbe9e7;">
+            <span class="t3">
+              OBSERVACIONES / <br>
+              ANAMNESIS
+            </span>
+          </td>
+          <td colspan="4">
+            <span class="t3_n">{{entryform.anamnesis|default:""}}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="row" style="page-break-inside: avoid !important;">
+    <table class="table table-bordered">
+      <tbody>
+        <tr>
+          <td class="col-xs-4" colspan="2" style="background-color: #fbe9e7;">
+            <span class="t3">
+              CASO INGRESADO POR:
+            </span>
+          </td>
+          <td class="col-xs-8" colspan="4">
+            <span class="t3_n">{{case_created_by|default:""}}</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-xs-4" colspan="2" style="background-color: #fbe9e7;">
+            <span class="t3">
+              COMPROBANTE GENERADO POR:
+            </span>
+          </td>
+          <td class="col-xs-8" colspan="4">
+            <span class="t3_n">{{report_generated_by|default:""}}</span>
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="row" style="margin-top:1% !important; page-break-inside: avoid !important;">
+    <span class="t2" style="text-transform: uppercase;"><strong>Notas Importantes</strong></span><br>
+
+    <span class="t3_n"> <b>&middot;</b> Este documento es un comprobante general de recepción. El detalle de lo
+      ingresado más los análisis solicitados será
+      enviado a través del correo <a href="mailto:recepcion@vehice.com"> recepcion@vehice.com</a>.</span><br>
+    <span class="t3_n"> <b>&middot;</b> Para consultas sobre ingreso de muestras y envío de información, dirigirse a
+      <a href="mailto:recepcion@vehice.com">recepcion@vehice.com</a> </span><br>
+    <span class="t3_n"> <b>&middot;</b> Para consultas técnicas dirigirse a <a href="mailto:carlos.sandoval@vehice.com">carlos.sandoval@vehice.com</a> </span><br>
+    <span class="t3_n"> <b>&middot;</b> Para consultas sobre facturación y otros temas relacionados, dirigirse a
+      <a href="mailto:gabriela.vera@vehice.com">gabriela.vera@vehice.com</a> </span><br>
+    <span class="t3_n"> <b>&middot;</b> Instructivo para la Toma de Muestras en <a href="http://www.vehice.com/home/sample-dispatch">www.vehice.com/home/sample-dispatch</a>
+    </span>
+  </div>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+{% endblock scripts %}

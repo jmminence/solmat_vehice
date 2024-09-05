@@ -1,0 +1,361 @@
+{% extends 'base_pdf.html' %}
+{% load static %}
+{% block stylesheets %}
+<link href="https://fonts.cdnfonts.com/css/calibri-light" rel="stylesheet">
+
+<style type="text/css">
+ 
+  body{
+    height:100% !important;
+    font-family:"Calibri light" !important;
+    font-size: 14pt;
+  }
+
+  .container {
+    min-height:100% !important;
+  }
+
+  .page-break{
+    page-break-before: always;
+  }
+
+  .title{
+    text-align:center;
+    color: #c90b00;
+    font-weight: bold;
+    font-size: 14pt;
+  }
+
+  .div_table_info{
+    padding-top:20px;
+    width: 98%;
+    margin: 0 auto;
+  }
+
+  .table_info {
+    text-align: center;
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 13pt;
+  }
+  
+  .table_info td, th {
+    border: 1px solid #f2a16b;
+    padding: 5px;
+  }
+
+  .table_info td:first-child {
+    text-align: left;
+    width: 195px;
+    background-color:#c0504d;
+    color: white;
+    font-weight: 600;
+  }
+
+  .table_body{
+    border-top: 0;
+    margin-top: 0;
+    padding-top: 0;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .table_body td {
+    border-top: 0;
+  }
+
+  .anamnesis_container{
+    padding-top: 40px;
+    width: 98%;
+    margin: 0 auto;
+  }
+
+  h2{
+    padding-left: 80px;
+    color: #c90b00;
+    font-size: 14pt;
+    font-weight: bold;
+  }
+
+  .anamnesis_body{
+    text-align:justify;
+    border: 1px solid #f2a16b;
+    padding: 5px;
+  }
+
+  th{
+    text-align:center;
+  }
+
+  .container_images{
+    text-align:center;
+    font-size:12pt;
+  }
+
+  .image{
+    width:100%;
+    margin: auto 0;
+  }
+
+  .grande{
+    border: 1px solid #f2a16b;
+    display:block;
+    width: 930px;
+    margin: 0 auto;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 5px;
+    text-align:justify;
+
+  }
+
+  .mediano{
+    display: inline-block;
+    border: 1px solid #f2a16b;
+    width: 459px;
+    margin: 5px;
+    padding: 5px;
+    text-align:justify;
+    vertical-align:middle;
+    height: 360px;
+  }
+
+  .test{
+    height:auto;
+    display:inline-block;
+    margin: auto 0 ;
+    vertical-align: middle;
+  }
+
+  .comment{
+    padding-top: 8px;
+  }
+
+  #contra-portada{
+    padding-top:500px;
+    text-align:center;
+  }
+
+  .owner{
+    color:#2d2e83;
+    font-weight: bold;
+    font-size:15pt;
+    display: inline-block;
+    text-align:center;
+    margin: 30px;
+    padding: 30px;
+    padding-bottom:0;
+    margin-bottom:0;
+  }
+
+  .pathologist{
+    color:#2d2e83;
+    font-weight: bold;
+    font-size:15pt;
+    display: inline-block;
+    text-align:center;
+    margin: 30px;
+    padding: 30px;
+    padding-bottom:0;
+    margin-bottom:0;
+    vertical-align:top;
+  }
+
+  .logo{
+    padding-top:15px;
+    margin: 0 auto;
+    width:300px;
+  }
+
+  .logo img{
+    width:100%;
+  }
+
+  .contraportada img{
+    width:100%;
+  }
+
+  .comment_font{
+    font-size:15pt;
+  }
+
+  p{
+    margin:0;
+  }
+
+ </style>
+
+{% endblock stylesheets %}
+
+{% block body %}
+
+<div class="container">
+  <div class="div_title">
+    <h1 class="title">INFORME DE RESULTADOS</h1>
+  </div>
+  <div class="div_table_info">
+      <table class="table_top table_info">
+        <tr>
+          <td>N°Reporte - N°Ingreso</td>
+          <td><p style="margin-left:250px;width: 200px;margin-bottom:0px;">{{no_reporte}}</p></td>
+          <td width="10px">{{no_caso}}</td>
+          <td width="25px">{% if research %}E{% else %}R{% endif %}</td>
+        </tr>
+      </table>
+      <table class="table_body table_info">
+        <tr>
+          <td>Empresa</td>
+          <td colspan="3">{{customer}}</td>
+        </tr>
+        <tr>
+          <td>Centro</td>
+          <td colspan="3">{{center}}</td>
+        </tr>
+      </table>
+      <table class="table_body table_info">
+        <tr>
+          <td>Especie - E° Desarrollo</td>
+          <td><em>{{specie}}</em></td>
+          <td>{{larvalstage}} /
+            {% for identification in identifications %}
+              {% if identification.weight > 0 %}
+                {{identification.weight }} g /
+              {% endif %}
+            {% endfor %}
+          </td>
+        </tr>
+        <tr>
+          <td>Estanque/Jaula - Grupo</td>
+          <td width="360">
+            {% for identification in identifications %}
+                {{identification.cage}} /
+            {% endfor %}
+          </td>
+          <td>
+            {% if identifications_group_empty == False %}
+              {% for identification in identifications %}
+                {% if identification.group != "" %}
+                  {{identification.group}} /
+                {% endif %}
+              {% endfor %}
+            {% else %}
+              -
+            {% endif %}
+          </td>
+        </tr>
+      </table>
+      <table class="table_body table_info">
+        <tr>
+          <td>Fuente de Agua</td>
+          <td>{{watersource}}</td>
+        </tr>
+        <tr>
+          <td>Análisis</td>
+          <td>{{sample_charge}}</td>
+        </tr>
+        <tr>
+          <td>Fecha de Muestreo</td>
+          <td>{{fecha_muestreo}}</td>
+        </tr>
+        <tr>
+          <td>Fecha Recepción</td>
+          <td>{{fecha_recepcion}}</td>
+        </tr>
+        <tr>
+          <td>Fecha Informe</td>
+          <td>{{fecha_informe}}</td>
+        </tr>
+      </table>
+  </div>
+
+  {% if anamnesis and anamnesis != "<br>" and anamnesis != "" %}
+  <div class="anamnesis_container">
+    <h2 class="anamnesis_title">ANAMNESIS</h2>
+    <div class="anamnesis_body">
+      {{anamnesis | safe}}
+    </div>
+  </div>
+  {% endif %}
+
+  {% if etiological_diagnostic and etiological_diagnostic != "<br>" and etiological_diagnostic != "" %}
+  <div class="anamnesis_container">
+    <h2 class="anamnesis_title">DIAGNÓSTICO ETIOLÓGICO</h2>
+    <div class="anamnesis_body">
+      {{etiological_diagnostic | safe}}
+    </div>
+  </div>
+  {% endif %}
+
+  {% if methodology and methodology != "<br>" and methodology != "" %}
+  <div class="methodology_container page-break">
+    <h2 class="anamnesis_title">METODOLOGÍA</h2>
+    <div class="methodology_body" style="text-align:justify;">
+      {{methodology.description | safe}}
+    </div>
+    <div class="container_images">
+      {% for image in methodology.image %}
+        {% if image.size == "grande" %}
+        <div class="grande">
+          <img class="image" src="{{image.url}}">
+          <p class="comment">{{image.comment | safe}}</p>
+        </div>
+        {% else %}
+        <div class="mediano">
+          <div class="test">
+            <img class="image" src="{{image.url}}">
+            <p class="comment">{{image.comment | safe}}</p>
+          </div>
+        </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="page-break">
+    <h2>COMENTARIOS</h2>
+    <div class="anamnesis_body comment_font">
+      {{comment | safe}}
+    </div>
+  </div>
+
+  {% if reportImages %}
+  <div class="page-break">
+    <h2>IMÁGENES</h2>
+    <div class="container_images">
+      {% for reportImage in reportImages %}
+        {% if reportImage.size == "grande" %}
+        <div class="grande">
+          <img class="image" src="{{reportImage.imagen.url}}">
+          <p class="comment"><b>Figura {{reportImage.index}}.</b> {{reportImage.comment | safe}}</p>
+        </div>
+        {% else %}
+        <div class="mediano">
+          <div class="test">
+            <img class="image" src="{{reportImage.imagen.url}}">
+            <p class="comment"><b>Figura {{reportImage.index}}.</b> {{reportImage.comment | safe}}</p>
+          </div>
+        </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="page-break" id="contra-portada">
+    <div class="owner">
+      <p>Carlos Sandoval Hurtado <br>M.V., MSc</p>
+    </div>
+    <div class="pathologist">
+      <p>{{pathologist}}<br>M.V.</p>
+    </div>
+    <div class="logo">
+      <img src="{% static '/assets/images/logo/logo.png' %}">
+    </div>
+  </div>
+</div>
+
+{% endblock body %}
+
+{% block scripts %}
+{% endblock scripts %}
